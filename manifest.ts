@@ -7,7 +7,7 @@ import { Manifest } from "deno-slack-sdk/mod.ts";
  */
 export default Manifest({
   name: "askme",
-  description: "A blank template for building Slack apps with Deno",
+  description: "Ask Me management slack app.",
   icon: "assets/default_new_app_icon.png",
   functions: [],
   workflows: [],
