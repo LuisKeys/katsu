@@ -1,18 +1,4 @@
 // AskMe App POC
-
-const express = require('express');
-const app = express();
-const port = 3000;
-
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
-});
-
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
-
-/*
 const { App } = require("@slack/bolt");
 
 const app = new App({
@@ -56,5 +42,18 @@ app.command('/helloworld', async ({ ack, payload, context }) => {
   catch (error) {
     console.error(error);
   }
+});
+
+/* Testing code
+const express = require('express');
+const app = express();
+const port = 3000;
+
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
+
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
 */
