@@ -1,14 +1,18 @@
 // AskMe App POC
+
 const { App } = require("@slack/bolt");
+require('dotenv').config()
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-// Listen for a slash command invocation
-app.command('/helloworld', async ({ ack, payload, context }) => {
+//listening for slash command invocation
+app.command('/askme', async ({ ack, payload, context }) => {
   // Acknowledge the command request
+  //console.log(payload);
+  //console.log(context);
   ack();
 
   try {
@@ -22,15 +26,7 @@ app.command('/helloworld', async ({ ack, payload, context }) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: 'Go ahead. Click it.'
-          },
-          accessory: {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Click me!'
-            },
-            action_id: 'button_abc'
+            text: 'Hey amigo!, this is a test msg :-D'
           }
         }
       ],
@@ -44,16 +40,9 @@ app.command('/helloworld', async ({ ack, payload, context }) => {
   }
 });
 
-/* Testing code
-const express = require('express');
-const app = express();
-const port = 3000;
+(async () => {
+  // Start your app
+  await app.start(3000);
 
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
-});
-
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
-*/
+  console.log('⚡ Bolt app is running on port 3000');
+})();
