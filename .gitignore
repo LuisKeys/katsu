@@ -3,4 +3,6 @@ package
 .DS_Store
 .slack/apps.dev.json
 .env
+.boost
 askme.pem
+node_modules

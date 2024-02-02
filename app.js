@@ -6,17 +6,36 @@
 
 // Required External Modules
 const { App } = require("@slack/bolt");
-require('dotenv').config()
-const sf = require('./src/salesforce/sf');
+require("dotenv").config();
+const sf = require("./src/salesforce/sf_api");
+const nl2sql = require("./src/nl2sql/translate");
+const OpenAI = require("openai");
+const openaiapi = require("./src/openai/openai_api");
+
+openai = new OpenAI();
+
+const genSQL = async () => {
+  const sql = await nl2sql.generateSQL(
+    openai,
+    openaiapi,
+    "list all the engagements with name similar to 'acc'"
+  );
+
+  console.log(sql);
+}
+
+genSQL();
+
+
 
 // Bolt app Initialization
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
 //listening for slash command invocation
-app.command('/askme', async ({ ack, payload, context }) => {
+app.command("/askme", async ({ ack, payload, context }) => {
   // Acknowledge the command request
   ack();
 
@@ -28,19 +47,21 @@ app.command('/askme', async ({ ack, payload, context }) => {
       // Include a button in the message (or whatever blocks you want!)
       blocks: [
         {
-          type: 'section',
+          type: "section",
           text: {
-            type: 'mrkdwn',
-            text: 'Hey amigo!, this is a test msg :-D'
-          }
-        }
+            type: "mrkdwn",
+            text: "Hey amigo!, this is a test msg :-D",
+          },
+        },
       ],
       // Text in the notification
-      text: 'Message from Test App'
+      text: "Message from Test App",
     });
     console.log(result);
-  }
-  catch (error) {
+
+    // Call the sendPromptToOpenAI function
+    await sendPromptToOpenAI("This is a prompt for OpenAI");
+  } catch (error) {
     console.error(error);
   }
 });
@@ -49,5 +70,5 @@ app.command('/askme', async ({ ack, payload, context }) => {
   // Start your app
   await app.start(3000);
 
-  console.log('⚡ Bolt app is running on port 3000');
+  console.log("⚡ Bolt app is running on port 3000");
 })();

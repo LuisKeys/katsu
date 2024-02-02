@@ -23,6 +23,7 @@
   "homepage": "https://github.com/a1repo/askme#readme",
   "dependencies": {
     "@slack/bolt": "^3.17.1",
-    "dotenv": "^16.4.1"
+    "dotenv": "^16.4.1",
+    "openai": "^4.26.0"
   }
 }
