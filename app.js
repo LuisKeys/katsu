@@ -1,8 +1,15 @@
-// AskMe App POC
+/**
+ * This is the main file for the AskMe App POC.
+ * It initializes the Slack Bolt app, authenticates with Salesforce,
+ * and listens for a slash command invocation to send a test message.
+ */
 
+// Required External Modules
 const { App } = require("@slack/bolt");
 require('dotenv').config()
+const sf = require('./src/salesforce/sf');
 
+// Bolt app Initialization
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
@@ -11,8 +18,6 @@ const app = new App({
 //listening for slash command invocation
 app.command('/askme', async ({ ack, payload, context }) => {
   // Acknowledge the command request
-  //console.log(payload);
-  //console.log(context);
   ack();
 
   try {
