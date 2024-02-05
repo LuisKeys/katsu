@@ -11,6 +11,7 @@ const sf = require("./src/salesforce/sf_api");
 const nl2sql = require("./src/nl2sql/translate");
 const OpenAI = require("openai");
 const openaiapi = require("./src/openai/openai_api");
+const fs = require("fs");
 
 openai = new OpenAI();
 
