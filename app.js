@@ -7,11 +7,22 @@
 // Required External Modules
 const { App } = require("@slack/bolt");
 require("dotenv").config();
-const sf = require("./src/salesforce/sf_api");
+const sf_api = require("./src/salesforce/sf_api");
+const sf_parser = require("./src/salesforce/sf_parser");
 const nl2sql = require("./src/nl2sql/translate");
 const OpenAI = require("openai");
 const openaiapi = require("./src/openai/openai_api");
 const fs = require("fs");
+
+const data = fs.readFileSync("data.json");
+
+const response = sf_parser.parse(data);
+
+response.forEach(line => {
+  console.log(line);
+});
+
+process.exit(0);
 
 openai = new OpenAI();
 
