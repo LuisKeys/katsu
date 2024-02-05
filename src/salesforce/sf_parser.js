@@ -1,8 +1,7 @@
 const RECORD_DIVIDER = ' -------------------------';
 const SF_BASE_LIGHTNING_URL = process.env.SF_BASE_LIGHTNING_URL
 
-const parse = function (jsonData) {  
-  const data = JSON.parse(jsonData);
+const parseSFData = function (data) {    
   const response = [];
   for (let i = 0; i < data.records.length; i++) {
     const record = data.records[i]
@@ -41,6 +40,4 @@ const formatDate = function (isoDate) {
   return `${month}/${day}/${year}`; 
 }
 
-
-
-module.exports = { parse };
+module.exports = { parseSFData };

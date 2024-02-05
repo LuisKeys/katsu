@@ -13,7 +13,7 @@ const generateSQL = async function (openai, openaiapi, prompt) {
   let header= "Create an SQL statement with the following prompt and do not add any additional text or explanation in the answer, ";
   header += "validating the results with these table names ";
   header += "account, contact, lead, opportunity, project, engagement, engagement_role, time_entries, engagement_approver.";
-  header += "Valid field names are Name, Id, isDeleted. For the SELECT use Name as field. Provide the result sorted by Name ascending.";
+  header += "Valid field names is Name. For the SELECT use Name as field. Provide the result sorted by Name ascending.";
 
   fullprompt = header + prompt  
 
@@ -41,8 +41,10 @@ const replace = function (sql) {
   replacedSql = replacedSql.replace(/ /g, '+');
   replacedSql = replacedSql.replace(/%/g, '%25');
   replacedSql = replacedSql.replace(/\n/g, '+');
-  replacedSql = replacedSql.replace('+Name+', '+FIELDS(+standard+)');
+  replacedSql = replacedSql.replace('+Name+', '+FIELDS(+ALL+)');
+  replacedSql = replacedSql.replace('+status+', '+status__c+');
   replacedSql = replacedSql.replace(';', '');
+  replacedSql += '+LIMIT+200';
   
   return replacedSql;  
 }

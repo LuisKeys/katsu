@@ -14,26 +14,17 @@ const OpenAI = require("openai");
 const openaiapi = require("./src/openai/openai_api");
 const fs = require("fs");
 
-const data = fs.readFileSync("data.json");
-
-const response = sf_parser.parse(data);
-
-response.forEach(line => {
-  console.log(line);
-});
-
-process.exit(0);
-
 openai = new OpenAI();
 
 const genSQL = async () => {
   const sql = await nl2sql.generateSQL(
     openai,
     openaiapi,
-    "list all the engagements with name similar to 'acc'"
+    "list all the active engagements"
   );
 
   console.log(sql);
+  //sf_api.getData(sql);
 }
 
 genSQL();

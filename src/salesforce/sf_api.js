@@ -1,5 +1,7 @@
 //Salesforce API connector
 const axios = require('axios');
+const { parse } = require('dotenv');
+const { parseSFData } = require('./sf_parser');
 
 // Required environment variables
 const base_url = process.env.SF_BASE_URL;
@@ -15,7 +17,7 @@ const password = process.env.SF_PASSWORD;
  * @returns {Promise<{accessToken: string, instanceUrl: string}>} The access token and instance URL.
  * @throws {Error} If authentication fails.
  */
-async function authenticate() {
+const authenticate = async function () {
   try {
     const response = await axios.post( base_url + '/services/oauth2/token', {
       client_id: clientId,
@@ -48,7 +50,7 @@ async function authenticate() {
  * @returns {Promise<any>} The response data from the API.
  * @throws {Error} If the API request fails.
  */
-async function get(accessToken, path) {
+const get = async function (accessToken, path) {
   try {
     const response = await axios.get(`${base_url}${path}`, {
       headers: {
@@ -64,15 +66,19 @@ async function get(accessToken, path) {
   }
 }
 
-function getData(query) {
+const getData = function (query) {
   const path = query_url + query;
 
   // Authenticate with Salesforce and log the response  
   authenticate().then((response) => {
     sf_accessToken = response.accessToken;  
 
-    get(sf_accessToken, path).then((response) => {
-      console.log(response);
+    get(sf_accessToken, path).then((response) => {      
+      output = parseSFData(response);
+      output.forEach((line) => {
+        console.log(line);
+      });
+
     }).catch((error) => {  
       throw error;
     });  
