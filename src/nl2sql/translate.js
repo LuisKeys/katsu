@@ -60,7 +60,7 @@ const generateSQL = async function (openai, openaiapi, prompt) {
     fullprompt
   );
   
-  sqlStatement = replace(sqlStatement);
+  sqlStatement = replace(sqlStatement.toLowerCase());
 
   return sqlStatement;
 }
