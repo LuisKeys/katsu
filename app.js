@@ -37,7 +37,7 @@ app.command("/askme", async ({ ack, payload, context }) => {
     let output = '';
 
     // Walk through response elements and concatenate them in the output string
-    const linesLimit = 30;
+    const linesLimit = 50;
     let lineCounter = 0;
     response.forEach(element => {
       lineCounter++;
