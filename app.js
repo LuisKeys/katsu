@@ -30,14 +30,16 @@ app.command("/askme", async ({ ack, payload, context }) => {
   const prompt = payload.text;
 
   try {
-
-    const sql = await nl2sql.generateSQL(
-      openai,
-      openaiapi,
-      prompt
-    );
+    const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
   
     console.log(sql);
+    const response = sf_api.getData(sql);
+    let output = '';
+
+    // Walk through response elements and concatenate them in the output string
+    response.forEach(element => {
+      output += element + '\n';
+    });
   
     const result = await app.client.chat.postMessage({
       token: context.botToken,
@@ -49,17 +51,14 @@ app.command("/askme", async ({ ack, payload, context }) => {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: sql,
+            text: output,
           },
         },
       ],
       // Text in the notification
       text: "Message from Test App",
     });
-    console.log(result);
-
-    // Call the sendPromptToOpenAI function
-    await sendPromptToOpenAI("This is a prompt for OpenAI");
+    //console.log(result);    
   } catch (error) {
     console.error(error);
   }

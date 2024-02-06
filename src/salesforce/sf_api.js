@@ -72,6 +72,7 @@ const get = async function (accessToken, path) {
  */
 const getData = function (query) {
   const path = query_url + query;
+  let output;
 
   // Authenticate with Salesforce and log the response  
   authenticate().then((response) => {
@@ -81,10 +82,6 @@ const getData = function (query) {
       console.log('Salesforce data:');
       //console.log(response);      
       output = parseSFData(response);
-      output.forEach((line) => {
-        console.log(line);
-      });
-
     }).catch((error) => {  
       throw error;
     });  
@@ -92,6 +89,7 @@ const getData = function (query) {
   }).catch((error) => {    
     throw error;
   });
+  return output;
 }
 
 module.exports = {
