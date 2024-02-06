@@ -92,9 +92,28 @@ const replace = function (sql) {
   repSQL = repSQL.replace(/%/g, '%25');
   repSQL = repSQL.replace(/\n/g, '+');
   repSQL = repSQL.replace(';', '');
+  repSQL = replaceSelectFields(repSQL);
   
   return repSQL;  
 }
 
-module.exports = { generateSQL };
+/**
+ * Replaces the fields between 'select' and 'from' with '+fields(all)+' in a SQL statement.
+ * @param {string} sql - The SQL statement to be modified.
+ * @returns {string} The modified SQL statement.
+ */
+const replaceSelectFields = function (sql) {
+  const selectIndex = sql.indexOf('select');
+  const fromIndex = sql.indexOf('from');
+  
+  if (selectIndex !== -1 && fromIndex !== -1 && selectIndex < fromIndex) {
+    const fieldsToReplace = sql.substring(selectIndex + 6, fromIndex);
+    const modifiedSql = sql.replace(fieldsToReplace, '+fields(all)+');
+    return modifiedSql;
+  }
+  
+  return sql;
+}
+
+module.exports = { generateSQL, replaceSelectFields };
 

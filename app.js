@@ -33,8 +33,7 @@ app.command("/askme", async ({ ack, payload, context }) => {
     const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
   
     console.log(sql);
-    const response = await sf_api.getData(sql);
-    console.log(response);
+    const response = await sf_api.getData(sql);    
     let output = '';
 
     // Walk through response elements and concatenate them in the output string
