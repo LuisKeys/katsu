@@ -34,7 +34,8 @@ app.command("/askme", async ({ ack, payload, context }) => {
   
     console.log(sql);
     const response = await sf_api.getData(sql);    
-    let output = '';
+    let output = prompt + ':\n';
+    
 
     // Walk through response elements and concatenate them in the output string
     const linesLimit = 50;
