@@ -33,12 +33,17 @@ app.command("/askme", async ({ ack, payload, context }) => {
     const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
   
     console.log(sql);
-    const response = sf_api.getData(sql);
+    const response = await sf_api.getData(sql);
+    console.log(response);
     let output = '';
 
     // Walk through response elements and concatenate them in the output string
+    const linesLimit = 30;
+    let lineCounter = 0;
     response.forEach(element => {
-      output += element + '\n';
+      lineCounter++;
+      if(lineCounter < linesLimit)
+        output += element + '\n';      
     });
   
     const result = await app.client.chat.postMessage({

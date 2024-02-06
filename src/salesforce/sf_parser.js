@@ -56,7 +56,7 @@ const parseSFData = function (data) {
     response.push(link);
     response.push('\n');    
   }
-  
+
   return response;
 }
 

@@ -70,25 +70,16 @@ const get = async function (accessToken, path) {
  * Retrieves data from Salesforce based on the provided query.
  * @param {string} query - The query to be executed.
  */
-const getData = function (query) {
+const getData = async function (query) {
   const path = query_url + query;
   let output;
 
   // Authenticate with Salesforce and log the response  
-  authenticate().then((response) => {
-    sf_accessToken = response.accessToken;  
+  let response = await authenticate();
+  sf_accessToken = response.accessToken;  
 
-    get(sf_accessToken, path).then((response) => {
-      console.log('Salesforce data:');
-      //console.log(response);      
-      output = parseSFData(response);
-    }).catch((error) => {  
-      throw error;
-    });  
-
-  }).catch((error) => {    
-    throw error;
-  });
+  response = await get(sf_accessToken, path);
+  output = parseSFData(response);
   return output;
 }
 
