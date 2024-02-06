@@ -20,16 +20,14 @@ const genSQL = async () => {
   const sql = await nl2sql.generateSQL(
     openai,
     openaiapi,
-    "list all the leads created during the last of the last couple of weeks"
+    "List all the leads created during the last of the last 3 weeks"
   );
 
   console.log(sql);
-  //sf_api.getData(sql);
+  sf_api.getData(sql);
 }
 
 genSQL();
-
-
 
 // Bolt app Initialization
 const app = new App({

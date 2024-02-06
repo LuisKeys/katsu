@@ -51,7 +51,7 @@ const generateSQL = async function (openai, openaiapi, prompt) {
   header += " - LAST_N_YEARS:n	Starts at 12:00:00 am on January 1, n+1 years ago. The range ends on December 31 of the year before the current year.	SELECT Id FROM Opportunity WHERE CloseDate = LAST_N_YEARS:5";
   header += " - N_YEARS_AGO:n	Starts at 12:00:00 AM on January 1 of the calendar year n years before the current calendar year and continues through the end of December 31 of that year.	SELECT Id FROM Opportunity WHERE CloseDate = N_YEARS_AGO:2";
   
-  header += "Finally the query must be strictly compliant with Salesforce SOQL for API (not APEX code).";
+  header += "Finally the query must be strictly compliant with Salesforce SOQL for API and must  not be compliant with APEX code).";
 
   fullprompt = header + prompt  
 

@@ -30,6 +30,26 @@ const parseSFData = function (data) {
     if(record.LastModifiedDate) {
       response.push('Last Modified Date: ' + formatDate(record.LastModifiedDate));
     }
+
+    if(record.MobilePhone) {
+      response.push('Mobile Phone: ' + record.MobilePhone);
+    }
+
+    if(record.Email) {
+      response.push('Email: ' + record.Email);
+    }
+
+    if(record.Company) {
+      response.push('Company: ' + record.Company);
+    }
+
+    if(record.FirstName) {
+      response.push('FirstName: ' + record.FirstName);
+    }
+
+    if(record.LastName) {
+      response.push('LastName: ' + record.LastName);
+    }
       
     const sfobject = record.attributes.type;
     const link = SF_BASE_LIGHTNING_URL + sfobject + '/' +  record.Id + '/view';    
