@@ -20,7 +20,7 @@ const genSQL = async () => {
   const sql = await nl2sql.generateSQL(
     openai,
     openaiapi,
-    "list all the active engagements"
+    "list all the leads created during the last of the last couple of weeks"
   );
 
   console.log(sql);

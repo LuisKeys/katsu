@@ -66,6 +66,10 @@ const get = async function (accessToken, path) {
   }
 }
 
+/**
+ * Retrieves data from Salesforce based on the provided query.
+ * @param {string} query - The query to be executed.
+ */
 const getData = function (query) {
   const path = query_url + query;
 
@@ -73,7 +77,9 @@ const getData = function (query) {
   authenticate().then((response) => {
     sf_accessToken = response.accessToken;  
 
-    get(sf_accessToken, path).then((response) => {      
+    get(sf_accessToken, path).then((response) => {
+      console.log('Salesforce data:');
+      //console.log(response);      
       output = parseSFData(response);
       output.forEach((line) => {
         console.log(line);
@@ -83,8 +89,7 @@ const getData = function (query) {
       throw error;
     });  
 
-  }).catch((error) => {
-    console.error(error);
+  }).catch((error) => {    
     throw error;
   });
 }
