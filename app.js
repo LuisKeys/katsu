@@ -16,19 +16,6 @@ const fs = require("fs");
 
 openai = new OpenAI();
 
-const genSQL = async () => {
-  const sql = await nl2sql.generateSQL(
-    openai,
-    openaiapi,
-    "List all the leads created during the last of the last 3 weeks"
-  );
-
-  console.log(sql);
-  sf_api.getData(sql);
-}
-
-genSQL();
-
 // Bolt app Initialization
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -40,7 +27,18 @@ app.command("/askme", async ({ ack, payload, context }) => {
   // Acknowledge the command request
   ack();
 
+  const prompt = payload.text;
+
   try {
+
+    const sql = await nl2sql.generateSQL(
+      openai,
+      openaiapi,
+      prompt
+    );
+  
+    console.log(sql);
+  
     const result = await app.client.chat.postMessage({
       token: context.botToken,
       // Channel to send message to
@@ -51,7 +49,7 @@ app.command("/askme", async ({ ack, payload, context }) => {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "Hey amigo!, this is a test msg :-D",
+            text: sql,
           },
         },
       ],
