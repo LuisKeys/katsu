@@ -22,6 +22,17 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
+const test = async () => {
+
+const prompt = "What are the top 5 opportunities by amount?";
+const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
+  
+console.log(sql);
+//const response = await sf_api.getData(sql);    
+}
+
+test();
+
 //listening for slash command invocation
 app.command("/askme", async ({ ack, payload, context }) => {
   // Acknowledge the command request
@@ -41,7 +52,8 @@ app.command("/askme", async ({ ack, payload, context }) => {
     const linesLimit = 50;
     let lineCounter = 0;
     let totalLines = 0;
-    for(const element in response) {
+    for(let i = 0; i < response.length; i++) {
+      const element = response[i];
       lineCounter++;
       totalLines++;
       output += element + '\n';    
