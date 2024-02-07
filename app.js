@@ -40,29 +40,37 @@ app.command("/askme", async ({ ack, payload, context }) => {
     // Walk through response elements and concatenate them in the output string
     const linesLimit = 50;
     let lineCounter = 0;
+    let totalLines = 0;
     response.forEach(element => {
       lineCounter++;
-      if(lineCounter < linesLimit)
-        output += element + '\n';      
-    });
-  
-    const result = await app.client.chat.postMessage({
-      token: context.botToken,
-      // Channel to send message to
-      channel: payload.channel_id,
-      // Include a button in the message (or whatever blocks you want!)
-      blocks: [
-        {
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: output,
-          },
-        },
-      ],
-      // Text in the notification
-      text: "Message from Test App",
-    });
+      totalLines++;
+      output += element + '\n';    
+        
+      if(lineCounter >= linesLimit || response.length === totalLines) {
+        const result = app.client.chat.postMessage({
+          token: context.botToken,
+          // Channel to send message to
+          channel: payload.channel_id,
+          // Include a button in the message (or whatever blocks you want!)
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: output, // Output message
+              },
+            },
+          ],
+          // Text in the notification
+          text: "Message from Test App",
+        });
+        // Reset the output and counter
+        lineCounter = 0;
+        output = '';
+      }
+      
+    });    
+
     //console.log(result);    
   } catch (error) {
     console.error(error);
