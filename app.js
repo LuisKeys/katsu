@@ -41,13 +41,13 @@ app.command("/askme", async ({ ack, payload, context }) => {
     const linesLimit = 50;
     let lineCounter = 0;
     let totalLines = 0;
-    response.forEach(element => {
+    for(const element in response) {
       lineCounter++;
       totalLines++;
       output += element + '\n';    
         
       if(lineCounter >= linesLimit || response.length === totalLines) {
-        const result = app.client.chat.postMessage({
+        const result = await app.client.chat.postMessage({
           token: context.botToken,
           // Channel to send message to
           channel: payload.channel_id,
@@ -64,12 +64,13 @@ app.command("/askme", async ({ ack, payload, context }) => {
           // Text in the notification
           text: "Message from Test App",
         });
+
         // Reset the output and counter
         lineCounter = 0;
         output = '';
       }
       
-    });    
+    };    
 
     //console.log(result);    
   } catch (error) {
