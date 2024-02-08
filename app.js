@@ -24,7 +24,7 @@ const app = new App({
 
 const test = async () => {
 
-const prompt = "What are the top 5 opportunities by amount?";
+const prompt = "Which are the time entries for 'paradela' where engagement name similar to 'vertikal'";
 const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
   
 console.log(sql);

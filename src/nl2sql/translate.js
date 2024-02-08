@@ -11,9 +11,10 @@ const generateSQL = async function (openai, openaiapi, prompt) {
   let header= "Create an SQL statement with the following prompt and do not add any additional text or explanation in the answer, ";
   header += "validating the results with these table names ";
   //Valid tables
-  header += "account, contact, lead, opportunity, project, engagement, engagement_role, time_entries, engagement_approver.";
+  header += "account, contact, lead, opportunity, project__c, engagement, Project_Role__c, time_entry__c, engagement_approver.";
   // Schema
   header += "Use the following schema for the tables and fields: ";
+  // Opportunity
   header += "- Table:Opportunity";
   header += "  Fields:";
   header += "      Id";
@@ -33,10 +34,108 @@ const generateSQL = async function (openai, openaiapi, prompt) {
   header += "      CreatedDate";
   header += "      LastModifiedDate";
   header += "      LastActivityDate";
-
-  // Exception for engagement
-  header += "If the table is engagement or project the 'status__c' field is alowed in the where otherwise the only field allowed is name with the 'like' clause.";
-  header += "The only valid values  for 'status__c' field are  'active' and 'inactive'.";  
+  // Account
+  header += "- Table:Account";
+  header += "  Fields:";  
+  header += "      Id";
+  header += "      Name";
+  header += "      Type";
+  header += "      Phone";
+  header += "      AccountNumber";
+  header += "      Website";
+  header += "      Industry";
+  header += "      AnnualRevenue";
+  header += "      CreatedDate";
+  header += "      LastModifiedDate";
+  header += "      IsPartner";
+  header += "      Email__c";
+  header += "      Quickbooks_Customer_Id__c";
+  header += "      GDrive_Folder_Url__c";
+  // Project__c
+  header += "- Table:Project__c";
+  header += "  Fields:";  
+  header += "      Id";
+  header += "      Name";
+  header += "      CreatedDate";
+  header += "      LastModifiedDate";
+  header += "      Opportunity__c";
+  header += "      Billing_Type__c";
+  header += "      Project_Type__c";
+  header += "      Pay_Terms__c";
+  header += "      Start_Date__c";
+  header += "      End_Date__c";
+  header += "      Bill_Amount__c";
+  header += "      Total_Project_Amount__c";
+  header += "      Project_Bill_Type__c";
+  header += "      Customer__c";
+  header += "      Status__c";
+  header += "      Customer_Email__c";
+  // Contact
+  header += "- Table:Contact";
+  header += "  Fields:";  
+  header += "      Id";
+  header += "      AccountId";
+  header += "      LastName";
+  header += "      FirstName";
+  header += "      Name";
+  header += "      MailingCountry";
+  header += "      MobilePhone";
+  header += "      Email";
+  header += "      Title";
+  header += "      Department";
+  header += "      CreatedDate";
+  header += "      Status__c";
+  header += "      Active_Engagement_Roles__c";
+  header += "      Bamboo_Id__c";
+  header += "      Hire_Date__c";
+  header += "      Personal_Email__c";
+  // Lead
+  header += "- Table:Lead";
+  header += "  Fields:";  
+  header += "      Id";
+  header += "      LastName";
+  header += "      FirstName";
+  header += "      Name";
+  header += "      Company";
+  header += "      Street";
+  header += "      City";
+  header += "      State";
+  header += "      Country";
+  header += "      Phone";
+  header += "      MobilePhone";
+  header += "      Email";
+  header += "      Website";
+  header += "      LeadSource";
+  header += "      Status";
+  header += "      IsConverted";
+  header += "      CreatedDate";
+  header += "      Assigned_contact__c";
+  header += "      Opportunity_from_Lead__c";
+  // Time_Entry__c
+  header += "- Table:Time_Entry__c";
+  header += "  Fields:";
+  header += "      Id";
+  header += "      Name:";
+  header += "      CreatedDate";
+  header += "      Date__c";
+  header += "      Hours_Worked__c";
+  header += "      EngagementName__c";
+  header += "      Status__c";
+  header += "      ContactName__c";
+  // Project_Role__c
+  header += "- Table:Project_Role__c";
+  header += "  Fields:";
+  header += "      Id";
+  header += "      Name";
+  header += "      CreatedDate";
+  header += "      Role__c";
+  header += "      Customer_Name__c";
+  header += "      Active_Engagement__c";    
+ 
+  // Specific values and comparissons rules
+  header += "Valid values for 'status__c' field are 'active', 'inactive' and 'approved'.";
+  header += "For string comparissons always must use 'like' clause and always must surround the comopared text with '%'.";
+  header += "Do not never perform joins, always only simple queries on a single table.";
 
   // Sorting and limits
   header += "Provide the result sorted by Name ascending.";
@@ -75,6 +174,8 @@ const generateSQL = async function (openai, openaiapi, prompt) {
     fullprompt
   );
 
+  console.log('Prompt:');
+  console.log(prompt);
   console.log('Raw SQL statement:');
   console.log(sqlStatement);
   
