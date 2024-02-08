@@ -61,8 +61,8 @@ const get = async function (accessToken, path) {
     // Return the response data
     return response.data;
   } catch (error) {
-    // Handle any errors that occur during the API request    
-    throw error;
+    // Handle any errors that occur during the API request        
+    return error;    
   }
 }
 
@@ -71,15 +71,26 @@ const get = async function (accessToken, path) {
  * @param {string} query - The query to be executed.
  */
 const getData = async function (query) {
-  const path = query_url + query;
+  const fullQuery = query_url + query;
   let output;
 
   // Authenticate with Salesforce and log the response  
   let response = await authenticate();
   sf_accessToken = response.accessToken;  
-
-  response = await get(sf_accessToken, path);
-  output = parseSFData(response);
+  
+  try {
+    response = await get(sf_accessToken, fullQuery);
+    output = parseSFData(response);
+  } catch (error) {
+    console.error('Error parsing data:');
+    output = "Sorry I couldn't find any data. Please try to rephrase your request.\n";
+    output += "The following are samples of correct prompts:\n";
+    output += "- Which are active engagements\n";
+    output += "- Which are the latest 5 leads\n";
+    output += "- List the account information for 'Vertikal'\n";
+    output += "- What contacts has the name 'felipe'\n";    
+    return output;
+  }  
   return output;
 }
 

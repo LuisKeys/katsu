@@ -22,16 +22,16 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
 });
 
-const test = async () => {
+// Testing block
+// const test = async () => {
+//   const prompt = "What contacts has the name 'felipe'";
+//   let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
+//   const response = await sf_api.getData(sql);
+    
+//   console.log(response);
+// }
 
-const prompt = "Which are the time entries for 'paradela' where engagement name similar to 'vertikal'";
-const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
-  
-console.log(sql);
-//const response = await sf_api.getData(sql);    
-}
-
-test();
+// test();
 
 //listening for slash command invocation
 app.command("/askme", async ({ ack, payload, context }) => {

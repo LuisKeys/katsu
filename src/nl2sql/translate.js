@@ -211,6 +211,10 @@ const replace = function (sql) {
   repSQL = repSQL.replace(/%/g, '%25');
   repSQL = repSQL.replace(/\n/g, '+');
   repSQL = repSQL.replace(';', '');
+  
+  // Replace wrong fields name
+  repSQL = repSQL.replace('project__cname__c', 'EngagementName__c');  
+
   repSQL = replaceSelectFields(repSQL);
   
   return repSQL;  
