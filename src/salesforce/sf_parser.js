@@ -50,7 +50,15 @@ const parseSFData = function (data) {
     if(record.LastName) {
       response.push('LastName: ' + record.LastName);
     }
-      
+
+    if(record.Role__c) {
+      response.push('Role: ' + record.Role__c);
+    }
+    
+    if(record.Customer_Name__c) {
+      response.push('Customer: ' + record.Customer_Name__c);
+    }
+    
     const sfobject = record.attributes.type;
     const link = SF_BASE_LIGHTNING_URL + sfobject + '/' +  record.Id + '/view';    
     response.push(link);

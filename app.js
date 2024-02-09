@@ -23,15 +23,15 @@ const app = new App({
 });
 
 // Testing block
-// const test = async () => {
-//   const prompt = "What contacts has the name 'felipe'";
-//   let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
-//   const response = await sf_api.getData(sql);
-    
-//   console.log(response);
-// }
+const test = async () => {
+  const prompt = "Which are the projects roles where contact name is simlar 'geronimo' and customer is not 'accelone'";
+  let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
+  console.log(sql);
+  const response = await sf_api.getData(sql);
+  console.log(response);
+}
 
-// test();
+test();
 
 //listening for slash command invocation
 app.command("/askme", async ({ ack, payload, context }) => {
