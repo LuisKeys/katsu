@@ -24,7 +24,7 @@ const app = new App({
 
 // Testing block
 const test = async () => {
-  const prompt = "Which are the projects roles where contact name is simlar 'geronimo' and customer is not 'accelone'";
+  const prompt = "Give me the current headcount from Bamboo.";
   let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
   console.log(sql);
   const response = await sf_api.getData(sql);

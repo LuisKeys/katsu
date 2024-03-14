@@ -214,7 +214,12 @@ const replace = function (sql) {
   
   // Replace wrong table and fields name
   repSQL = repSQL.replace('project__cname__c', 'EngagementName__c');  
-  repSQL = repSQL.replace('project__c_role__c', 'project_role__c');    
+  repSQL = repSQL.replace('project__c_role__c', 'project_role__c'); 
+  if (repSQL.includes('project_role__c')) {
+    repSQL = repSQL.replace('name', 'contactname__c');
+  }
+
+  ContactName__c
 
   repSQL = replaceSelectFields(repSQL);
   
