@@ -5,4 +5,4 @@ package
 .env
 .boost
 askme.pem
-node_modules
+node_modules/
