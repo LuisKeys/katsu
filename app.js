@@ -9,6 +9,7 @@
 const { App } = require("@slack/bolt");
 require("dotenv").config();
 const nl2sql = require("./src/nl2sql/translate");
+const nlPromptType = require("./src/nl/prompt_type");
 const OpenAI = require("openai");
 const openaiapi = require("./src/openai/openai_api");
 const db = require("./src/db/db_commands");
@@ -17,8 +18,9 @@ const fs = require("fs");
 openai = new OpenAI();
 
 // Testing block
-const test = async () => {
-  const prompt = "Which is the sum of the total amount of the active engagements?";
+const promptHandler = async () => {  
+  const prompt = "List all the employees with name 'Pablo'";
+  const promoptType = nlPromptType.getPromptType(prompt);
   let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
   // Assuming you have a function to execute SQL
   await db.connect();
@@ -31,7 +33,7 @@ const test = async () => {
   db.logResult(result);  
 }
 
-test();
+promptHandler();
 
 // // Bolt app Initialization
 // const app = new App({

@@ -26,17 +26,27 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
     fullPrompt
   );
 
+  sql = sql.replaceAll("```", " ");
+  sql = sql.replaceAll("sql", " ");
+  sql = sql.trim();
+  
   return sql;
 }
 
 const getPrompt = function (openai, openaiapi, entity, fields, userPrompt) {
   let prompt = "Create a SELECT statement for PostgreSql to retrieve data from the " + entity + " table.";
+  if(userPrompt.includes("total number of")) {
+    prompt += " Count the number of rows.";
+  } 
+
   prompt += " Include the following fields to define the where statement: ";
   for(let i = 0; i < fields.length; i++) {
     prompt += fields[i] + ", ";
   }
 
   prompt+= " based on the following user prompt: " + userPrompt;
+
+
   prompt += " Limit the results to 50 rows.";  
   prompt += " Answer only with the SQL statement.";  
 

@@ -86,6 +86,14 @@ const loadEntities  = () => {
     source: "salesforce"
   }
 
+  const employees = {
+    name: "employees",
+    alias: ["employees", "heads", "resources", "contractors", "ftes"],
+    view : "v_employees",
+    source: "bamboohr"
+  }
+  
+  // Salesforce
   entities.push(account);
   entities.push(contact);
   entities.push(lead);
@@ -94,6 +102,9 @@ const loadEntities  = () => {
   entities.push(project_role);
   entities.push(time_entry);
   entities.push(engagement_approver);
+  
+  // BambooHR
+  entities.push(employees);  
 
   return entities;
 }
