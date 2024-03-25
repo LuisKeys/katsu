@@ -11,15 +11,24 @@ require("dotenv").config();
 const nl2sql = require("./src/nl2sql/translate");
 const OpenAI = require("openai");
 const openaiapi = require("./src/openai/openai_api");
+const db = require("./src/db/db_commands");
 const fs = require("fs");
 
 openai = new OpenAI();
 
 // Testing block
 const test = async () => {
-  const prompt = "List all the active engagements.";
+  const prompt = "Which is the sum of the total amount of the active engagements?";
   let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
-  console.log(sql);  
+  // Assuming you have a function to execute SQL
+  await db.connect();
+  let result = await db.execute(sql);
+  await db.close();
+
+  console.log('SQL:');
+  console.log(sql);
+  console.log('Result:');
+  db.logResult(result);  
 }
 
 test();

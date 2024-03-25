@@ -50,9 +50,15 @@ const close = async function () {
   }
 };
 
+const logResult = function (result) {
+  for (let row of result.rows) {
+    console.log(row);
+  }  
+};
 
 module.exports = {
   execute,
   connect,
-  close
+  close,
+  logResult
 };
