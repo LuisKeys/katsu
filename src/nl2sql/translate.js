@@ -65,7 +65,7 @@ const getPrompt = function (openai, openaiapi, entity, fields, userPrompt) {
 
   prompt+= " based on the following user prompt: " + userPrompt;
 
-
+  prompt += " In case there is a where clause use lower() function to compare varchar fields.";  
   prompt += " Limit the results to 100 rows.";  
   prompt += " Answer only with the SQL statement.";  
 

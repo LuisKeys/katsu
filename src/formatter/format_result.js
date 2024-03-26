@@ -7,7 +7,7 @@ const tableLib = require('cli-table3');
  */
 const getTableFromResult = function(result) {
   let limit = false;
-  if (result.fields.length > 3) {
+  if (result.fields.length > 4) {
     limit = true;
   }
   header = result.fields.map(field => field.name)
