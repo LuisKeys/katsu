@@ -20,6 +20,11 @@ const getPromptType = (prompt) => {
     return "file";
   }
 
+  // Order or sort statement
+  if (lcPrompt.includes("order by") || lcPrompt.includes("sort")) {
+    return "sort";
+  }
+
   // Check if the prompt is a statement
   return "question";
 }

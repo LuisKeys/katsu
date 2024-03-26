@@ -6,15 +6,28 @@ const tableLib = require('cli-table3');
  * @param {Object} result - The result set containing columns and rows.
  */
 const getTableFromResult = function(result) {
-  let limit = false;
+  let nameFound = false;
+  let header = result.fields.map(field => field.name)
+
+  // check if there are more than 4 columns
   if (result.fields.length > 4) {
-    limit = true;
-  }
-  header = result.fields.map(field => field.name)
+    // search for name
+    for (let i = 0; i < result.fields.length; i++) {
+      if (result.fields[i].name === 'name') {
+        // if name found, limit to name column
+        header = ['name'];
+        nameFound = true;
+        break;
+      }
+    }
+    
+    // if name not found, limit to 4 columns
+    if (!nameFound) {
+      slicedFields = result.fields.slice(0, 4);            
+      header = slicedFields.map(field => field.name);
+    }
+  }  
   
-  if (limit) {
-    header = header.slice(0, 3);
-  }
 
   let table = new tableLib({
     head: header,
@@ -23,7 +36,6 @@ const getTableFromResult = function(result) {
            , 'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼'
            , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
   });
-
 
   for (let i = 0; i < result.rows.length; i++) {
     let row = result.rows[i];

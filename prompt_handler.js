@@ -7,14 +7,16 @@ const openAIAPI = require("./src/openai/openai_api");
 const db = require("./src/db/db_commands");
 const formatTable = require("./src/formatter/format_result");
 const excel = require("./src/excel/create_excel");
+const sortFieldFinder = require("./src/nl2sql/sort_field_finder");
+const dbSortResult = require("./src/db/sort_result");
 
 openai = new OpenAI();
+let result;
 
 // Testing block
 const promptHandler = async (prompt) => {    
-  const promptType = nlPromptType.getPromptType(prompt);  
+  const promptType = nlPromptType.getPromptType(prompt);
   let sql = '';  
-  let result;
 
   if (promptType === 'question') {    
     sql = await nl2sql.generateSQL(openai, openAIAPI, prompt);
@@ -22,18 +24,26 @@ const promptHandler = async (prompt) => {
   } else if (promptType === 'file') {
     // TODO Write the file
   } else if (promptType === 'link') {
-
     await db.connect();
     result = await db.execute('SELECT words FROM links');
     sql = await nl2sql.getLinkSQL(prompt, result.rows);
   } else if (promptType === 'help') {
     // TODO Show help
   }
+  if (promptType === 'sort') {    
+    field = sortFieldFinder.getSortfield(prompt, result);
+    if (field) {
+      result.rows = dbSortResult.sortResult(result, field);
+    }
+  }
 
-  result = await db.execute(sql);
-  await db.close();  
-  console.log('SQL:');
-  console.log(sql);
+  if(promptType === 'question' || promptType === 'link') {
+    result = await db.execute(sql);
+    await db.close();  
+    console.log('SQL:');
+    console.log(sql);
+  }
+
   formatTable.getTableFromResult(result);  
   excel.createExcel(result);
 }

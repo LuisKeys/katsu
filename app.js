@@ -14,9 +14,16 @@
 
   openai = new openAI();
 
-  const prompt = "Provide a full list of the active engagements.";
-  //const prompt = "Give me the link of candidates viewer.";
-  promptHandler.promptHandler(prompt);
+  // Test the promptHandler
+  const test = async () => {
+  let prompt = "List all the active engagements.";  
+  await promptHandler.promptHandler(prompt);
+
+  prompt = "Sort the result by name.";  
+  await promptHandler.promptHandler(prompt);
+  }
+
+  test();
 
   // // Bolt app Initialization
   // const app = new App({

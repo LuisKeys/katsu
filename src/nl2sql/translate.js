@@ -9,7 +9,7 @@ const getLinkSQL = async function (prompt, rows) {
     words = row.words.split(',');
     for (let j = 0; j < words.length; j++) {
       if (prompt.includes(words[j])) {
-        sql = "SELECT url as link FROM links where words like '%" + words[j] + "%'";
+        sql = "SELECT name, url as link FROM links where words like '%" + words[j] + "%'";
       }
     }
   }
