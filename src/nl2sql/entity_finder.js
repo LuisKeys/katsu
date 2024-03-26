@@ -1,6 +1,6 @@
 var entities = []
 
-const getEntity = function (openai, openaiapi, prompt) {
+const getEntity = function (prompt) {
 
   let entities = loadEntities();
   for (let i = 0; i < entities.length; i++) {
@@ -92,6 +92,13 @@ const loadEntities  = () => {
     view : "v_employees",
     source: "bamboohr"
   }
+
+  const links = {
+    name: "links",
+    alias: ["links", "link"],
+    view : "v_links",
+    source: "links"
+  }
   
   // Salesforce
   entities.push(account);
@@ -105,6 +112,9 @@ const loadEntities  = () => {
   
   // BambooHR
   entities.push(employees);  
+
+  // Links
+  entities.push(links);  
 
   return entities;
 }

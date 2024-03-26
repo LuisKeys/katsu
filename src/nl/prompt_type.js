@@ -10,6 +10,16 @@ const getPromptType = (prompt) => {
     return "graph";
   }
 
+  // Check if the prompt is a link
+  if (lcPrompt.includes("link") || lcPrompt.includes("links")) {
+    return "link";
+  }
+
+  // Check if the prompt is a file
+  if (lcPrompt.includes("file") || lcPrompt.includes("csv")) {
+    return "file";
+  }
+
   // Check if the prompt is a statement
   return "question";
 }

@@ -2,7 +2,7 @@
  * This is the main file for the AskMe App POC.
  * It initializes the Slack Bolt app, authenticates with DB,
  * and listens for a slash command invocation to send a test message.
- * It also has a test() method to test the nl2sql and openaiapi modules local.
+ * It also has a test() method to test the nl2sql and openAIAPI modules local.
  */
 
 // Required External Modules
@@ -11,26 +11,39 @@ require("dotenv").config();
 const nl2sql = require("./src/nl2sql/translate");
 const nlPromptType = require("./src/nl/prompt_type");
 const OpenAI = require("openai");
-const openaiapi = require("./src/openai/openai_api");
+const openAIAPI = require("./src/openai/openai_api");
 const db = require("./src/db/db_commands");
 const fs = require("fs");
+const format_table = require("./src/formatter/format_result");
 
 openai = new OpenAI();
 
 // Testing block
-const promptHandler = async () => {  
-  const prompt = "List all the employees with name 'Pablo'";
-  const promoptType = nlPromptType.getPromptType(prompt);
-  let sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
-  // Assuming you have a function to execute SQL
-  await db.connect();
-  let result = await db.execute(sql);
-  await db.close();
+const promptHandler = async () => {    
+  const prompt = "Get candidate viewer link";
+  const promptType = nlPromptType.getPromptType(prompt);  
+  let sql = '';  
+  let result;
 
+  if (promptType === 'question') {    
+    sql = await nl2sql.generateSQL(openai, openAIAPI, prompt);
+    await db.connect();
+  } else if (promptType === 'file') {
+    // TODO Write the file
+  } else if (promptType === 'link') {
+
+    await db.connect();
+    result = await db.execute('SELECT words FROM links');
+    sql = await nl2sql.getLinkSQL(prompt, result.rows);
+  } else if (promptType === 'help') {
+    // TODO Show help
+  }
+
+  result = await db.execute(sql);
+  await db.close();  
   console.log('SQL:');
   console.log(sql);
-  console.log('Result:');
-  db.logResult(result);  
+  format_table.getTableFromResult(result);  
 }
 
 promptHandler();
@@ -49,7 +62,7 @@ promptHandler();
 //   const prompt = payload.text;
 
 //   try {
-//     const sql = await nl2sql.generateSQL(openai, openaiapi, prompt);
+//     const sql = await nl2sql.generateSQL(openai, openAIAPI, prompt);
   
 //     console.log(sql);
 //     const response = await sf_api.getData(sql);    
