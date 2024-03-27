@@ -41,6 +41,11 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
   // Get the entity from the prompt
   const entity = await finder.getEntity(userPrompt);
 
+  if(entity === '') {
+    return '';
+  }
+
+
   // Get the fields for the entity
   const fields = await dbFields.getViewFields(entity);
 

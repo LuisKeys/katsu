@@ -17,11 +17,11 @@
   // Test the promptHandler
   const test = async () => {
   //let prompt = "help link";  
-  let prompt = "List the roles does employee 'geronimo' works. list the customer name and the role.";
+  let prompt = "pepe.";
   await promptHandler.promptHandler(prompt, true);
 
-  // prompt = "Sort the result by name.";  
-  // await promptHandler.promptHandler(prompt, true);
+  prompt = "Sort the result by customer_name.";  
+  await promptHandler.promptHandler(prompt, true);
 
   // prompt = "Export to an excel file.";  
   // await promptHandler.promptHandler(prompt, true);

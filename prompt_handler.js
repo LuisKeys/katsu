@@ -7,10 +7,10 @@
 require("dotenv").config();
 const constants = require("./src/prompts/constants");
 const excel = require("./src/excel/create_excel");
-const formatTable = require("./src/formatter/format_result");
 const handlers = require("./src/prompts/handlers");
 const help = require("./src/nl2sql/help");
 const nlPromptType = require("./src/prompts/prompt_type");
+const resultObj = require("./src/prompts/result_object");
 
 let result;
 
@@ -52,15 +52,20 @@ const promptHandler = async (prompt, isDebug) => {
   }
 
   // Format the result
-  if (result && result.rows.length > 0 && isDebug) {    
-    formatTable.getTableFromResult(result);  
+  let resultObject
+  if (result && result.rows.length > 0 && isDebug) {        
+    resultObject = resultObj.getResultObject(result, [], isDebug);
   } else {
-    console.log('No data found for your request.');
-    console.log('Try the following Help prompts to get a list of possible valid prompts.');
+    messages = [];
+    messages.push('No data found for your request.');
+    messages.push('Try the following Help prompts to get a list of possible valid prompts.');
+    
     result = await help.getHelp(constants.HELP);
-    if(isDebug)
-      formatTable.getTableFromResult(result);
+
+    resultObject = resultObj.getResultObject(result, messages, isDebug);
   }
+  
+    return resultObject;
 }
 
 module.exports = { promptHandler };
