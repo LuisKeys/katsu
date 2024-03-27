@@ -1,3 +1,8 @@
+/**
+ * @fileOverview This module provides a function to clean up old reports from a specified folder.
+ * @module clean
+ */
+
 const fs = require('fs');
 const path = require('path');
 
@@ -5,7 +10,7 @@ const path = require('path');
  * Cleans up old reports from a specified folder.
  */
 function cleanReports() {
-  const folder = process.env.REPORTS
+  const folder = process.env.REPORTS;
   const directory = path.join(__dirname, '../../' + folder);
   const files = fs.readdirSync(directory);
 

@@ -1,7 +1,14 @@
+
+/**
+ * @module db_commands
+ * @description This module provides functions for connecting to a PostgreSQL database, executing SQL statements, and closing the database connection.
+ */
+
 const { Client } = require('pg');
 
 /**
  * Connects to the database.
+ * @async
  */
 const connect = async function () {
   try {
@@ -25,7 +32,9 @@ const connect = async function () {
 
 /**
  * Executes the given SQL statement on the connected PostgreSQL database.
+ * @async
  * @param {string} sql - The SQL statement to execute.
+ * @returns {Promise<object>} - The result of the SQL query.
  */
 const execute = async function (sql) {
   try {
@@ -39,6 +48,7 @@ const execute = async function (sql) {
 
 /**
  * Closes the database connection.
+ * @async
  */
 const close = async function () {
   try {
@@ -50,6 +60,10 @@ const close = async function () {
   }
 };
 
+/**
+ * Logs the result of a database query.
+ * @param {object} result - The result of a database query.
+ */
 const logResult = function (result) {
   for (let row of result.rows) {
     console.log(row);

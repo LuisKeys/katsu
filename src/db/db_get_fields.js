@@ -1,5 +1,16 @@
+/**
+ * @file This module contains a function to retrieve the fields of a database view.
+ * @module db_get_fields
+ */
+
 const db = require("./db_commands");
 
+/**
+ * Retrieves the fields of a database view.
+ * @param {Object} entity - The entity object containing the view name.
+ * @param {string} entity.view - The name of the view.
+ * @returns {Array} - An array of field names.
+ */
 const getViewFields = async function (entity) {
  
   let fields = [];

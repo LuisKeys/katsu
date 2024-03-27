@@ -1,6 +1,18 @@
+
+/**
+ * This module contains functions for generating SQL statements based on user prompts.
+ * @module nl2sql/translate
+ */
+
 const finder = require("./entity_finder");
 const dbFields = require("../db/db_get_fields");
 
+/**
+ * Retrieves the SQL statement for retrieving links based on the given prompt and rows.
+ * @param {string} prompt - The prompt to be used for searching links.
+ * @param {Array} rows - The rows containing words to be matched with the prompt.
+ * @returns {string} The SQL statement for retrieving links.
+ */
 const getLinkSQL = async function (prompt, rows) {
   let sql = '';
 
@@ -9,18 +21,19 @@ const getLinkSQL = async function (prompt, rows) {
     words = row.words.split(',');
     for (let j = 0; j < words.length; j++) {
       if (prompt.includes(words[j])) {
-        sql = "SELECT name, url as link FROM links where words like '%" + words[j] + "%'";
+        sql = "SELECT name, url as link FROM links where words like '%" + words[j] + "%' order by name";
       }
     }
   }
 
   return sql;
-
 }
 
 /**
  * Generates an SQL statement based on the provided prompt.
- * @param {string} prompt - The prompt to be used in the SQL statement.
+ * @param {object} openai - The OpenAI object.
+ * @param {object} openaiapi - The OpenAI API object.
+ * @param {string} userPrompt - The user prompt for generating the SQL statement.
  * @returns {string} The generated SQL statement.
  */
 const generateSQL = async function (openai, openaiapi, userPrompt) {
@@ -52,6 +65,15 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
   return sql;
 }
 
+/**
+ * Generates the prompt for the SQL statement based on the entity, fields, and user prompt.
+ * @param {object} openai - The OpenAI object.
+ * @param {object} openaiapi - The OpenAI API object.
+ * @param {string} entity - The entity for the SQL statement.
+ * @param {Array} fields - The fields to be included in the WHERE statement.
+ * @param {string} userPrompt - The user prompt for the SQL statement.
+ * @returns {string} The generated prompt for the SQL statement.
+ */
 const getPrompt = function (openai, openaiapi, entity, fields, userPrompt) {
   let prompt = "Create a SELECT statement for PostgreSql to retrieve data from the " + entity + " table.";
   if(userPrompt.includes("total number of")) {

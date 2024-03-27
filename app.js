@@ -16,11 +16,15 @@
 
   // Test the promptHandler
   const test = async () => {
-  let prompt = "List all the active engagements.";  
-  await promptHandler.promptHandler(prompt);
+  //let prompt = "help link";  
+  let prompt = "link help";  
+  await promptHandler.promptHandler(prompt, true);
 
-  prompt = "Sort the result by name.";  
-  await promptHandler.promptHandler(prompt);
+  // prompt = "Sort the result by name.";  
+  // await promptHandler.promptHandler(prompt, true);
+
+  // prompt = "Export to an excel file.";  
+  // await promptHandler.promptHandler(prompt, true);
   }
 
   test();

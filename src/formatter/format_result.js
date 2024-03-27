@@ -1,3 +1,8 @@
+/**
+ * Module for formatting and displaying result sets as text tables.
+ * @module format_result
+ */
+
 const tableLib = require('cli-table3');
 
 /**

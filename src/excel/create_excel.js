@@ -1,3 +1,9 @@
+
+/**
+ * @file Creates an Excel file with the provided data.
+ * @module createExcel
+ */
+
 const excel = require("excel4node");
 const clean = require('../files/clean');
 
@@ -61,6 +67,10 @@ const createExcel = function(result) {
   return fileName
 }
 
+/**
+ * Generates a unique filename for the Excel file based on the current date and time.
+ * @returns {string} The generated filename.
+ */
 const excelFileName = function() {
   const date = new Date();
   const year = date.getFullYear();

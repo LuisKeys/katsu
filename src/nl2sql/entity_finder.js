@@ -1,5 +1,16 @@
+
+/**
+ * This module provides functions for finding entities based on prompts.
+ * @module entity_finder
+ */
+
 var entities = []
 
+/**
+ * Finds the entity that matches the given prompt.
+ * @param {string} prompt - The prompt to match against entity names and aliases.
+ * @returns {Object|string} The matching entity object if found, or an empty string if not found.
+ */
 const getEntity = function (prompt) {
 
   let entities = loadEntities();
@@ -20,7 +31,6 @@ const getEntity = function (prompt) {
 
   return '';
 }
-
 
 /**
  * Loads the entities and returns an array of entity objects.

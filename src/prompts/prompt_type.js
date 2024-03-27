@@ -1,3 +1,14 @@
+
+/**
+ * Module for determining the type of prompt.
+ * @module prompt_type
+ */
+
+/**
+ * Determines the type of prompt based on the given input.
+ * @param {string} prompt - The prompt to be analyzed.
+ * @returns {string} The type of prompt.
+ */
 const getPromptType = (prompt) => {
   const lcPrompt = prompt.toLowerCase();
   // Check if the prompt is a request for help
@@ -16,8 +27,8 @@ const getPromptType = (prompt) => {
   }
 
   // Check if the prompt is a file
-  if (lcPrompt.includes("file") || lcPrompt.includes("csv")) {
-    return "file";
+  if (lcPrompt.includes("file") || lcPrompt.includes("csv") || lcPrompt.includes("spreadsheet") || lcPrompt.includes("excel")) {
+    return "export";
   }
 
   // Order or sort statement

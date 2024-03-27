@@ -1,51 +1,67 @@
+/**
+ * @fileoverview This module exports the `promptHandler` function which handles different types of prompts and performs corresponding actions.
+ * @module promptHandler
+ */
+
 // Required External Modules
 require("dotenv").config();
-const nl2sql = require("./src/nl2sql/translate");
-const nlPromptType = require("./src/nl/prompt_type");
-const OpenAI = require("openai");
-const openAIAPI = require("./src/openai/openai_api");
-const db = require("./src/db/db_commands");
-const formatTable = require("./src/formatter/format_result");
+const constants = require("./src/prompts/constants");
 const excel = require("./src/excel/create_excel");
-const sortFieldFinder = require("./src/nl2sql/sort_field_finder");
-const dbSortResult = require("./src/db/sort_result");
+const formatTable = require("./src/formatter/format_result");
+const handlers = require("./src/prompts/handlers");
+const help = require("./src/nl2sql/help");
+const nlPromptType = require("./src/prompts/prompt_type");
 
-openai = new OpenAI();
 let result;
 
-// Testing block
-const promptHandler = async (prompt) => {    
+/**
+ * Handles different types of prompts and performs corresponding actions.
+ * @async
+ * @param {string} prompt - The prompt to be handled.
+ * @param {boolean} isDebug - Indicates whether the debug mode is enabled.
+ * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
+ */
+const promptHandler = async (prompt, isDebug) => {    
   const promptType = nlPromptType.getPromptType(prompt);
   let sql = '';  
+  const promptTr = prompt.trim().toLowerCase();
 
-  if (promptType === 'question') {    
-    sql = await nl2sql.generateSQL(openai, openAIAPI, prompt);
-    await db.connect();
-  } else if (promptType === 'file') {
-    // TODO Write the file
-  } else if (promptType === 'link') {
-    await db.connect();
-    result = await db.execute('SELECT words FROM links');
-    sql = await nl2sql.getLinkSQL(prompt, result.rows);
-  } else if (promptType === 'help') {
-    // TODO Show help
-  }
-  if (promptType === 'sort') {    
-    field = sortFieldFinder.getSortfield(prompt, result);
-    if (field) {
-      result.rows = dbSortResult.sortResult(result, field);
-    }
+  if (promptType === constants.QUESTION) {    
+    // Question prompt
+    result = await handlers.questionHandler(promptTr);
   }
 
-  if(promptType === 'question' || promptType === 'link') {
-    result = await db.execute(sql);
-    await db.close();  
-    console.log('SQL:');
-    console.log(sql);
+  if (promptType === constants.EXPORT) {
+    // Export prompt
+    excel.createExcel(result);
+  }
+  
+  if (promptType === constants.LINK) {
+    // Link prompt
+    result = await handlers.linkHandler(promptTr);
+  }
+ 
+  
+  if (promptType === constants.SORT) {    
+    // Sort prompt
+    result = await handlers.sortHandler(promptTr, result);
   }
 
-  formatTable.getTableFromResult(result);  
-  excel.createExcel(result);
+  if (promptType === constants.HELP) {    
+    // Sort prompt
+    result = await help.getHelp(promptTr);
+  }
+
+  // Format the result
+  if (result && result.rows.length > 0 && isDebug) {    
+    formatTable.getTableFromResult(result);  
+  } else {
+    console.log('No data found for your request.');
+    console.log('Try the following Help prompts to get a list of possible valid prompts.');
+    result = await help.getHelp(constants.HELP);
+    if(isDebug)
+      formatTable.getTableFromResult(result);
+  }
 }
 
 module.exports = { promptHandler };
