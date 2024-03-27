@@ -98,7 +98,7 @@ const loadEntities  = () => {
 
   const employees = {
     name: "employees",
-    alias: ["employees", "heads", "resources", "contractors", "ftes"],
+    alias: ["employees", "heads", "resources", "contractors", "ftes", "employee"],
     view : "v_employees",
     source: "bamboohr"
   }

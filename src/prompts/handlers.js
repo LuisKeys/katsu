@@ -20,6 +20,7 @@ openai = new openAI();
  */
 const questionHandler = async (prompt) => {
   sql = await nl2sql.generateSQL(openai, openAIAPI, prompt);
+  console.log(sql);
   await db.connect();
   result = await db.execute(sql);
   await db.close();  

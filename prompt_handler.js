@@ -39,8 +39,7 @@ const promptHandler = async (prompt, isDebug) => {
   if (promptType === constants.LINK) {
     // Link prompt
     result = await handlers.linkHandler(promptTr);
-  }
- 
+  } 
   
   if (promptType === constants.SORT) {    
     // Sort prompt

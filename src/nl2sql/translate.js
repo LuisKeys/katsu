@@ -40,22 +40,45 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
 
   // Get the entity from the prompt
   const entity = await finder.getEntity(userPrompt);
-  console.log('Entity:');
-  console.log(entity);
 
   // Get the fields for the entity
   const fields = await dbFields.getViewFields(entity);
 
   // Get the prompt for the SQL statement
   const fullPrompt = getPrompt(openai, openaiapi, entity.view, fields, userPrompt);
-  console.log('Full Prompt:');
-  console.log(fullPrompt);
-
+  
   let sql = await openaiapi.ask(
     openai,
     fullPrompt
   );
 
+  sql = sanitizeSQL(sql);
+  sql = replaceEqualityWithLike(sql);
+
+  return sql;
+}
+
+/**
+ * Replaces equality comparisons in the SQL string with LIKE comparisons.
+ *
+ * @param {string} sql - The SQL string to modify.
+ * @returns {string} The modified SQL string.
+ */
+const replaceEqualityWithLike = function (sql) {
+  const pattern = /lower\((.*?)\) = '(.*?)'/g;
+  const replacement = "lower($1) like '%$2%'";
+  sql = sql.replace(pattern, replacement);
+  
+  return sql;
+}
+
+/**
+ * Sanitizes the given SQL string by removing unwanted characters and converting it to lowercase.
+ *
+ * @param {string} sql - The SQL string to sanitize.
+ * @returns {string} The sanitized SQL string.
+ */
+const sanitizeSQL = function (sql) {
   sql = sql.replaceAll("```", " ");
   sql = sql.replaceAll("sql", " ");
   sql = sql.replaceAll("\n", " ");
@@ -76,7 +99,7 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
  */
 const getPrompt = function (openai, openaiapi, entity, fields, userPrompt) {
   let prompt = "Create a SELECT statement for PostgreSql to retrieve data from the " + entity + " table.";
-  if(userPrompt.includes("total number of")) {
+  if(userPrompt.includes("number of")) {
     prompt += " Count the number of rows.";
   } 
 
