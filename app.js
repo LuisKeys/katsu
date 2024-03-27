@@ -17,7 +17,7 @@
   // Test the promptHandler
   const test = async () => {
   //let prompt = "help link";  
-  let prompt = "In which roles does 'geronimo' works.";
+  let prompt = "List the roles does employee 'geronimo' works. list the customer name and the role.";
   await promptHandler.promptHandler(prompt, true);
 
   // prompt = "Sort the result by name.";  
