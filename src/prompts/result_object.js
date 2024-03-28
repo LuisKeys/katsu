@@ -11,8 +11,9 @@ const formatTable = require("../formatter/format_result");
  */
 const getResultObject = function (result, messages, isDebug) {
   const resultObject = {
-    result,
-    messages
+    rows:result.rows,
+    fields:result.fields,
+    messages:messages
   };
 
   if (isDebug) {
