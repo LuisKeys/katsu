@@ -11,6 +11,7 @@ const handlers = require("./src/prompts/handlers");
 const help = require("./src/nl2sql/help");
 const nlPromptType = require("./src/prompts/prompt_type");
 const resultObj = require("./src/prompts/result_object");
+const cleanPrompt = require("./src/prompts/clean");
 
 let result;
 
@@ -24,7 +25,7 @@ let result;
 const promptHandler = async (prompt, isDebug) => {    
   const promptType = nlPromptType.getPromptType(prompt);
   let sql = '';  
-  const promptTr = prompt.trim().toLowerCase();
+  const promptTr = cleanPrompt.cleanPrompt(prompt);
 
   if (promptType === constants.QUESTION) {    
     // Question prompt
