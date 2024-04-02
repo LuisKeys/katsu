@@ -5,12 +5,12 @@ const constants = require('../prompts/constants');
  * @param {Object} result - The result object containing fields and rows.
  * @returns {Array} - The table data as a 2D array.
  */
-const getTableData = function (result) {
+const getTableData = function (result, maxColumns) {
   let tableData = [];
 
   // Get the header
   let header = [];
-  for (let i = 0; i < result.fields.length; i++) {
+  for (let i = 0; i < result.fields.length && i < maxColumns; i++) {
     header.push(result.fields[i].name);
   }
   tableData.push(header);

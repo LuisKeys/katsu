@@ -15,14 +15,14 @@
 
   openai = new openAI();
 
-  // // Test the promptHandler
+  // Test the promptHandler
   // const test = async () => {
-  // let prompt = " List all the active projects.";
-  // let result = await promptHandler.promptHandler(prompt, false);
-  // let output = resultObject.render(result);  
-  // prompt = "Export to an excel file.";  
-  // result = await promptHandler.promptHandler(prompt, false);
-  // output = resultObject.render(result);
+  //   let prompt = " List all the active projects.";
+  //   let result = await promptHandler.promptHandler(prompt, true);
+  //   let output = resultObject.render(result);  
+  //   prompt = "Export to an excel file.";  
+  //   result = await promptHandler.promptHandler(prompt, false);
+  //   output = resultObject.render(result);
   // }
 
   // test();

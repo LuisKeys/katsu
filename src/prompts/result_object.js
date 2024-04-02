@@ -34,7 +34,8 @@ const getResultObject = function (result, messages, promptType, isDebug) {
     }
   }  
 
-  resultObject.table = formatTable.getMarkDownTable(result, isDebug);
+  const maxColumns = process.env.MAX_COLUMNS;
+  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, isDebug);
 
   return resultObject;
 }

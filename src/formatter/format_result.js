@@ -5,9 +5,9 @@
 
 const mdUtils = require('./markdown_utils');
 
-const getMarkDownTable = function(result, isDebug) {
+const getMarkDownTable = function(result, maxColumns, isDebug) {
 
-  let tableData = mdUtils.getTableData(result);
+  let tableData = mdUtils.getTableData(result, maxColumns);
   let columnWidths = mdUtils.getColumnWidths(tableData);
   
   let table = '';
