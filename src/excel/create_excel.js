@@ -15,7 +15,9 @@ const clean = require('../files/clean');
 const createExcel = function(result) {
   var wb = new excel.Workbook();
   var ws = wb.addWorksheet('KATSU Report');
-  const fileName = excelFileName();
+  let fileName = excelFileName();
+  const folder = process.env.REPORTS_FOLDER;
+  fullPath = `${folder}/` + fileName;
 
   var headerStyle = wb.createStyle({
     font: {
@@ -60,11 +62,13 @@ const createExcel = function(result) {
     }    
   }
 
-  wb.write(fileName);
+  wb.write(fullPath);
 
   clean.cleanReports();
 
-  return fileName
+  const url = process.env.REPORTS_URL + fileName;
+
+  return url
 }
 
 /**
@@ -80,11 +84,9 @@ const excelFileName = function() {
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
   const milliseconds = date.getMilliseconds();
+  const random = Math.floor(Math.random() * 1000);
 
-  const folder = process.env.REPORTS
-  const path = `./${folder}/`;
-
-  return path + `katsu_report_${year}_${month}_${day}_${hours}_${minutes}_${seconds}_${milliseconds}.xlsx`;
+  return `katsu_report_${year}_${month}_${day}_${hours}_${minutes}_${seconds}_${milliseconds}_${random}.xlsx`;
 }
 
 module.exports = { createExcel };

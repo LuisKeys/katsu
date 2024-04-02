@@ -19,10 +19,11 @@
   // const test = async () => {
   // let prompt = "help";  
   // // let prompt = "List the roles where employee 'geronimo' works. List the customer name and the role.";
-  // const result = await promptHandler.promptHandler(prompt, true);
-  // const output = resultObject.render(result);  
-  // // prompt = "Export to an excel file.";  
-  // // await promptHandler.promptHandler(prompt, true);
+  // let result = await promptHandler.promptHandler(prompt, false);
+  // let output = resultObject.render(result);  
+  // prompt = "Export to an excel file.";  
+  // result = await promptHandler.promptHandler(prompt, false);
+  // output = resultObject.render(result);
   // }
 
   // test();

@@ -55,7 +55,7 @@ const getColumnWidths = function(tableData) {
  * @returns {String} - A markdown table row.
  */
 const getMarkdownTableRow = function(row, columnLengths, isHeader) {
-  let markdownRow = '\`|';
+  let markdownRow = '|';
 
   for (let i = 0; i < row.length; i++) {
     let field = row[i];
@@ -66,7 +66,7 @@ const getMarkdownTableRow = function(row, columnLengths, isHeader) {
 
     // Pad the field with spaces to match the column width
     let paddedField = field.padEnd(columnLengths[i]);
-    markdownRow += ` ${paddedField} |\``;
+    markdownRow += ` ${paddedField} |`;
   }
 
   return markdownRow;
@@ -78,11 +78,11 @@ const getMarkdownTableRow = function(row, columnLengths, isHeader) {
  * @returns {String} - A markdown table separator.
  */
 const getMarkdownTableSeparator = function(columnWidths) {
-  let separator = '\`|';
+  let separator = '|';
 
   for (let i = 0; i < columnWidths.length; i++) {
     // Add the separator for each column
-    separator += ' ' + '-'.repeat(columnWidths[i]) + ' |\`';
+    separator += ' ' + '-'.repeat(columnWidths[i]) + ' |';
   }
 
   return separator;

@@ -25,6 +25,8 @@ let result;
 const promptHandler = async (prompt, isDebug) => {    
   const promptType = nlPromptType.getPromptType(prompt);
   let sql = '';  
+  let fileURL = '';
+
   const promptTr = cleanPrompt.cleanPrompt(prompt);
 
   if (promptType === constants.QUESTION) {    
@@ -34,7 +36,7 @@ const promptHandler = async (prompt, isDebug) => {
 
   if (promptType === constants.EXPORT) {
     // Export prompt
-    excel.createExcel(result);
+    fileURL = excel.createExcel(result);
   }
   
   if (promptType === constants.LINK) {
@@ -60,7 +62,16 @@ const promptHandler = async (prompt, isDebug) => {
     if(result.rows.length > constants.MAX_LINES_SLACK) {
       messages.push('Only 10 records are displayed. To see the complete list, use the Export to Excel prompt.');        
     }
-    resultObject = resultObj.getResultObject(result, messages, isDebug);
+
+    if(promptType === constants.EXPORT) {
+      // Export prompt
+      messages = [];
+      messages.push('The data has been exported to an Excel file.');
+      messages.push(fileURL);
+    }
+
+    resultObject = resultObj.getResultObject(result, messages, promptType, isDebug);
+
   } else {
     // No data found
     messages.push('No data found for your request.');
@@ -68,7 +79,7 @@ const promptHandler = async (prompt, isDebug) => {
     
     result = await help.getHelp(constants.HELP);
 
-    resultObject = resultObj.getResultObject(result, messages, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, isDebug);
   }
   
   return resultObject;

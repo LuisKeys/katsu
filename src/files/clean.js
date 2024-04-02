@@ -10,8 +10,7 @@ const path = require('path');
  * Cleans up old reports from a specified folder.
  */
 function cleanReports() {
-  const folder = process.env.REPORTS;
-  const directory = path.join(__dirname, '../../' + folder);
+  const directory = process.env.REPORTS_FOLDER;
   const files = fs.readdirSync(directory);
 
   files.forEach(file => {
