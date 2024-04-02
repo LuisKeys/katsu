@@ -44,6 +44,7 @@
       let output = prompt + ':\n';
       const response = await promptHandler.promptHandler(prompt, false);
       output += resultObject.render(response);
+      output = "\`\`\`" + output + "\`\`\`";      
 
       // Walk through response elements and concatenate them in the output string
       await app.client.chat.postMessage({
@@ -56,7 +57,7 @@
             type: "section",
             text: {
               type: "mrkdwn",
-              text: "\`\`\`" + output + "\`\`\`" // Output message
+              text: output // Output message
               // Added backticks to format the output as multine code
             },
           },

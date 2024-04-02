@@ -32,7 +32,7 @@ const render = function (resultObject) {
   let output = ""
   
   for(i = 0; i < resultObject.messages.length; i++) {
-    output += resultObject.messages[i] + '\n';
+    output += resultObject.messages[i] + '\n\n';
   }
 
   output += resultObject.table;
