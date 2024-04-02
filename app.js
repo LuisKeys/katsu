@@ -27,7 +27,7 @@
 
   // test();
 
-  Bolt app Initialization
+  // Bolt app Initialization
   const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
