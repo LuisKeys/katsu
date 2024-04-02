@@ -10,7 +10,7 @@ const tableLib = require('cli-table3');
  *
  * @param {Object} result - The result set containing columns and rows.
  */
-const getTableFromResult = function(result) {
+const getTableFromResult = function(result, isDebug) {
   let nameFound = false;
   let header = result.fields.map(field => field.name)
 
@@ -42,7 +42,7 @@ const getTableFromResult = function(result) {
            , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
   });
 
-  for (let i = 0; i < result.rows.length; i++) {
+  for (let i = 0; i < 10; i++) {
     let row = result.rows[i];
     let values = [];
     for (let j = 0; j < header.length; j++) {
@@ -52,7 +52,13 @@ const getTableFromResult = function(result) {
     table.push(values);
   }
 
-  console.log(table.toString());
+  const output = table.toString();
+
+  if(isDebug) {
+    console.log(output);
+  }  
+
+  return output;
 }
 
 module.exports = { getTableFromResult };

@@ -10,6 +10,7 @@
   const openAI = require("openai");
   const fs = require("fs");
   const promptHandler = require("./prompt_handler");
+  const resultObject = require("./src/prompts/result_object");
   require("dotenv").config();
 
   openai = new openAI();
@@ -17,10 +18,10 @@
   // Test the promptHandler
   const test = async () => {
   //let prompt = "help link";  
-  let prompt = "List the roles does employee 'geronimo' works. List the customer name and the role.";
-  await promptHandler.promptHandler(prompt, true);
-
-  
+  let prompt = "List the roles where employee 'geronimo' works. List the customer name and the role.";
+  const result = await promptHandler.promptHandler(prompt, false);
+  const output = resultObject.render(result);
+  console.log(output);
   // prompt = "Export to an excel file.";  
   // await promptHandler.promptHandler(prompt, true);
   }

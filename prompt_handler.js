@@ -54,10 +54,15 @@ const promptHandler = async (prompt, isDebug) => {
 
   // Format the result
   let resultObject
-  if (result && result.rows.length > 0 && isDebug) {        
-    resultObject = resultObj.getResultObject(result, [], isDebug);
+  let messages = [];
+  if (result && result.rows.length > 0) {        
+    // Data found
+    if(result.rows.length > 10) {
+      messages.push('Only 10 records are displayed. To see the complete list, use the Export to Excel prompt.');        
+    }
+    resultObject = resultObj.getResultObject(result, messages, isDebug);
   } else {
-    messages = [];
+    // No data found
     messages.push('No data found for your request.');
     messages.push('Try the following Help prompts to get a list of possible valid prompts.');
     
@@ -66,7 +71,7 @@ const promptHandler = async (prompt, isDebug) => {
     resultObject = resultObj.getResultObject(result, messages, isDebug);
   }
   
-    return resultObject;
+  return resultObject;
 }
 
 module.exports = { promptHandler };

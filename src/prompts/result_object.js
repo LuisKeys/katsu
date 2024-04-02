@@ -13,18 +13,30 @@ const getResultObject = function (result, messages, isDebug) {
   const resultObject = {
     rows:result.rows,
     fields:result.fields,
-    messages:messages
+    messages:messages,
+    table:"",
   };
 
   if (isDebug) {
     for(i = 0; i < messages.length; i++) {
       console.log(messages[i]);
     }
-
-    formatTable.getTableFromResult(result);
   }  
+
+  resultObject.table = formatTable.getTableFromResult(result, isDebug);
 
   return resultObject;
 }
 
-module.exports = { getResultObject };
+const render = function (resultObject) {  
+  let output = ""
+  
+  for(i = 0; i < resultObject.messages.length; i++) {
+    output += resultObject.messages[i] + '\n';
+  }
+
+  output += resultObject.table;
+  return output;
+}
+
+module.exports = { getResultObject, render };
