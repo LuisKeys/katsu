@@ -56,7 +56,8 @@
             type: "section",
             text: {
               type: "mrkdwn",
-              text: output, // Output message
+              text: "\`\`\`" + output + "\`\`\`" // Output message
+              // Added backticks to format the output as multine code
             },
           },
         ],
