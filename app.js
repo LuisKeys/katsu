@@ -15,14 +15,14 @@
 
   openai = new openAI();
 
-  // Test the promptHandler
+  // // Test the promptHandler
   // const test = async () => {
-  // let prompt = "help link";  
-  // let prompt = "List the roles where employee 'geronimo' works. List the customer name and the role.";
+  // let prompt = "help";  
+  // // let prompt = "List the roles where employee 'geronimo' works. List the customer name and the role.";
   // const result = await promptHandler.promptHandler(prompt, true);
   // const output = resultObject.render(result);  
-  // prompt = "Export to an excel file.";  
-  // await promptHandler.promptHandler(prompt, true);
+  // // prompt = "Export to an excel file.";  
+  // // await promptHandler.promptHandler(prompt, true);
   // }
 
   // test();

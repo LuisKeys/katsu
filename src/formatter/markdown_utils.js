@@ -16,7 +16,7 @@ const getTableData = function (result) {
   tableData.push(header);
   
   // Get the rows  
-  for (let i = 0; i < constants.MAX_LINES_SLACK; i++) {
+  for (let i = 0; i < result.rows.length && i < constants.MAX_LINES_SLACK; i++) {
     let row = result.rows[i];
     let values = [];
     for (let j = 0; j < header.length; j++) {
