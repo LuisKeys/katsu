@@ -39,6 +39,10 @@ const getColumnWidths = function(tableData) {
 
   for (let row of tableData) {
     for (let i = 0; i < row.length; i++) {
+      if(row[i] === null) {
+        row[i] = '';
+      }
+
       if (columnWidths[i] === undefined || row[i].length > columnWidths[i]) {
         columnWidths[i] = row[i].length;
       }
@@ -58,14 +62,20 @@ const getMarkdownTableRow = function(row, columnLengths, isHeader) {
   let markdownRow = '|';
 
   for (let i = 0; i < row.length; i++) {
-    let field = row[i];
+    let field = row[i].toString();
     // If line is header add a '*' to the field to create a bold text
     if (isHeader) {
       field = '*' + field + '*';
     }
 
     // Pad the field with spaces to match the column width
-    let paddedField = field.padEnd(columnLengths[i]);
+    let paddedField = '';
+    try {
+      paddedField = field.padEnd(columnLengths[i]);
+    }
+    catch (err) {
+      console.log(err);
+    }
     markdownRow += ` ${paddedField} |`;
   }
 

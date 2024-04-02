@@ -17,8 +17,7 @@
 
   // // Test the promptHandler
   // const test = async () => {
-  // let prompt = "help";  
-  // // let prompt = "List the roles where employee 'geronimo' works. List the customer name and the role.";
+  // let prompt = " List all the active projects.";
   // let result = await promptHandler.promptHandler(prompt, false);
   // let output = resultObject.render(result);  
   // prompt = "Export to an excel file.";  
@@ -28,7 +27,7 @@
 
   // test();
 
-  // Bolt app Initialization
+  Bolt app Initialization
   const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
