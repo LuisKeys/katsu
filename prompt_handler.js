@@ -57,7 +57,7 @@ const promptHandler = async (prompt, isDebug) => {
   let messages = [];
   if (result && result.rows.length > 0) {        
     // Data found
-    if(result.rows.length > 10) {
+    if(result.rows.length > constants.MAX_LINES_SLACK) {
       messages.push('Only 10 records are displayed. To see the complete list, use the Export to Excel prompt.');        
     }
     resultObject = resultObj.getResultObject(result, messages, isDebug);

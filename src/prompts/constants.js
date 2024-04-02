@@ -3,6 +3,7 @@
  * @module prompts/constants
  */
 
+const MAX_LINES_SLACK = 20;
 
 const ALL = 'all';
 const EXPORT = 'export';
@@ -16,6 +17,7 @@ module.exports = {
   EXPORT,
   HELP, 
   LINK,
+  MAX_LINES_SLACK,
   QUESTION,
   SORT  
 };

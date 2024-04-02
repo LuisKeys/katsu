@@ -23,7 +23,7 @@ const getResultObject = function (result, messages, isDebug) {
     }
   }  
 
-  resultObject.table = formatTable.getTableFromResult(result, isDebug);
+  resultObject.table = formatTable.getMarkDownTable(result, isDebug);
 
   return resultObject;
 }

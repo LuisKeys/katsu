@@ -3,63 +3,32 @@
  * @module format_result
  */
 
-const tableLib = require('cli-table3');
+const mdUtils = require('./markdown_utils');
 
-/**
- * Generates a text table from the given result set.
- *
- * @param {Object} result - The result set containing columns and rows.
- */
-const getTableFromResult = function(result, isDebug) {
-  let nameFound = false;
-  let header = result.fields.map(field => field.name)
+const getMarkDownTable = function(result, isDebug) {
 
-  // check if there are more than 4 columns
-  if (result.fields.length > 4) {
-    // search for name
-    for (let i = 0; i < result.fields.length; i++) {
-      if (result.fields[i].name === 'name') {
-        // if name found, limit to name column
-        header = ['name'];
-        nameFound = true;
-        break;
-      }
-    }
-    
-    // if name not found, limit to 4 columns
-    if (!nameFound) {
-      slicedFields = result.fields.slice(0, 4);            
-      header = slicedFields.map(field => field.name);
-    }
-  }  
+  let tableData = mdUtils.getTableData(result);
+  let columnWidths = mdUtils.getColumnWidths(tableData);
   
+  let table = '';
 
-  let table = new tableLib({
-    head: header,
-    chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗'
-           , 'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝'
-           , 'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼'
-           , 'right': '║' , 'right-mid': '╢' , 'middle': '│' }
-  });
+  for (let i = 0; i < tableData.length; i++) {
+    let row = tableData[i];
+    let markdownRow = mdUtils.getMarkdownTableRow(row, columnWidths);
+    table += markdownRow + '\n';
 
-  for (let i = 0; i < 10; i++) {
-    let row = result.rows[i];
-    let values = [];
-    for (let j = 0; j < header.length; j++) {
-      const field = header[j];
-      values.push(row[field]);
+    if (i === 0) {
+      let separator = mdUtils.getMarkdownTableSeparator(columnWidths);
+      table += separator + '\n';
     }
-    table.push(values);
   }
 
-  const output = table.toString();
+  if (isDebug) {
+    console.log(table);
+  }
 
-  if(isDebug) {
-    console.log(output);
-  }  
-
-  return output;
+  return table;
 }
 
-module.exports = { getTableFromResult };
+module.exports = { getMarkDownTable };
 
