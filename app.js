@@ -33,8 +33,28 @@
     signingSecret: process.env.SLACK_SIGNING_SECRET,
   });
 
+  
+  // Listening for a message event
+  app.message('katsu', async ({ message, say }) => {
+    try {
+      let prompt = message.text.replace("katsu","");
+      console.log(message);      
+      const response = await promptHandler.promptHandler(prompt, true);
+
+      let output = "Sure!\n";
+      output += prompt + ':\n';
+      output += resultObject.render(response);
+      output = "\`\`\`" + output + "\`\`\`";      
+
+      await say(output);
+      
+    } catch (error) {
+      console.error(error);
+    }
+  });    
+
   //listening for slash command invocation
-  app.command("/askme", async ({ ack, payload, context }) => {
+  app.command("/katsu", async ({ ack, payload, context }) => {
     // Acknowledge the command request
     ack();
 
