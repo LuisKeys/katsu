@@ -43,8 +43,8 @@
   
   loadUsers();
 
-  const getAnswer = async (prompt, mail) => {
-    isValid = await checkUser.checkUser(mail);
+  const getAnswer = async (prompt, profile) => {
+    isValid = await checkUser.checkUser(profile.email);
 
     if (!isValid) {
       return "You are not a registered user. Please contact the administrator to register.";
@@ -65,7 +65,7 @@
 
       const profile = users.members.filter(member => member.id === message.user)[0].profile;       
 
-      const output = await getAnswer(prompt, profile.email);
+      const output = await getAnswer(prompt, profile);
 
       await say(output);
       
@@ -83,7 +83,7 @@
 
     try {
       const profile = users.members.filter(member => member.id === payload.user_id)[0].profile;       
-      const output = await getAnswer(prompt, profile.email);
+      const output = await getAnswer(prompt, profile);
 
       // Walk through response elements and concatenate them in the output string
       await app.client.chat.postMessage({
