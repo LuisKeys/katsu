@@ -11,18 +11,20 @@
   const fs = require("fs");
   const promptHandler = require("./prompt_handler");
   const resultObject = require("./src/prompts/result_object");
+  const checkUser = require("./src/prompts/check_user");
   require("dotenv").config();
 
   openai = new openAI();
 
   // Test the promptHandler
   // const test = async () => {
-  //   let prompt = " List all the active projects.";
+  //   let prompt = "Help.";
   //   let result = await promptHandler.promptHandler(prompt, true);
   //   let output = resultObject.render(result);  
-  //   prompt = "Export to an excel file.";  
-  //   result = await promptHandler.promptHandler(prompt, false);
-  //   output = resultObject.render(result);
+
+  //   // prompt = "Export to an excel file.";  
+  //   // result = await promptHandler.promptHandler(prompt, false);
+  //   // output = resultObject.render(result);
   // }
 
   // test();
@@ -41,8 +43,15 @@
 
       const users = await app.client.users.list();
       const profile = users.members.filter(member => member.id === message.user)[0].profile;       
+
+      isValid = await checkUser.checkUser(profile.mail);
+
+      if (!isValid) {
+        await say("You are not a registered user. Please contact the administrator to register.");
+        return;
+      }      
       
-      const response = await promptHandler.promptHandler(prompt, true);
+      const response = await promptHandler.promptHandler(prompt, false);
 
       const hey = "Certainly *" + profile.first_name + "*!\n";
       let output = prompt + ':\n';
@@ -55,7 +64,7 @@
       console.error(error);
     }
   });    
-  
+
   //listening for slash command invocation
   app.command("/katsu", async ({ ack, payload, context }) => {
     // Acknowledge the command request
