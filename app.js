@@ -43,7 +43,21 @@
   
   loadUsers();
 
-  
+  const getAnswer = async (prompt, mail) => {
+    isValid = await checkUser.checkUser(mail);
+
+    if (!isValid) {
+      return "You are not a registered user. Please contact the administrator to register.";
+    }      
+    
+    const response = await promptHandler.promptHandler(prompt, false);
+    const hey = "Certainly *" + profile.first_name + "*!\n";
+    let output = resultObject.render(response);
+    output = hey + "\`\`\`" + output + "\`\`\`";      
+
+    return output;
+  }
+
   // Listening for a message event
   app.message('katsu', async ({ message, say }) => {
     try {
@@ -51,18 +65,7 @@
 
       const profile = users.members.filter(member => member.id === message.user)[0].profile;       
 
-      isValid = await checkUser.checkUser(profile.email);
-
-      if (!isValid) {
-        await say("You are not a registered user. Please contact the administrator to register.");
-        return;
-      }      
-      
-      const response = await promptHandler.promptHandler(prompt, false);
-
-      const hey = "Certainly *" + profile.first_name + "*!\n";
-      let output = resultObject.render(response);
-      output = hey + "\`\`\`" + output + "\`\`\`";      
+      const output = await getAnswer(prompt, profile.email);
 
       await say(output);
       
@@ -79,10 +82,8 @@
     const prompt = payload.text;
 
     try {
-      let output = prompt + ':\n';
-      const response = await promptHandler.promptHandler(prompt, false);
-      output += resultObject.render(response);
-      output = "\`\`\`" + output + "\`\`\`";      
+      const profile = users.members.filter(member => member.id === payload.user_id)[0].profile;       
+      const output = await getAnswer(prompt, profile.email);
 
       // Walk through response elements and concatenate them in the output string
       await app.client.chat.postMessage({
