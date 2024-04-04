@@ -38,13 +38,16 @@
   app.message('katsu', async ({ message, say }) => {
     try {
       let prompt = message.text.replace("katsu","");
-      console.log(message);      
+
+      const users = await app.client.users.list();
+      const profile = users.members.filter(member => member.id === message.user)[0].profile;       
+      
       const response = await promptHandler.promptHandler(prompt, true);
 
-      let output = "Sure!\n";
-      output += prompt + ':\n';
+      const hey = "Certainly *" + profile.first_name + "*!\n";
+      let output = prompt + ':\n';
       output += resultObject.render(response);
-      output = "\`\`\`" + output + "\`\`\`";      
+      output = hey + "\`\`\`" + output + "\`\`\`";      
 
       await say(output);
       
@@ -52,7 +55,7 @@
       console.error(error);
     }
   });    
-
+  
   //listening for slash command invocation
   app.command("/katsu", async ({ ack, payload, context }) => {
     // Acknowledge the command request
