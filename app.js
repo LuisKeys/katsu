@@ -31,17 +31,17 @@
 
   // test();
 
-  const loadUsers = async () => {
-    users = await app.client.users.list();    
-  }
-  
-  loadUsers();
-
   // Bolt app Initialization
   const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
   });
+
+  const loadUsers = async () => {
+    users = await app.client.users.list();    
+  }
+  
+  loadUsers();
 
   
   // Listening for a message event
