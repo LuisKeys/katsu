@@ -20,7 +20,7 @@
 
   // // Test the promptHandler
   // const test = async () => {
-  //   let prompt = "Help sales";
+  //   let prompt = "list the leads created during the last 60 days and the lead source is 'apollo'. Display first name, last name, company.";
   //   let result = await promptHandler.promptHandler(prompt, true);
   //   let output = resultObject.render(result);  
 
@@ -51,7 +51,8 @@
     }      
     
     const response = await promptHandler.promptHandler(prompt, false);
-    const hey = "Certainly *" + profile.first_name + "*!\n";
+    let hey = "Certainly *" + profile.first_name + "*!\n";
+    hey += prompt + "\n";
     let output = resultObject.render(response);
     output = hey + "\`\`\`" + output + "\`\`\`";      
 
