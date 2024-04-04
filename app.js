@@ -54,8 +54,7 @@
       const response = await promptHandler.promptHandler(prompt, false);
 
       const hey = "Certainly *" + profile.first_name + "*!\n";
-      let output = prompt + ':\n';
-      output += resultObject.render(response);
+      let output = resultObject.render(response);
       output = hey + "\`\`\`" + output + "\`\`\`";      
 
       await say(output);
