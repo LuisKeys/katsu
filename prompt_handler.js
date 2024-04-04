@@ -60,7 +60,7 @@ const promptHandler = async (prompt, isDebug) => {
   if (result && result.rows.length > 0) {        
     // Data found
     if(result.rows.length > constants.MAX_LINES_SLACK) {
-      messages.push('Only 10 records are displayed. To see the complete list, use the Export to Excel prompt.');        
+      messages.push('Only ' + constants.MAX_LINES_SLACK + ' records are displayed. To see the complete list, use the Export to Excel prompt.');        
     }
 
     if(promptType === constants.EXPORT) {

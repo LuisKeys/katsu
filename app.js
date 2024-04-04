@@ -16,6 +16,8 @@
 
   openai = new openAI();
 
+  let users
+
   // Test the promptHandler
   // const test = async () => {
   //   let prompt = "Help.";
@@ -29,6 +31,12 @@
 
   // test();
 
+  const loadUsers = async () => {
+    users = await app.client.users.list();    
+  }
+  
+  loadUsers();
+
   // Bolt app Initialization
   const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
@@ -41,7 +49,6 @@
     try {
       let prompt = message.text.replace("katsu","");
 
-      const users = await app.client.users.list();
       const profile = users.members.filter(member => member.id === message.user)[0].profile;       
 
       isValid = await checkUser.checkUser(profile.email);
