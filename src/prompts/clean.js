@@ -8,7 +8,7 @@ const cleanPrompt = function (prompt) {
   // To lower case
   let promptCl = prompt.toLowerCase();
   // Remove any extra spaces
-  promptCl = prompt.trim();
+  promptCl = promptCl.trim();
   // Remove final point, comma or question mark
   promptCl = promptCl.replace(/[\.,\?]+$/, '');
   return promptCl;

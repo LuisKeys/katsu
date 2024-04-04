@@ -36,6 +36,7 @@ const getTableData = function (result, maxColumns) {
  */
 const getColumnWidths = function(tableData) {
   let columnWidths = [];
+  let maxColumnWidth = process.env.MAX_COLUMN_WIDTH;  
 
   for (let row of tableData) {
     for (let i = 0; i < row.length; i++) {
@@ -45,6 +46,13 @@ const getColumnWidths = function(tableData) {
 
       if (columnWidths[i] === undefined || row[i].length > columnWidths[i]) {
         columnWidths[i] = row[i].length;
+        if (columnWidths[i] < 3) {
+          columnWidths[i] = 3;
+
+        }
+        if (columnWidths[i] > maxColumnWidth) {
+          columnWidths[i] = maxColumnWidth;
+        }
       }
     }
   }
@@ -58,14 +66,15 @@ const getColumnWidths = function(tableData) {
  * @param {Array} columnLengths - The maximum length for each column.
  * @returns {String} - A markdown table row.
  */
-const getMarkdownTableRow = function(row, columnLengths, isHeader) {
+const getMarkdownTableRow = function(row, columnLengths) {
   let markdownRow = '|';
 
   for (let i = 0; i < row.length; i++) {
     let field = row[i].toString();
-    // If line is header add a '*' to the field to create a bold text
-    if (isHeader) {
-      field = '*' + field + '*';
+
+    // If the field length is greater than the column length, wrap the text
+    if (field.length > columnLengths[i]) {
+      field = field.substring(0, columnLengths[i] - 3) + '...';
     }
 
     // Pad the field with spaces to match the column width

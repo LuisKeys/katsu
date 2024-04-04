@@ -19,102 +19,102 @@
   let users
 
   // Test the promptHandler
-  // const test = async () => {
-  //   let prompt = "Help.";
-  //   let result = await promptHandler.promptHandler(prompt, true);
-  //   let output = resultObject.render(result);  
+  const test = async () => {
+    let prompt = "Help sales";
+    let result = await promptHandler.promptHandler(prompt, true);
+    let output = resultObject.render(result);  
 
-  //   // prompt = "Export to an excel file.";  
-  //   // result = await promptHandler.promptHandler(prompt, false);
-  //   // output = resultObject.render(result);
+    // prompt = "Export to an excel file.";  
+    // result = await promptHandler.promptHandler(prompt, false);
+    // output = resultObject.render(result);
+  }
+
+  test();
+
+  // // Bolt app Initialization
+  // const app = new App({
+  //   token: process.env.SLACK_BOT_TOKEN,
+  //   signingSecret: process.env.SLACK_SIGNING_SECRET,
+  // });
+
+  // const loadUsers = async () => {
+  //   users = await app.client.users.list();    
+  // }
+  
+  // loadUsers();
+
+  // const getAnswer = async (prompt, profile) => {
+  //   isValid = await checkUser.checkUser(profile.email);
+
+  //   if (!isValid) {
+  //     return "You are not a registered user. Please contact the administrator to register.";
+  //   }      
+    
+  //   const response = await promptHandler.promptHandler(prompt, false);
+  //   const hey = "Certainly *" + profile.first_name + "*!\n";
+  //   let output = resultObject.render(response);
+  //   output = hey + "\`\`\`" + output + "\`\`\`";      
+
+  //   return output;
   // }
 
-  // test();
+  // // Listening for a message event
+  // app.message('katsu', async ({ message, say }) => {
+  //   try {
+  //     let prompt = message.text.replace("katsu","");
 
-  // Bolt app Initialization
-  const app = new App({
-    token: process.env.SLACK_BOT_TOKEN,
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-  });
+  //     const profile = users.members.filter(member => member.id === message.user)[0].profile;       
 
-  const loadUsers = async () => {
-    users = await app.client.users.list();    
-  }
-  
-  loadUsers();
+  //     const output = await getAnswer(prompt, profile);
 
-  const getAnswer = async (prompt, profile) => {
-    isValid = await checkUser.checkUser(profile.email);
-
-    if (!isValid) {
-      return "You are not a registered user. Please contact the administrator to register.";
-    }      
-    
-    const response = await promptHandler.promptHandler(prompt, false);
-    const hey = "Certainly *" + profile.first_name + "*!\n";
-    let output = resultObject.render(response);
-    output = hey + "\`\`\`" + output + "\`\`\`";      
-
-    return output;
-  }
-
-  // Listening for a message event
-  app.message('katsu', async ({ message, say }) => {
-    try {
-      let prompt = message.text.replace("katsu","");
-
-      const profile = users.members.filter(member => member.id === message.user)[0].profile;       
-
-      const output = await getAnswer(prompt, profile);
-
-      await say(output);
+  //     await say(output);
       
-    } catch (error) {
-      console.error(error);
-    }
-  });    
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });    
 
-  //listening for slash command invocation
-  app.command("/katsu", async ({ ack, payload, context }) => {
-    // Acknowledge the command request
-    ack();
+  // //listening for slash command invocation
+  // app.command("/katsu", async ({ ack, payload, context }) => {
+  //   // Acknowledge the command request
+  //   ack();
 
-    const prompt = payload.text;
+  //   const prompt = payload.text;
 
-    try {
-      const profile = users.members.filter(member => member.id === payload.user_id)[0].profile;       
-      const output = await getAnswer(prompt, profile);
+  //   try {
+  //     const profile = users.members.filter(member => member.id === payload.user_id)[0].profile;       
+  //     const output = await getAnswer(prompt, profile);
 
-      // Walk through response elements and concatenate them in the output string
-      await app.client.chat.postMessage({
-        token: context.botToken,
-        // Channel to send message to
-        channel: payload.channel_id,
-        // Include a button in the message (or whatever blocks you want!)
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: output // Output message
-              // Added backticks to format the output as multine code
-            },
-          },
-          {
-            type: "divider"
-          }          
-        ],
-        // Text in the notification
-        text: "Message from KATSU",
-      });      
-    } catch (error) {
-      console.error(error);
-    }
-  });
+  //     // Walk through response elements and concatenate them in the output string
+  //     await app.client.chat.postMessage({
+  //       token: context.botToken,
+  //       // Channel to send message to
+  //       channel: payload.channel_id,
+  //       // Include a button in the message (or whatever blocks you want!)
+  //       blocks: [
+  //         {
+  //           type: "section",
+  //           text: {
+  //             type: "mrkdwn",
+  //             text: output // Output message
+  //             // Added backticks to format the output as multine code
+  //           },
+  //         },
+  //         {
+  //           type: "divider"
+  //         }          
+  //       ],
+  //       // Text in the notification
+  //       text: "Message from KATSU",
+  //     });      
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });
 
-  (async () => {
-    // Start your app
-    await app.start(3000);
+  // (async () => {
+  //   // Start your app
+  //   await app.start(3000);
 
-    console.log("⚡ Bolt app is running on port 3000");
-  })();
+  //   console.log("⚡ Bolt app is running on port 3000");
+  // })();
