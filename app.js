@@ -100,11 +100,13 @@
               // Added backticks to format the output as multine code
             },
           },
+          {
+            type: "divider"
+          }          
         ],
         // Text in the notification
         text: "Message from KATSU",
-      });
-      
+      });      
     } catch (error) {
       console.error(error);
     }
