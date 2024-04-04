@@ -44,7 +44,7 @@
       const users = await app.client.users.list();
       const profile = users.members.filter(member => member.id === message.user)[0].profile;       
 
-      isValid = await checkUser.checkUser(profile.mail);
+      isValid = await checkUser.checkUser(profile.email);
 
       if (!isValid) {
         await say("You are not a registered user. Please contact the administrator to register.");
