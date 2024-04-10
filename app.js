@@ -20,7 +20,7 @@
 
   // // Test the promptHandler
   // const test = async () => {
-  //   const prompt = "list the employees with name 'luis'";
+  //   const prompt = "list the employees with name 'zaraza'";
   //   // const prompt = "list the active engagements";
   //   let result = await promptHandler.promptHandler(prompt, true);
   //   let output = resultObject.render(result);  

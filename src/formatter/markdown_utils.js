@@ -11,7 +11,7 @@ const getTableData = function (result, dispFields, maxColumns) {
   // Get the header
   let header = [];
 
-  if (dispFields.length > 0) {
+  if (dispFields.length > 0 && result.rows.length > 0) {
     for (let i = 0; i < dispFields.length && i < maxColumns; i++) {
       header.push(dispFields[i]);
     }

@@ -82,7 +82,12 @@ const promptHandler = async (prompt, isDebug) => {
     
     result = await help.getHelp(constants.HELP);
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, isDebug);
+    let header = [];
+    for(i = 0; i < result.fields.length; i++) {
+      header.push(result.fields[i].name);
+    }
+
+    resultObject = resultObj.getResultObject(result, messages, promptType, header, isDebug);
   }
   
   return resultObject;
