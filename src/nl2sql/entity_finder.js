@@ -50,7 +50,7 @@ const loadEntities  = () => {
     alias: ["contacts"],
     view : "v_contact",
     source: "salesforce",
-    dispFields: ["lastname", "firstname", "phone", "email", "title"]
+    dispFields: ["lastname", "firstname", "phone", "email"]
   }
 
   const lead = { 
@@ -58,7 +58,7 @@ const loadEntities  = () => {
     alias: ["leads"],
     view : "v_lead",
     source: "salesforce",
-    dispFields: ["lastname", "firstname", "name", "company", "leadsource"]
+    dispFields: ["lastname", "firstname", "company", "leadsource"]
   }
 
   const opportunity = {
@@ -75,7 +75,7 @@ const loadEntities  = () => {
     alias: ["engagements", "projects", "project"],
     view : "v_engagement",
     source: "salesforce",
-    dispFields: ["name", "customer", "start_date", "end_date", "total_project_amount"]
+    dispFields: ["name", "customer", "total_project_amount"]
   }
 
   // Requires view
@@ -84,7 +84,7 @@ const loadEntities  = () => {
     alias: ["project_roles", "role", "roles"],
     view : "v_project_role",
     source: "salesforce",
-    dispFields: ["role", "customer_name", "valid_from", "bill_rate", "pay_rate", "valid_to"]
+    dispFields: ["role", "customer_name", "bill_rate", "pay_rate"]
   }
 
   // Requires view
@@ -109,7 +109,7 @@ const loadEntities  = () => {
     alias: ["employees", "heads", "resources", "contractors", "ftes", "employee"],
     view : "v_employees",
     source: "bamboohr",
-    dispFields: ["firstname", "lastname", "jobtitle", "mobilephone", "workemail"]
+    dispFields: ["firstname", "lastname", "mobilephone", "workemail"]
   }
 
   const links = {
