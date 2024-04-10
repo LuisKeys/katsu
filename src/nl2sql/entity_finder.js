@@ -50,7 +50,7 @@ const loadEntities  = () => {
     alias: ["contacts"],
     view : "v_contact",
     source: "salesforce",
-    dispFields: []
+    dispFields: ["lastname", "firstname", "phone", "email", "title"]
   }
 
   const lead = { 
@@ -66,7 +66,7 @@ const loadEntities  = () => {
     alias: ["opportunities"],
     view : "v_opportunity",
     source: "salesforce",
-    dispFields: []
+    dispFields: ["name", "stagename", "amount", "probability"]
   }
 
   // Requires view
@@ -93,7 +93,7 @@ const loadEntities  = () => {
     alias: ["time entries", "time entry"],
     view : "v_time_entry",
     source: "salesforce",
-    dispFields: []
+    dispFields: ["name", "engagementname", "contactname", "status"]
   }
 
   const engagement_approver = {
@@ -101,7 +101,7 @@ const loadEntities  = () => {
     alias: ["engagement approvers", "engagement approver", "approver", "approvers"],
     view : "v_engagement_approver",
     source: "salesforce",
-    dispFields: []
+    dispFields: ["name"]
   }
 
   const employees = {
@@ -109,7 +109,7 @@ const loadEntities  = () => {
     alias: ["employees", "heads", "resources", "contractors", "ftes", "employee"],
     view : "v_employees",
     source: "bamboohr",
-    dispFields: []
+    dispFields: ["firstname", "lastname", "jobtitle", "mobilephone", "workemail"]
   }
 
   const links = {
