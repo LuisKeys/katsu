@@ -19,13 +19,14 @@ const formatTable = require("../formatter/format_result");
  * @param {boolean} isDebug - Indicates if debug mode is enabled.
  * @returns {Object} - The result object containing the result and messages.
  */
-const getResultObject = function (result, messages, promptType, isDebug) {
+const getResultObject = function (result, messages, promptType, dispFields, isDebug) {
   const resultObject = {
     rows:result.rows,
     fields:result.fields,
     messages:messages,
     promptType:promptType,
     table:"",
+    dispFields:dispFields
   };
 
   if (isDebug) {
@@ -35,7 +36,7 @@ const getResultObject = function (result, messages, promptType, isDebug) {
   }  
 
   const maxColumns = process.env.MAX_COLUMNS;
-  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, isDebug);
+  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug);
 
   return resultObject;
 }

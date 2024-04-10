@@ -41,28 +41,32 @@ const loadEntities  = () => {
     name: "account",
     alias: ["accounts"],
     view : "v_account",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: []
   }
 
   const contact = {
     name: "contact",
     alias: ["contacts"],
     view : "v_contact",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: []
   }
 
   const lead = { 
     name: "lead",
     alias: ["leads"],
     view : "v_lead",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: ["lastname", "firstname", "name", "company", "leadsource"]
   }
 
   const opportunity = {
     name: "opportunity",
     alias: ["opportunities"],
     view : "v_opportunity",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: []
   }
 
   // Requires view
@@ -70,7 +74,8 @@ const loadEntities  = () => {
     name: "engagement",
     alias: ["engagements", "projects", "project"],
     view : "v_engagement",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: ["name", "customer", "start_date", "end_date", "total_project_amount"]
   }
 
   // Requires view
@@ -78,7 +83,8 @@ const loadEntities  = () => {
     name: "project_role",
     alias: ["project_roles", "role", "roles"],
     view : "v_project_role",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: ["role", "customer_name", "valid_from", "bill_rate", "pay_rate", "valid_to"]
   }
 
   // Requires view
@@ -86,28 +92,32 @@ const loadEntities  = () => {
     name: "time_entry",
     alias: ["time entries", "time entry"],
     view : "v_time_entry",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: []
   }
 
   const engagement_approver = {
     name: "engagement_approver",
     alias: ["engagement approvers", "engagement approver", "approver", "approvers"],
     view : "v_engagement_approver",
-    source: "salesforce"
+    source: "salesforce",
+    dispFields: []
   }
 
   const employees = {
     name: "employees",
     alias: ["employees", "heads", "resources", "contractors", "ftes", "employee"],
     view : "v_employees",
-    source: "bamboohr"
+    source: "bamboohr",
+    dispFields: []
   }
 
   const links = {
     name: "links",
     alias: ["links", "link"],
     view : "v_links",
-    source: "links"
+    source: "links",
+    dispFields: []
   }
   
   // Salesforce

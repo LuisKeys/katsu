@@ -14,6 +14,8 @@ const resultObj = require("./src/prompts/result_object");
 const cleanPrompt = require("./src/prompts/clean");
 
 let result;
+let resultData;
+resultData = {dispFields:[], result:{rows:[], fields:[]}};
 
 /**
  * Handles different types of prompts and performs corresponding actions.
@@ -31,7 +33,8 @@ const promptHandler = async (prompt, isDebug) => {
 
   if (promptType === constants.QUESTION) {    
     // Question prompt
-    result = await handlers.questionHandler(promptTr);
+    resultData = await handlers.questionHandler(promptTr);
+    result = resultData.result;
   }
 
   if (promptType === constants.EXPORT) {
@@ -70,7 +73,7 @@ const promptHandler = async (prompt, isDebug) => {
       messages.push(fileURL);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, isDebug);
 
   } else {
     // No data found
@@ -79,7 +82,7 @@ const promptHandler = async (prompt, isDebug) => {
     
     result = await help.getHelp(constants.HELP);
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, isDebug);
   }
   
   return resultObject;

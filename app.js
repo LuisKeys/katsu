@@ -20,7 +20,8 @@
 
   // // Test the promptHandler
   // const test = async () => {
-  //   let prompt = "list the leads created during the last 60 days and the lead source is 'apollo'. Display first name, last name, company.";
+  //   const prompt = "list the leads created during the last 120 days and the lead source is 'apollo'";
+  //   // const prompt = "list the active engagements";
   //   let result = await promptHandler.promptHandler(prompt, true);
   //   let output = resultObject.render(result);  
 
