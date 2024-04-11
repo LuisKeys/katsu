@@ -8,13 +8,14 @@ const mdUtils = require('./markdown_utils');
 const getMarkDownTable = function(result, maxColumns, dispFields, isDebug) {
 
   let tableData = mdUtils.getTableData(result, dispFields, maxColumns);
-  let columnWidths = mdUtils.getColumnWidths(tableData);
+  result = mdUtils.formatTableData(tableData);
+  let columnWidths = mdUtils.getColumnWidths(result.tableData);
   
   let table = '';
 
   for (let i = 0; i < tableData.length; i++) {
     let row = tableData[i];    
-    let markdownRow = mdUtils.getMarkdownTableRow(row, columnWidths);
+    let markdownRow = mdUtils.getMarkdownTableRow(row, columnWidths, result.numColumns);
     table += markdownRow + '\n';
 
     if (i === 0) {

@@ -77,8 +77,8 @@ const getColumnWidths = function (tableData) {
  * @param {Array} columnLengths - The maximum length for each column.
  * @returns {String} - A markdown table row.
  */
-const getMarkdownTableRow = function (row, columnLengths) {
-  let markdownRow = "|";
+const getMarkdownTableRow = function (row, columnLengths, numColumns) {
+  let markdownRow = "";
 
   for (let i = 0; i < row.length; i++) {
     let field = row[i].toString();
@@ -91,11 +91,15 @@ const getMarkdownTableRow = function (row, columnLengths) {
     // Pad the field with spaces to match the column width
     let paddedField = "";
     try {
-      paddedField = field.padEnd(columnLengths[i]);
+      if (numColumns.includes(i)) {
+        paddedField = field.padStart(columnLengths[i]);
+      } else {
+        paddedField = field.padEnd(columnLengths[i]);      
+      }
     } catch (err) {
       console.log(err);
     }
-    markdownRow += ` ${paddedField} |`;
+    markdownRow += ` ${paddedField}`;
   }
 
   return markdownRow;
@@ -107,19 +111,99 @@ const getMarkdownTableRow = function (row, columnLengths) {
  * @returns {String} - A markdown table separator.
  */
 const getMarkdownTableSeparator = function (columnWidths) {
-  let separator = "|";
+  let separator = "";
 
   for (let i = 0; i < columnWidths.length; i++) {
     // Add the separator for each column
-    separator += " " + "-".repeat(columnWidths[i]) + " |";
+    separator += " " + "-".repeat(columnWidths[i]);
   }
 
   return separator;
 };
+
+const formatTableData = function (tableData) {
+  if(tableData.length === 0) {
+    return tableData;
+  }
+
+  const numColumns = getNumericColumns(tableData);
+  const formattedTableData = formatNumericColumns(tableData, numColumns);
+
+  result = {tableData: formattedTableData, numColumns: numColumns};
+  
+  return result;
+};
+
+/**
+ * Formats the numeric columns of a table data array.
+ *
+ * @param {Array<Array<any>>} tableData - The table data array.
+ * @param {Array<number>} numColumns - The indices of the numeric columns.
+ * @returns {Array<Array<any>>} - The formatted table data array.
+ */
+const formatNumericColumns = function(tableData, numColumns) {
+  for(let i = 1; i < tableData.length; i++) {
+    for(let j = 0; j < numColumns.length; j++) {
+      tableData[i][numColumns[j]] = formatNumber(tableData[i][numColumns[j]]);
+    }
+  }
+  
+  return tableData;
+};
+
+/**
+ * Formats a number with thousand and decimal separators.
+ * @param {string} number - The non-formatted number as a string.
+ * @returns {string} - The formatted number with separators.
+ */
+const formatNumber = function(number) {
+  // Convert the number to a float
+  const parsedNumber = parseFloat(number);
+
+  // Check if the number is valid
+  if (isNaN(parsedNumber)) {
+    return "";
+  }
+
+  // Format the number with separators
+  const formattedNumber = parsedNumber.toLocaleString();
+
+  return formattedNumber;
+};
+
+/**
+ * Retrieves the indices of numeric columns in a table.
+ *
+ * @param {Array<Array<any>>} tableData - The table data.
+ * @returns {Array<number>} - The indices of numeric columns.
+ */
+const getNumericColumns = function(tableData) {
+  let numericColumns = [];
+
+  const header = tableData[0];
+  
+  for(let i = 0; i < header.length; i++) {
+    let isNumeric = true;
+    
+    for(let j = 1; j < tableData.length; j++) {
+      if(isNaN(tableData[j][i])) {
+        isNumeric = false;
+        break;
+      }
+    }
+    
+    if(isNumeric) {
+      numericColumns.push(i);
+    }
+  }
+  
+  return numericColumns;
+}
 
 module.exports = {
   getColumnWidths,
   getMarkdownTableRow,
   getTableData,
   getMarkdownTableSeparator,
+  formatTableData,
 };

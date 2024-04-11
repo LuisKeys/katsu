@@ -75,7 +75,7 @@ const loadEntities  = () => {
     alias: ["engagements", "projects", "project"],
     view : "v_engagement",
     source: "salesforce",
-    dispFields: ["name", "customer", "total_project_amount"]
+    dispFields: ["name", "project_type", "total_project_amount"]
   }
 
   // Requires view
