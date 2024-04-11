@@ -19,7 +19,7 @@
 
   let users
 
-  const isDebug = process.env.DEBUG == 'true';
+  const isDebug = process.env.KATSU_DEBUG == 'true';
 
   if (isDebug) {
     console.log("Debug mode is on.");
@@ -36,7 +36,7 @@
       } else {
         const prompt = "list the active engagements";
         // const prompt = "help";
-        let result = await promptHandler.promptHandler(prompt, memberId, false);
+        let result = await promptHandler.promptHandler(prompt, memberId, false, "luis");
 
         let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
         hey += prompt + "\n";
@@ -63,15 +63,15 @@
     loadUsers();
 
     const getAnswer = async (prompt, profile) => {
-      const memberId = await getMember.getMemberId("luis@accelone.com");
+      const memberId = await getMember.getMemberId(profile.email);
       const isValid = memberId != -1;
 
       if (!isValid) {
         return "You are not a registered user. Please contact the administrator to register.";
       }
 
-      const response = await promptHandler.promptHandler(prompt, false);
-      let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
+      const response = await promptHandler.promptHandler(prompt, memberId, false, profile.first_name);
+      let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
       hey += prompt + "\n";
       let output = resultObject.render(response);
       output = hey + "```" + output + "```";

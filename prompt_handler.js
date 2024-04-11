@@ -25,7 +25,7 @@ resultData = {dispFields:[], result:{rows:[], fields:[]}};
  * @param {boolean} isDebug - Indicates whether the debug mode is enabled.
  * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
  */
-const promptHandler = async (prompt, memberId, isDebug) => {    
+const promptHandler = async (prompt, memberId, isDebug, memberName) => {    
   const promptType = nlPromptType.getPromptType(prompt);  
   let fileURL = '';
 
@@ -35,7 +35,7 @@ const promptHandler = async (prompt, memberId, isDebug) => {
     // Question prompt
     resultData = await handlers.questionHandler(promptTr);
     result = resultData.result;
-    await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length);
+    await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length, memberName);
   }
 
   if (promptType === constants.EXPORT) {
