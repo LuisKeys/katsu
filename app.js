@@ -123,8 +123,8 @@ if (isDebug) {
         (member) => member.id === payload.user_id
       )[0].profile;
       const output = await getAnswer(prompt, profile);
-
-      await sendMessage(context.botToken, payload.channel_id, output);
+      const token = process.env.SLACK_BOT_TOKEN;
+      await sendMessage(token, payload.channel_id, output);
     } catch (error) {
       console.error(error);
     }
@@ -134,6 +134,7 @@ if (isDebug) {
   app.action(
     { action_id: "exportToExcel" },
     async ({ body, client, ack, logger }) => {
+      console.log("Exporting to Excel...");
       await ack();
 
       const profile = users.members.filter(
@@ -142,8 +143,10 @@ if (isDebug) {
 
       const prompt = "export to excel";
       const output = await getAnswer(prompt, profile);
+      const token = process.env.SLACK_BOT_TOKEN;
+      const channelId = body.container.channel_id;
 
-      await sendMessage(body.token, body.container.container, output);
+      await sendMessage(token, channelId, output);
     }
   );
 
