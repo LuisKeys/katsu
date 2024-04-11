@@ -15,7 +15,7 @@ const savePrompt = async (memberId, prompt, sql, rowsCount, memberName) => {
   const sqlSafe = sql.replace(/'/g, "''");  
   let insetSQL = "insert into prompts_history ";
   insetSQL += "(userId, prompt, SQL, rows_count, member_name) ";
-  insetSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, ${memberName}) `;
+  insetSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${memberName}') `;
   
   await db.connect();
   const result = await db.execute(insetSQL, [memberId, promptSafe, sqlSafe, rowsCount]);
