@@ -132,7 +132,7 @@ if (isDebug) {
 
   // Listening for the export excel action
   app.action(
-    { action_id: "exportToExcel", block_id: "exportToExcel" },
+    { action_id: "exportToExcel" },
     async ({ body, client, ack, logger }) => {
       await ack();
 
