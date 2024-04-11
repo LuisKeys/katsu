@@ -116,10 +116,18 @@ const loadEntities  = () => {
     name: "links",
     alias: ["links", "link"],
     view : "v_links",
-    source: "links",
+    source: "katsu",
     dispFields: []
   }
   
+  const prompts_hitory = {
+    name: "prompts_hitory",
+    alias: ["pompts_history", "prompts history"],
+    view : "v_prompts_hitory",
+    source: "katsu",
+    dispFields: ["prompt", "rows_count", "member_name"]
+  }
+
   // Salesforce
   entities.push(account);
   entities.push(contact);
@@ -135,6 +143,9 @@ const loadEntities  = () => {
 
   // Links
   entities.push(links);  
+
+  // prompts_hitory
+  entities.push(prompts_hitory);  
 
   return entities;
 }

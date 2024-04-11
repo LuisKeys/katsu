@@ -40,9 +40,11 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
 
   // Get the entity from the prompt
   const entity = await finder.getEntity(userPrompt);
+  let result = {sql:"", dispFields:[]};
 
   if(entity === '') {
-    return '';
+    
+    return result;
   }
 
 
@@ -60,7 +62,7 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
   sql = sanitizeSQL(sql);
   sql = replaceEqualityWithLike(sql);
 
-  let result = {sql:sql, dispFields:entity.dispFields};
+  result = {sql:sql, dispFields:entity.dispFields};
 
   return result;
 }

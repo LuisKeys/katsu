@@ -34,7 +34,7 @@
         );
         return;
       } else {
-        const prompt = "list the active engagements";
+        const prompt = "list phist";
         // const prompt = "help";
         let result = await promptHandler.promptHandler(prompt, memberId, false, "luis");
 

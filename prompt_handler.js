@@ -35,7 +35,9 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     // Question prompt
     resultData = await handlers.questionHandler(promptTr);
     result = resultData.result;
-    await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length, memberName);
+    if(result && result.rows.length > 0) {
+      await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length, memberName);
+    }
   }
 
   if (promptType === constants.EXPORT) {

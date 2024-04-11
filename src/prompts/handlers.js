@@ -22,16 +22,17 @@ openai = new openAI();
  */
 const questionHandler = async (prompt) => {
   const resultSQL = await nl2sql.generateSQL(openai, openAIAPI, prompt);
-  const sql = resultSQL.sql;
+  const sql = resultSQL.sql;  
   console.log(sql);
+  let resultData = {result:null, dispFields:[], sql:""};
   if(sql === '') {
-    return null;
+    return resultData;
   }
   await db.connect();
   const result = await db.execute(sql);
   await db.close();  
   
-  const resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql};
+  resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql};
   return resultData;
 }    
 
