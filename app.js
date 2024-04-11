@@ -150,6 +150,13 @@
       }
     });
 
+// Export  to Excel handler
+app.action({ action_id: 'exportToExcel', block_id: 'assign_ticket' },
+async ({ body, client, ack, logger }) => {
+  await ack();
+  console.log(body);
+});
+
     (async () => {
       // Start your app
       await app.start(3000);
