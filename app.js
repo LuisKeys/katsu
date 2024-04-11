@@ -126,6 +126,21 @@
             {
               type: "divider",
             },
+            {
+              "type": "actions",
+              "elements": [
+                  {
+                      "type": "button",
+                      "text": {
+                          "type": "plain_text",
+                          "text": "Export to Excel",
+                          "emoji": true
+                      },
+                      "value": "exportToExcel",
+                      "action_id": "exportToExcel"
+                  }            
+            ]             
+          }            
           ],
           // Text in the notification
           text: "Message from KATSU",
