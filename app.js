@@ -34,7 +34,7 @@
         );
         return;
       } else {
-        const prompt = "list all the prompts history created during the last couple of days. Use created_date to compare time.";
+        const prompt = "list all the active engagements.";
         // const prompt = "help";
         let result = await promptHandler.promptHandler(prompt, memberId, false, "luis");
 

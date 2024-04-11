@@ -5,6 +5,7 @@
  */
 
 const finder = require("./entity_finder");
+const checkPrompt = require("../prompts/check_history");
 const dbFields = require("../db/db_get_fields");
 
 /**
@@ -53,11 +54,15 @@ const generateSQL = async function (openai, openaiapi, userPrompt) {
 
   // Get the prompt for the SQL statement
   const fullPrompt = getPrompt(openai, openaiapi, entity.view, fields, userPrompt);
-  
-  let sql = await openaiapi.ask(
-    openai,
-    fullPrompt
-  );
+
+  let sql = await checkPrompt.checkPrompt(userPrompt);
+
+  if(sql == null) {
+    sql = await openaiapi.ask(
+      openai,
+      fullPrompt
+    );
+  }
 
   sql = sanitizeSQL(sql);
   sql = replaceEqualityWithLike(sql);

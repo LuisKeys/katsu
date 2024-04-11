@@ -13,16 +13,37 @@ const savePrompt = async (memberId, prompt, sql, rowsCount, memberName) => {
 
   const promptSafe = prompt.replace(/'/g, "''");
   const sqlSafe = sql.replace(/'/g, "''");  
-  let insetSQL = "insert into prompts_history ";
-  insetSQL += "(userId, prompt, SQL, rows_count, member_name) ";
-  insetSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${memberName}') `;
+  let insertSQL = "insert into prompts_history ";
+  insertSQL += "(userId, prompt, SQL, rows_count, member_name, prompt_cmp) ";
+  const promptClean = cleanPrompt(prompt);  
+  insertSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${memberName}', '${promptClean}') `;
   
   await db.connect();
-  const result = await db.execute(insetSQL, [memberId, promptSafe, sqlSafe, rowsCount]);
+  const result = await db.execute(insertSQL, [memberId, promptSafe, sqlSafe, rowsCount]);
   await db.close(); 
 
 }
 
+/**
+ * Cleans the given prompt by replacing single quotes with double quotes,
+ * removing all spaces, and converting it to lowercase.
+ *
+ * @param {string} prompt - The prompt to be cleaned.
+ * @returns {string} The cleaned prompt.
+ */
+const cleanPrompt = (prompt) => {
+  let promptSafe = prompt.replace(/'/g, "''");
+  // clean all spaces
+  promptSafe = promptSafe.replace(/\s/g, '');
+  // remove all special characters
+  promptSafe = promptSafe.replace(/[^a-zA-Z0-9]/g, '');
+  // turn to lower case
+  promptSafe = promptSafe.toLowerCase();
+
+  return promptSafe;
+}
+
 module.exports = {
-  savePrompt
+  savePrompt,
+  cleanPrompt
 }

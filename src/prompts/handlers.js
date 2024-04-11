@@ -21,9 +21,11 @@ openai = new openAI();
  * @returns {Promise} - A promise that resolves to the result of the database query.
  */
 const questionHandler = async (prompt) => {
+  
   const resultSQL = await nl2sql.generateSQL(openai, openAIAPI, prompt);
-  const sql = resultSQL.sql;  
+  sql = resultSQL.sql;  
   console.log(sql);
+
   let resultData = {result:null, dispFields:[], sql:""};
   if(sql === '') {
     return resultData;
