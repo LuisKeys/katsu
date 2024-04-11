@@ -5,14 +5,19 @@ const db = require("../db/db_commands");
  * @param {string} email - The email of the user to check.
  * @returns {Promise<boolean>} - A promise that resolves to true if the user exists, false otherwise.
  */
-const checkUser = async (email) => {
-  const sql = `SELECT email FROM members WHERE email = '${email}'`;
+const getMemberId = async (email) => {
+  const sql = `SELECT id FROM members WHERE email = '${email}'`;
   await db.connect();
   const result = await db.execute(sql);
-  await db.close();  
-  return result.rows.length > 0;
+  await db.close(); 
+  
+  if (result.rows.length > 0) {
+    return result.rows[0].id;  
+  }
+
+  return -1;
 }    
 
 module.exports = {
-  checkUser
+  getMemberId
 }

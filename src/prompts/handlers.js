@@ -31,7 +31,7 @@ const questionHandler = async (prompt) => {
   const result = await db.execute(sql);
   await db.close();  
   
-  const resultData = {result:result, dispFields:resultSQL.dispFields};
+  const resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql};
   return resultData;
 }    
 

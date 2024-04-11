@@ -11,7 +11,7 @@
   const fs = require("fs");
   const promptHandler = require("./prompt_handler");
   const resultObject = require("./src/prompts/result_object");
-  const checkUser = require("./src/prompts/check_user");
+  const getMember = require("./src/members/get_member");
   const answerPhrase = require("./src/prompts/answer_phrases");
   require("dotenv").config();
 
@@ -22,110 +22,123 @@
   const isDebug = process.env.DEBUG == 'true';
 
   if (isDebug) {
-      console.log("Debug mode is on.");
+    console.log("Debug mode is on.");
 
     // Test the promptHandler
     const test = async () => {
-      // const prompt = "list the active engagements";
-      const prompt = "help";
-      let result = await promptHandler.promptHandler(prompt, false);
+      const memberId = await getMember.getMemberId("luis@accelone.com");
+      const isValid = memberId != -1;
+      if (!isValid) {
+        console.log(
+          "You are not a registered user. Please contact the administrator to register."
+        );
+        return;
+      } else {
+        const prompt = "list the active engagements";
+        // const prompt = "help";
+        let result = await promptHandler.promptHandler(prompt, memberId, false);
 
-      let hey = answerPhrase.getAnswerPhrase("Luis")+ "!\n";
-      hey += prompt + "\n";
-      let output = resultObject.render(result);
-      output = hey + "\`\`\`" + output + "\`\`\`";      
+        let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
+        hey += prompt + "\n";
+        let output = resultObject.render(result);
+        output = hey + "```" + output + "```";
 
-      console.log(output);
-    }
+        console.log(output);
+      }
+    };
 
     test();
+
   } else {
+    // Bolt app Initialization
+    const app = new App({
+      token: process.env.SLACK_BOT_TOKEN,
+      signingSecret: process.env.SLACK_SIGNING_SECRET,
+    });
 
-  // Bolt app Initialization
-  const app = new App({
-    token: process.env.SLACK_BOT_TOKEN,
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-  });
+    const loadUsers = async () => {
+      users = await app.client.users.list();
+    };
 
-  const loadUsers = async () => {
-    users = await app.client.users.list();    
-  }
-  
-  loadUsers();
+    loadUsers();
 
-  const getAnswer = async (prompt, profile) => {
-    isValid = await checkUser.checkUser(profile.email);
+    const getAnswer = async (prompt, profile) => {
+      const memberId = await getMember.getMemberId("luis@accelone.com");
+      const isValid = memberId != -1;
 
-    if (!isValid) {
-      return "You are not a registered user. Please contact the administrator to register.";
-    }      
-    
-    const response = await promptHandler.promptHandler(prompt, false);
-    let hey = answerPhrase.getAnswerPhrase("Luis")+ "!\n";
-    hey += prompt + "\n";
-    let output = resultObject.render(response);
-    output = hey + "\`\`\`" + output + "\`\`\`";      
+      if (!isValid) {
+        return "You are not a registered user. Please contact the administrator to register.";
+      }
 
-    return output;
-  }
+      const response = await promptHandler.promptHandler(prompt, false);
+      let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
+      hey += prompt + "\n";
+      let output = resultObject.render(response);
+      output = hey + "```" + output + "```";
 
-  // Listening for a message event
-  app.message('katsu', async ({ message, say }) => {
-    try {
-      let prompt = message.text.replace("katsu","");
+      return output;
+    };
 
-      const profile = users.members.filter(member => member.id === message.user)[0].profile;       
+    // Listening for a message event
+    app.message("katsu", async ({ message, say }) => {
+      try {
+        let prompt = message.text.replace("katsu", "");
 
-      const output = await getAnswer(prompt, profile);
-      await say(output);
-      
-    } catch (error) {
-      console.error(error);
-    }
-  });    
+        const profile = users.members.filter(
+          (member) => member.id === message.user
+        )[0].profile;
 
-  //listening for slash command invocation
-  app.command("/katsu", async ({ ack, payload, context }) => {
-    // Acknowledge the command request
-    ack();
+        const output = await getAnswer(prompt, profile);
+        await say(output);
+      } catch (error) {
+        console.error(error);
+      }
+    });
 
-    const prompt = payload.text;
+    //listening for slash command invocation
+    app.command("/katsu", async ({ ack, payload, context }) => {
+      // Acknowledge the command request
+      ack();
 
-    try {
-      const profile = users.members.filter(member => member.id === payload.user_id)[0].profile;       
-      const output = await getAnswer(prompt, profile);
+      const prompt = payload.text;
 
-      // Walk through response elements and concatenate them in the output string
-      await app.client.chat.postMessage({
-        token: context.botToken,
-        // Channel to send message to
-        channel: payload.channel_id,
-        // Include a button in the message (or whatever blocks you want!)
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: output // Output message
-              // Added backticks to format the output as multine code
+      try {
+        const profile = users.members.filter(
+          (member) => member.id === payload.user_id
+        )[0].profile;
+        const output = await getAnswer(prompt, profile);
+
+        // Walk through response elements and concatenate them in the output string
+        await app.client.chat.postMessage({
+          token: context.botToken,
+          // Channel to send message to
+          channel: payload.channel_id,
+          // Include a button in the message (or whatever blocks you want!)
+          blocks: [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: output, // Output message
+                // Added backticks to format the output as multine code
+              },
             },
-          },
-          {
-            type: "divider"
-          }          
-        ],
-        // Text in the notification
-        text: "Message from KATSU",
-      });      
-    } catch (error) {
-      console.error(error);
-    }
-  });
+            {
+              type: "divider",
+            },
+          ],
+          // Text in the notification
+          text: "Message from KATSU",
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    });
 
-  (async () => {
-    // Start your app
-    await app.start(3000);
+    (async () => {
+      // Start your app
+      await app.start(3000);
 
-    console.log("⚡ Bolt app is running on port 3000");
-  })();
-}
+      console.log("⚡ Bolt app is running on port 3000");
+    })();
+  }

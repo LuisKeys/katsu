@@ -19,7 +19,7 @@ KATSU serves as a sophisticated tool for businesses, facilitating streamlined ac
 
 ### Installation
 Clone the repository: \
-```git clone https://github.com/yourusername/katsu.git``` \
+```git clone https://github.com/yourusername/katsu.git``` 
 
 Navigate to the project directory:
 ```cd katsu```
@@ -33,7 +33,12 @@ Start the Node.js server: \
 ```npm start``` \
 Interact with KATSU via the configured interface (e.g., Slack) by issuing natural language commands. \
 For the particular cxase of Slack use the following slach command: \
-```/katsu ``` \
+```/katsu ``` 
+
+### Katsu tables:
+- prompts_history
+- help
+- members
 
 ### Contributors
 Luis Paradela

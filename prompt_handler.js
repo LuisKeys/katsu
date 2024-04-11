@@ -12,6 +12,7 @@ const help = require("./src/nl2sql/help");
 const nlPromptType = require("./src/prompts/prompt_type");
 const resultObj = require("./src/prompts/result_object");
 const cleanPrompt = require("./src/prompts/clean");
+const savePrompt = require("./src/prompts/save_prompt");
 
 let result;
 let resultData;
@@ -24,9 +25,8 @@ resultData = {dispFields:[], result:{rows:[], fields:[]}};
  * @param {boolean} isDebug - Indicates whether the debug mode is enabled.
  * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
  */
-const promptHandler = async (prompt, isDebug) => {    
-  const promptType = nlPromptType.getPromptType(prompt);
-  let sql = '';  
+const promptHandler = async (prompt, memberId, isDebug) => {    
+  const promptType = nlPromptType.getPromptType(prompt);  
   let fileURL = '';
 
   const promptTr = cleanPrompt.cleanPrompt(prompt);
@@ -35,6 +35,7 @@ const promptHandler = async (prompt, isDebug) => {
     // Question prompt
     resultData = await handlers.questionHandler(promptTr);
     result = resultData.result;
+    await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length);
   }
 
   if (promptType === constants.EXPORT) {
