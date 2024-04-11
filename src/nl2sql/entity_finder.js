@@ -122,7 +122,7 @@ const loadEntities  = () => {
   
   const prompts_hitory = {
     name: "prompts_hitory",
-    alias: ["pompts_history", "prompts history"],
+    alias: ["pompts_history", "prompt history", "prompts history"],
     view : "v_prompts_hitory",
     source: "katsu",
     dispFields: ["prompt", "rows_count", "member_name"]
