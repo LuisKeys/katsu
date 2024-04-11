@@ -9,7 +9,7 @@ const db = require("../db/db_commands");
  * @param {number} rowsCount - The number of rows affected by the SQL query.
  * @returns {Promise<void>} - A Promise that resolves when the prompt is saved.
  */
-const savePrompt = async (memberId, memberName, prompt, sql, rowsCount) => {
+const savePrompt = async (memberId, prompt, sql, rowsCount, memberName) => {
 
   const promptSafe = prompt.replace(/'/g, "''");
   const sqlSafe = sql.replace(/'/g, "''");  
