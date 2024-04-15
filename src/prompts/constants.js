@@ -11,10 +11,12 @@ const HELP = 'help';
 const LINK = 'link';
 const QUESTION = 'question';
 const SORT = 'sort';
+const FILE = 'file';
 
 module.exports = { 
   ALL,
   EXPORT,
+  FILE,
   HELP, 
   LINK,
   MAX_LINES_SLACK,

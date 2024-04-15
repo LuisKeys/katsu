@@ -46,9 +46,12 @@ const getTableData = function (result, dispFields, maxColumns) {
  * @param {Array} tableData - The data of the table.
  * @returns {Array} - An array containing the maximum lengths of each column.
  */
-const getColumnWidths = function (tableData) {
+const getColumnWidths = function (tableData, truncate) {
   let columnWidths = [];
   let maxColumnWidth = process.env.MAX_COLUMN_WIDTH;
+  if (!truncate) {
+    maxColumnWidth = 1000;
+  }
 
   for (let row of tableData) {
     for (let i = 0; i < row.length; i++) {

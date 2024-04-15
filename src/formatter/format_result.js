@@ -5,11 +5,11 @@
 
 const mdUtils = require('./markdown_utils');
 
-const getMarkDownTable = function(result, maxColumns, dispFields, isDebug) {
+const getMarkDownTable = function(result, maxColumns, dispFields, isDebug, truncate) {
 
   let tableData = mdUtils.getTableData(result, dispFields, maxColumns);
   result = mdUtils.formatTableData(tableData);
-  let columnWidths = mdUtils.getColumnWidths(result.tableData);
+  let columnWidths = mdUtils.getColumnWidths(result.tableData, truncate);
   
   let table = '';
 

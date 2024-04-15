@@ -7,10 +7,12 @@
 const constants = require("./constants");
 const db = require("../db/db_commands");
 const dbSortResult = require("../db/sort_result");
-const nl2sql = require("../nl2sql/translate");
+const filesClean = require("../files/clean");
+const filesIndex = require("../files/index");
+const nl2sql = require("../nl/translate");
 const openAI = require("openai");
 const openAIAPI = require("../openai/openai_api");
-const sortFieldFinder = require("../nl2sql/sort_field_finder");
+const sortFieldFinder = require("../nl/sort_field_finder");
 
 openai = new openAI();
 
@@ -78,8 +80,49 @@ const sortHandler = async (prompt, result) => {
   return result;
 }  
 
+const filesHandler = async (prompt, result) => {
+
+  let fullPrompt = "get the subject words for the prompt: '";
+  fullPrompt += prompt;
+  fullPrompt += "'.Only answer with a list of single words separated with comma.";
+  fullPrompt += "Ignore the words file, files, doc, documents or similar";
+
+  words = await openAIAPI.ask(
+    openai,
+    fullPrompt
+  );
+
+  const wordsList = words.split(',').map(word => word.trim());
+
+  const filesDir = process.env.FILES_FOLDER;
+  // clean up not indexable files and folders
+  // filesClean.cleanFiles(filesDir);
+  // filesClean.cleanEmptyDirs(filesDir);
+  // get file list
+  let files = filesIndex.exploreFolder(filesDir);
+  
+  files = filesIndex.searchFiles(files, wordsList);
+
+  const headerTitle = "Found_Files"
+  result = {rows:[], fields:[]};
+  field = {name:headerTitle};
+  result.fields.push(field);
+
+  for(let i = 0; i < files.length; i++) {
+    let record = {};
+    record[headerTitle] = files[i].fileName;
+    result.rows.push(record);
+    record = {};
+    record[headerTitle] = files[i].urlPath;
+    result.rows.push(record);
+  }
+  
+  return result;
+}  
+
 module.exports = {
   questionHandler,
   linkHandler,
-  sortHandler
+  sortHandler,
+  filesHandler
 };

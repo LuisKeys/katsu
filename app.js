@@ -2,7 +2,7 @@
  * This is the main file for the AskMe App POC.
  * It initializes the Slack Bolt app, authenticates with DB,
  * and listens for a slash command invocation to send a test message.
- * It also has a test() method to test the nl2sql and openAIAPI modules local.
+ * It also has a test() method to test the nl and openAIAPI modules local.
  */
 
 // Required External Modules
@@ -34,21 +34,21 @@ if (isDebug) {
       );
       return;
     } else {
-      const prompt = "list all the active engagements.";
+      const prompt = "list all SOW files for vertikal.";
       // const prompt = "help";
       let result = await promptHandler.promptHandler(
         prompt,
         memberId,
-        false,
+        true,
         "luis"
       );
 
-      let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
-      hey += prompt + "\n";
-      let output = resultObject.render(result);
-      output = hey + "```" + output + "```";
+      // let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
+      // hey += prompt + "\n";
+      // let output = resultObject.render(result);
+      // output = hey + "```" + output + "```";
 
-      console.log(output);
+      // console.log(output);
     }
   };
 
@@ -134,7 +134,6 @@ if (isDebug) {
   app.action(
     { action_id: "exportToExcel" },
     async ({ body, client, ack, logger }) => {
-      console.log("Exporting to Excel...");
       await ack();
 
       const profile = users.members.filter(

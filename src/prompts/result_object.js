@@ -35,8 +35,13 @@ const getResultObject = function (result, messages, promptType, dispFields, isDe
     }
   }  
 
+  let truncate = true;
+  if(promptType == constants.FILE) {
+    truncate = false;
+  }
+
   const maxColumns = process.env.MAX_COLUMNS;
-  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug);
+  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug, truncate);
 
   return resultObject;
 }

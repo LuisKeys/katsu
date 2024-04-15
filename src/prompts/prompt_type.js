@@ -27,13 +27,22 @@ const getPromptType = (prompt) => {
   }
 
   // Check if the prompt is a file
-  if (lcPrompt.includes("file") || lcPrompt.includes("csv") || lcPrompt.includes("spreadsheet") || lcPrompt.includes("excel")) {
+  if (lcPrompt.includes("excel")) {
     return "export";
   }
 
   // Order or sort statement
   if (lcPrompt.includes("order by") || lcPrompt.includes("sort")) {
     return "sort";
+  }
+
+  // Check for files prompt
+  if (lcPrompt.includes("file") || lcPrompt.includes("files") || 
+      lcPrompt.includes("folder") || lcPrompt.includes("document") || 
+      lcPrompt.includes("doc") || lcPrompt.includes("presentation") ||
+      lcPrompt.includes("ppt") || lcPrompt.includes("pdf")      
+    ) {
+    return "file";
   }
 
   // Check if the prompt is a statement

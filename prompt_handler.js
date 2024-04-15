@@ -8,7 +8,7 @@ require("dotenv").config();
 const constants = require("./src/prompts/constants");
 const excel = require("./src/excel/create_excel");
 const handlers = require("./src/prompts/handlers");
-const help = require("./src/nl2sql/help");
+const help = require("./src/nl/help");
 const nlPromptType = require("./src/prompts/prompt_type");
 const resultObj = require("./src/prompts/result_object");
 const cleanPrompt = require("./src/prompts/clean");
@@ -53,6 +53,11 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   if (promptType === constants.SORT) {    
     // Sort prompt
     result = await handlers.sortHandler(promptTr, result);
+  }
+
+  if (promptType === constants.FILE) {    
+    // File prompt
+    result = await handlers.filesHandler(promptTr);
   }
 
   if (promptType === constants.HELP) {    
