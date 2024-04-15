@@ -46,12 +46,9 @@ const getTableData = function (result, dispFields, maxColumns) {
  * @param {Array} tableData - The data of the table.
  * @returns {Array} - An array containing the maximum lengths of each column.
  */
-const getColumnWidths = function (tableData, truncate) {
+const getColumnWidths = function (tableData) {
   let columnWidths = [];
   let maxColumnWidth = process.env.MAX_COLUMN_WIDTH;
-  if (!truncate) {
-    maxColumnWidth = 1000;
-  }
 
   for (let row of tableData) {
     for (let i = 0; i < row.length; i++) {
@@ -80,24 +77,26 @@ const getColumnWidths = function (tableData, truncate) {
  * @param {Array} columnLengths - The maximum length for each column.
  * @returns {String} - A markdown table row.
  */
-const getMarkdownTableRow = function (row, columnLengths, numColumns) {
+const getMarkdownTableRow = function (row, columnLengths, numColumns, truncate) {
   let markdownRow = "";
 
   for (let i = 0; i < row.length; i++) {
     let field = row[i].toString();
 
+    conlumnLength = columnLengths[i];    
+
     // If the field length is greater than the column length, wrap the text
-    if (field.length > columnLengths[i]) {
-      field = field.substring(0, columnLengths[i] - 3) + "...";
+    if (field.length > conlumnLength && truncate) {
+      field = field.substring(0, conlumnLength - 3) + "...";
     }
 
     // Pad the field with spaces to match the column width
     let paddedField = "";
     try {
       if (numColumns.includes(i)) {
-        paddedField = field.padStart(columnLengths[i]);
+        paddedField = field.padStart(conlumnLength);
       } else {
-        paddedField = field.padEnd(columnLengths[i]);      
+        paddedField = field.padEnd(conlumnLength);      
       }
     } catch (err) {
       console.log(err);

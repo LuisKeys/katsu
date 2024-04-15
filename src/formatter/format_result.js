@@ -15,7 +15,7 @@ const getMarkDownTable = function(result, maxColumns, dispFields, isDebug, trunc
 
   for (let i = 0; i < tableData.length; i++) {
     let row = tableData[i];    
-    let markdownRow = mdUtils.getMarkdownTableRow(row, columnWidths, result.numColumns);
+    let markdownRow = mdUtils.getMarkdownTableRow(row, columnWidths, result.numColumns, truncate);
     table += markdownRow + '\n';
 
     if (i === 0) {

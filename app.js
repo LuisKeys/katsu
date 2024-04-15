@@ -34,21 +34,22 @@ if (isDebug) {
       );
       return;
     } else {
-      const prompt = "list all SOW files for vertikal.";
-      // const prompt = "help";
+      const prompt = "list all master files for alliance.";
+      // const prompt = "list all the active engagements";
+      // const prompt = "help link";
       let result = await promptHandler.promptHandler(
         prompt,
         memberId,
-        true,
+        false,
         "luis"
       );
 
-      // let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
-      // hey += prompt + "\n";
-      // let output = resultObject.render(result);
-      // output = hey + "```" + output + "```";
+      let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
+      hey += prompt + "\n";
+      let output = resultObject.render(result);
+      output = hey + "```" + output + "```";
 
-      // console.log(output);
+      console.log(output);
     }
   };
 
