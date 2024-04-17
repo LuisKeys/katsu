@@ -6,7 +6,7 @@ const answerPhrase = require("../prompts/answer_phrases");
 const resultObject = require("../prompts/result_object");
 const promptHandler = require("../prompts/prompt_handler");
 
-const setApp = (appObj, usersList) => {
+const initSlack = (appObj, usersList) => {
   app = appObj;
   users = usersList;
 
@@ -139,4 +139,4 @@ const getAnswer = async (prompt, profile) => {
   return output;
 };
 
-module.exports = { setApp };
+module.exports = { initSlack };

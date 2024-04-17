@@ -33,7 +33,7 @@ if (isDebug) {
   // Load workspace users
   const loadUsers = async () => {
     users = await app.client.users.list();
-    messages.setApp(app, users);
+    messages.initSlack(app, users);
   };
 
   loadUsers();  
