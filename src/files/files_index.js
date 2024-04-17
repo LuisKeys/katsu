@@ -79,7 +79,7 @@ function searchFiles(files, words) {
  * @returns {Array<Object>} - An array of file objects with updated URL paths.
  */
 function copyFilesToReports(files) {
-  const copyFolder = process.env.COPY_FOLDER;
+  const copyFolder = process.env.FILES_COPY_FOLDER;
   const reportsUrl = process.env.REPORTS_URL;
   const filesFolder = process.env.FILES_FOLDER;  
 
@@ -100,7 +100,6 @@ function copyFilesToReports(files) {
 
     const updatedFile = {
       ...file,
-      fileName: newFileName,
       relativePath: newPath,
       urlPath: updatedUrlPath
     };
