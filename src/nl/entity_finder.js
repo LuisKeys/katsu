@@ -125,7 +125,7 @@ const loadEntities  = () => {
     alias: ["prompts_history", "prompt history", "prompts history"],
     view : "v_prompts_history",
     source: "katsu",
-    dispFields: ["prompt", "rows_count", "member_name"]
+    dispFields: ["prompt"]
   }
 
   // Salesforce
