@@ -1,7 +1,9 @@
 let app;
+let users;
 
-const setApp = (appObj) => {
+const setApp = (appObj, usersList) => {
   app = appObj;
+  users = usersList;
 
     //Listening for slash command invocation
     app.command("/katsu", async ({ ack, payload, context }) => {

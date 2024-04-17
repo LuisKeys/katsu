@@ -2,21 +2,16 @@
  * This is the main file for the AskMe App POC.
  * It initializes the Slack Bolt app, authenticates with DB,
  * and listens for a slash command invocation to send a test message.
- * It also has a test() method to test the nl and openAIAPI modules local.
  */
 
 // Required External Modules
 const { App } = require("@slack/bolt");
 const answerPhrase = require("./src/prompts/answer_phrases");
-const fs = require("fs");
 const getMember = require("./src/members/get_member");
 const messages = require("./src/slack/messages");
-const openAI = require("openai");
 const promptHandler = require("./prompt_handler");
 const resultObject = require("./src/prompts/result_object");
 require("dotenv").config();
-
-openai = new openAI();
 
 let users;
 
@@ -67,14 +62,14 @@ if (isDebug) {
     signingSecret: process.env.SLACK_SIGNING_SECRET,
   });
 
-  messages.setApp(app);
-
   // Load workspace users
   const loadUsers = async () => {
     users = await app.client.users.list();
   };
 
   loadUsers();
+
+  messages.setApp(app, users);
 
   /**
    * Retrieves the answer based on the given prompt and user profile.
