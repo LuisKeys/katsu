@@ -24,10 +24,24 @@ openai = new openAI();
  * @returns {Promise} - A promise that resolves to the result of the database query.
  */
 const questionHandler = async (prompt) => {
-  
-  const resultSQL = await nl2sql.generateSQL(openai, openAIAPI, prompt);
+ 
+  let resultData = await getSQL(prompt, false, '');
+
+  // Reflection
+  if(resultData.result === null || resultData.result.rows.length === 0) {
+    const error = db.getError();
+    resultData = await getSQL(prompt, true, error);
+  }
+
+  return resultData;
+}
+    
+     
+
+const getSQL = async (prompt, reflection, error) => {
+  const resultSQL = await nl2sql.generateSQL(openai, openAIAPI, prompt, reflection, error);
   sql = resultSQL.sql;  
-  // console.log(sql);
+  console.log(sql);
 
   let resultData = {result:null, dispFields:[], sql:""};
   if(sql === '') {
@@ -35,11 +49,10 @@ const questionHandler = async (prompt) => {
   }
   await db.connect();
   const result = await db.execute(sql);
-  await db.close();  
-  
+  await db.close();
   resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql};
   return resultData;
-}    
+}
 
 /**
  * Handles the link prompt.
@@ -135,7 +148,6 @@ const remindersHandler = async (prompt, memberId) => {
   const result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
   return result;
 }
-
 
 module.exports = {
   questionHandler,

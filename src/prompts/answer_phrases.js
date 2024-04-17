@@ -33,7 +33,7 @@ const getAnswerPhrase = (name) => {
 
 const getRandomEmoji = () => {
   const emojis = [
-    "smilley",
+    "smiley",
     "nerd_face",
     "sunglasses",
     "relaxed",

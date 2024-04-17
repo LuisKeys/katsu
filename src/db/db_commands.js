@@ -6,6 +6,12 @@
 
 const { Client } = require('pg');
 
+let gerror = '';
+
+const getError = function () {
+  return gerror;
+}
+
 /**
  * Connects to the database.
  * @async
@@ -39,10 +45,13 @@ const connect = async function () {
 const execute = async function (sql) {
   try {
     // Perform database operations here
+    error = '';
     const rows = await client.query(sql);
     return rows;
   } catch (error) {
-    console.error("Error with database operation", error);    
+    console.error("Error with database operation", error);        
+    gerror = error.message;
+    return null;
   }
 };
 
@@ -71,8 +80,9 @@ const logResult = function (result) {
 };
 
 module.exports = {
-  execute,
-  connect,
   close,
+  connect,
+  execute,
+  getError,
   logResult
 };

@@ -120,10 +120,10 @@ const loadEntities  = () => {
     dispFields: []
   }
   
-  const prompts_hitory = {
-    name: "prompts_hitory",
-    alias: ["pompts_history", "prompt history", "prompts history"],
-    view : "v_prompts_hitory",
+  const prompts_history = {
+    name: "prompts_history",
+    alias: ["prompts_history", "prompt history", "prompts history"],
+    view : "v_prompts_history",
     source: "katsu",
     dispFields: ["prompt", "rows_count", "member_name"]
   }
@@ -145,7 +145,7 @@ const loadEntities  = () => {
   entities.push(links);  
 
   // prompts_hitory
-  entities.push(prompts_hitory);  
+  entities.push(prompts_history);  
 
   return entities;
 }

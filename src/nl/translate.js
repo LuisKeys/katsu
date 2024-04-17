@@ -37,23 +37,21 @@ const getLinkSQL = async function (prompt, rows) {
  * @param {string} userPrompt - The user prompt for generating the SQL statement.
  * @returns {string} The generated SQL statement.
  */
-const generateSQL = async function (openai, openaiapi, userPrompt) {
+const generateSQL = async function (openai, openaiapi, userPrompt, reflection, error) {
 
   // Get the entity from the prompt
   const entity = await finder.getEntity(userPrompt);
   let result = {sql:"", dispFields:[]};
 
-  if(entity === '') {
-    
+  if(entity === '') {    
     return result;
   }
-
 
   // Get the fields for the entity
   const fields = await dbFields.getViewFields(entity);
 
   // Get the prompt for the SQL statement
-  const fullPrompt = getPrompt(openai, openaiapi, entity.view, fields, userPrompt);
+  const fullPrompt = getPrompt(openai, openaiapi, entity.view, fields, userPrompt, reflection, error);
 
   let sql = await checkPrompt.checkPrompt(userPrompt);
 
@@ -111,15 +109,20 @@ const sanitizeSQL = function (sql) {
  * @param {string} userPrompt - The user prompt for the SQL statement.
  * @returns {string} The generated prompt for the SQL statement.
  */
-const getPrompt = function (openai, openaiapi, entity, fields, userPrompt) {
-  let prompt = "Create a SELECT statement for PostgreSql to retrieve data from the " + entity + " table.";
+const getPrompt = function (openai, openaiapi, entity, fields, userPrompt, reflection, error) {
+  let prompt = '';
+
+  prompt += "Create a SELECT statement for PostgreSql to retrieve data from the " + entity + " table.";
   if(userPrompt.includes("number of")) {
     prompt += " Count the number of rows.";
   } 
 
-  prompt += " Include the following fields to define the where statement: ";
+  prompt += "Only if it applies include the following fields to define the where statement: ";
   for(let i = 0; i < fields.length; i++) {
     prompt += fields[i] + ", ";
+    if(i === fields.length - 1) {
+      prompt += fields[i] + ".";
+    }
   }
 
   prompt+= " based on the following user prompt: " + userPrompt;
@@ -128,7 +131,31 @@ const getPrompt = function (openai, openaiapi, entity, fields, userPrompt) {
   prompt += " Limit the results to 100 rows.";  
   prompt += " Answer only with the SQL statement.";  
 
+  if(reflection) {
+    const origPrompt = prompt;
+    prompt = createReflectionPrompt(userPrompt, error, origPrompt);
+  }
+
   return prompt;
+}
+
+const createReflectionPrompt = (prompt, error, origPrompt) => {
+  let reflectionPrompt = "";
+  if(error != "") {
+    reflectionPrompt = "This is the original prompt:.\n";
+    reflectionPrompt += origPrompt + "\n";
+    reflectionPrompt += "The query you provided was wrong.\n";
+    reflectionPrompt += "Here is the error message:\n";
+    reflectionPrompt += error + "\n";
+    reflectionPrompt += "Try again with a different query.";
+  } else {
+    reflectionPrompt = "This is the original prompt:.\n";
+    reflectionPrompt += origPrompt + "\n";
+    reflectionPrompt += "The query you provided did not return any results.\n";
+    reflectionPrompt += "Try again with a different query without a where clause at all.";
+  }
+
+  return reflectionPrompt;
 }
 
 module.exports = { generateSQL, getLinkSQL };
