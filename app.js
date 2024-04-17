@@ -6,52 +6,20 @@
 
 // Required External Modules
 const { App } = require("@slack/bolt");
-const answerPhrase = require("./src/prompts/answer_phrases");
-const getMember = require("./src/members/get_member");
 const messages = require("./src/slack/messages");
-const promptHandler = require("./src/prompts/prompt_handler");
-const resultObject = require("./src/prompts/result_object");
+const testFunctions = require("./src/test/test");
 require("dotenv").config();
 
 let users;
 
 const isDebug = process.env.KATSU_DEBUG == "true";
 
+const test = async() => {
+  await testFunctions.test()
+}
+
 if (isDebug) {
   console.log("Debug mode is on.");
-
-  // Test the promptHandler
-  const test = async () => {
-    const memberId = await getMember.getMemberId("luis@accelone.com");
-    const isValid = memberId != -1;
-    if (!isValid) {
-      console.log(
-        "You are not a registered user. Please contact the administrator to register."
-      );
-      return;
-    } else {
-      let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
-      // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
-      prompts = ["help"];
-
-      for (let i = 0; i < prompts.length; i++) {
-        let prompt = prompts[i];
-        let result = await promptHandler.promptHandler(
-          prompt,
-          memberId,
-          false,
-          "luis"
-        );
-
-        let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
-        hey += prompt + "\n";
-        let output = resultObject.render(result);
-        output = hey + "```" + output + "```";
-
-        console.log(output);
-      }
-    }
-  };
 
   test();
 
