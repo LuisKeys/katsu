@@ -111,11 +111,17 @@ const filesHandler = async (prompt, result) => {
   result.fields.push(field);
 
   for(let i = 0; i < files.length; i++) {
+    // File name
     let record = {};
     record[headerTitle] = files[i].fileName;
     result.rows.push(record);
+    // URL
     record = {};
     record[headerTitle] = files[i].urlPath;
+    result.rows.push(record);
+    // separator
+    record = {};
+    record[headerTitle] = '////////////////////////////////////////';
     result.rows.push(record);
   }
   
