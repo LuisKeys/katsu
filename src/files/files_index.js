@@ -1,6 +1,8 @@
-const fs = require('fs');
 const { url } = require('inspector');
+const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
+
 
 
 /**
@@ -21,8 +23,6 @@ function exploreFolder(directory) {
     if (stats.isFile()) {
 
       relFilePath = filePath.replace(root, "");
-      urlPath = baseFilesURL + relFilePath;
-      urlPath = urlPath.replace(" ", "%20");
 
       const fileObj = {
         fileName: file,
@@ -30,7 +30,7 @@ function exploreFolder(directory) {
         size: stats.size,
         date: stats.mtime,
         relativePath: relFilePath,
-        urlPath: urlPath
+        urlPath: ""
       };
 
       fileList.push(fileObj);
@@ -73,7 +73,47 @@ function searchFiles(files, words) {
   return searchResults;
 }
 
+/**
+ * Copies files to the specified folder and updates the URL path.
+ * @param {Array<Object>} files - The list of file objects to copy.
+ * @returns {Array<Object>} - An array of file objects with updated URL paths.
+ */
+function copyFilesToReports(files) {
+  const copyFolder = process.env.COPY_FOLDER;
+  const reportsUrl = process.env.REPORTS_URL;
+  const filesFolder = process.env.FILES_FOLDER;  
+
+  const updatedFiles = [];
+
+  files.forEach((file) => {
+    const { fileName, extension, relativePath, urlPath } = file;
+
+    const fullPath = filesFolder + relativePath;
+    const fileData = fs.readFileSync(fullPath);
+    const hash = crypto.createHash('md5').update(fileName).digest('hex');
+    const newFileName = `${hash}${extension}`;
+    const newPath = path.join(copyFolder, newFileName);
+
+    fs.writeFileSync(newPath, fileData);
+
+    const updatedUrlPath = `${reportsUrl}/${newFileName}`;
+
+    const updatedFile = {
+      ...file,
+      fileName: newFileName,
+      relativePath: newPath,
+      urlPath: updatedUrlPath
+    };
+
+    updatedFiles.push(updatedFile);
+  });
+
+  return updatedFiles;
+}
+
+
 module.exports = {
   exploreFolder,
-  searchFiles
+  searchFiles,
+  copyFilesToReports
 };

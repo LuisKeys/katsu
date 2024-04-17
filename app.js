@@ -34,7 +34,7 @@ if (isDebug) {
       );
       return;
     } else {
-      const prompt = "list all master files for alliance.";
+      const prompt = "list all sow files for alliance.";
       // const prompt = "list all the active engagements";
       // const prompt = "help link";
       let result = await promptHandler.promptHandler(

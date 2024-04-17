@@ -8,7 +8,7 @@ const constants = require("./constants");
 const db = require("../db/db_commands");
 const dbSortResult = require("../db/sort_result");
 const filesClean = require("../files/clean");
-const filesIndex = require("../files/index");
+const filesIndex = require("../files/files_index");
 const nl2sql = require("../nl/translate");
 const openAI = require("openai");
 const openAIAPI = require("../openai/openai_api");
@@ -102,6 +102,8 @@ const filesHandler = async (prompt, result) => {
   let files = filesIndex.exploreFolder(filesDir);
   
   files = filesIndex.searchFiles(files, wordsList);
+
+  files = filesIndex.copyFilesToReports(files)
 
   const headerTitle = "Found_Files"
   result = {rows:[], fields:[]};
