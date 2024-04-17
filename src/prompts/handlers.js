@@ -131,8 +131,8 @@ const filesHandler = async (prompt, result) => {
   return result;
 } 
 
-const remindersHandler = async (prompt) => {
-  const result = await reminders.createReminder(openai, openAIAPI, prompt);
+const remindersHandler = async (prompt, memberId) => {
+  const result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
   return result;
 }
 

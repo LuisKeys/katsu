@@ -70,7 +70,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   if (promptType === constants.REMINDER) {    
     // Reminder prompt
     resultData.dispFields = [];
-    result = await handlers.remindersHandler(promptTr);
+    result = await handlers.remindersHandler(promptTr, memberId);
   }
 
   // Format the result

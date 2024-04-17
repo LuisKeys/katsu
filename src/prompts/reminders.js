@@ -9,13 +9,14 @@ const db = require("../db/db_commands");
  * @param {string} prompt - The prompt to be included in the SQL statement.
  * @returns {Promise<void>} - A promise that resolves when the SQL statement is executed.
  */
-const createReminder = async (openai, openAIAPI, prompt) => {
+const createReminder = async (openai, openAIAPI, prompt, memberId) => {
   let fullPrompt = 'create an insert sql statement  for postresql for the following table \n';
   fullPrompt += 'TABLE schedule (\n';
   fullPrompt += ' id SERIAL PRIMARY KEY\n';
   fullPrompt += ' title VARCHAR(400) NOT null\n';
   fullPrompt += ' starts_at TIMESTAMP NOT NULL\n';
   fullPrompt += ' repeat VARCHAR(20)\n';
+  fullPrompt += ' member_id int\n';
   fullPrompt += ' )\n';
   fullPrompt += ' - None\n';
   fullPrompt += ' - Daily\n';
@@ -24,6 +25,7 @@ const createReminder = async (openai, openAIAPI, prompt) => {
   fullPrompt += ' - Monthly\n';
   fullPrompt += ' based on this prompt\n';
   fullPrompt += `${prompt}\n`;
+  fullPrompt += `member_id=${memberId}\n`;  
   fullPrompt += ' Only display the sql statement without any additional explanation or description';
  
   const sql = await openAIAPI.ask(
