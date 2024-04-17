@@ -55,7 +55,7 @@ const createReminder = async (openai, openAIAPI, prompt, memberId) => {
   result.fields.push(field); 
   
   let record = {};
-  record[headerTitle] = `Your reminder '${text}' has been created successfully`;
+  record[headerTitle] = `:alarm_clock: Your reminder '${text}' has been created successfully`;
   result.rows.push(record);    
 
   return result;  
