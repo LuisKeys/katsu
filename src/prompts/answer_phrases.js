@@ -27,7 +27,7 @@ const getAnswerPhrase = (name) => {
   
   
   const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-  return phrase.replace("#name#", name);
+  return ":nerd_face:" + phrase.replace("#name#", name);
 }
 
 module.exports = {
