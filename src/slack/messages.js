@@ -104,3 +104,4 @@ const setApp = (appObj) => {
     });
   };
 
+module.exports = { setApp };

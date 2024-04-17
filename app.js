@@ -59,7 +59,7 @@ if (isDebug) {
   };
 
   test();
-  
+
 } else {
   // Bolt app Initialization
   const app = new App({
@@ -67,7 +67,7 @@ if (isDebug) {
     signingSecret: process.env.SLACK_SIGNING_SECRET,
   });
 
-  messages.messages(app);
+  messages.setApp(app);
 
   // Load workspace users
   const loadUsers = async () => {
