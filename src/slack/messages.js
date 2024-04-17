@@ -1,6 +1,11 @@
 let app;
 let users;
 
+const getMember = require("../members/get_member");
+const answerPhrase = require("../prompts/answer_phrases");
+const resultObject = require("../prompts/result_object");
+const promptHandler = require("../prompts/prompt_handler");
+
 const setApp = (appObj, usersList) => {
   app = appObj;
   users = usersList;
@@ -105,5 +110,33 @@ const setApp = (appObj, usersList) => {
       text: "Message from KATSU",
     });
   };
+
+/**
+   * Retrieves the answer based on the given prompt and user profile.
+   * @param {string} prompt - The prompt to be answered.
+   * @param {object} profile - The user's profile object.
+   * @returns {Promise<string>} The answer to the prompt.
+   */
+const getAnswer = async (prompt, profile) => {
+  const memberId = await getMember.getMemberId(profile.email);
+  const isValid = memberId != -1;
+
+  if (!isValid) {
+    return "You are not a registered user. Please contact the administrator to register.";
+  }
+
+  const response = await promptHandler.promptHandler(
+    prompt,
+    memberId,
+    false,
+    profile.first_name
+  );
+  let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
+  hey += prompt + "\n";
+  let output = resultObject.render(response);
+  output = hey + "```" + output + "```";
+
+  return output;
+};
 
 module.exports = { setApp };

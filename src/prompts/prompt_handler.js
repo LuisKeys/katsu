@@ -5,14 +5,14 @@
 
 // Required External Modules
 require("dotenv").config();
-const constants = require("./src/prompts/constants");
-const excel = require("./src/excel/create_excel");
-const handlers = require("./src/prompts/handlers");
-const help = require("./src/nl/help");
-const nlPromptType = require("./src/prompts/prompt_type");
-const resultObj = require("./src/prompts/result_object");
-const cleanPrompt = require("./src/prompts/clean");
-const savePrompt = require("./src/prompts/save_prompt");
+const constants = require("./constants");
+const excel = require("../excel/create_excel");
+const handlers = require("./handlers");
+const help = require("../nl/help");
+const nlPromptType = require("./prompt_type");
+const resultObj = require("./result_object");
+const cleanPrompt = require("./clean");
+const savePrompt = require("./save_prompt");
 
 let result;
 let resultData;

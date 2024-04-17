@@ -9,7 +9,7 @@ const { App } = require("@slack/bolt");
 const answerPhrase = require("./src/prompts/answer_phrases");
 const getMember = require("./src/members/get_member");
 const messages = require("./src/slack/messages");
-const promptHandler = require("./prompt_handler");
+const promptHandler = require("./src/prompts/prompt_handler");
 const resultObject = require("./src/prompts/result_object");
 require("dotenv").config();
 
@@ -65,40 +65,11 @@ if (isDebug) {
   // Load workspace users
   const loadUsers = async () => {
     users = await app.client.users.list();
+    messages.setApp(app, users);
   };
 
-  loadUsers();
-
-  messages.setApp(app, users);
-
-  /**
-   * Retrieves the answer based on the given prompt and user profile.
-   * @param {string} prompt - The prompt to be answered.
-   * @param {object} profile - The user's profile object.
-   * @returns {Promise<string>} The answer to the prompt.
-   */
-  const getAnswer = async (prompt, profile) => {
-    const memberId = await getMember.getMemberId(profile.email);
-    const isValid = memberId != -1;
-
-    if (!isValid) {
-      return "You are not a registered user. Please contact the administrator to register.";
-    }
-
-    const response = await promptHandler.promptHandler(
-      prompt,
-      memberId,
-      false,
-      profile.first_name
-    );
-    let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
-    hey += prompt + "\n";
-    let output = resultObject.render(response);
-    output = hey + "```" + output + "```";
-
-    return output;
-  };
-
+  loadUsers();  
+  
   (async () => {
     // Start your app
     await app.start(3000);
