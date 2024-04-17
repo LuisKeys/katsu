@@ -1,3 +1,5 @@
+const { alignment } = require("excel4node/distribution/lib/types");
+
 const getAnswerPhrase = (name) => {
   const phrases = [
     "Certainly #name#",
@@ -24,10 +26,26 @@ const getAnswerPhrase = (name) => {
     "Here you are #name#",
     "Of course, #name#"
   ];
-  
-  
+    
   const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-  return ":nerd_face:" + phrase.replace("#name#", name);
+  return getRandomEmoji() + " " + phrase.replace("#name#", name);
+}
+
+const getRandomEmoji = () => {
+  const emojis = [
+    "smilley",
+    "nerd_face",
+    "sunglasses",
+    "relaxed",
+    "upside_down_face",
+    "blush",
+    "alien",
+    "smiley_cat",
+    "dog"
+  ];
+
+  const randomIndex = Math.floor(Math.random() * emojis.length);
+  return ":" + emojis[randomIndex] + ":";
 }
 
 module.exports = {
