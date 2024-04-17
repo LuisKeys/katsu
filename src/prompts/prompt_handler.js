@@ -67,6 +67,12 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     result = await help.getHelp(promptTr);
   }
 
+  if (promptType === constants.REMINDER) {    
+    // Reminder prompt
+    resultData.dispFields = [];
+    result = await handlers.remindersHandler(promptTr);
+  }
+
   // Format the result
   let resultObject
   let messages = [];

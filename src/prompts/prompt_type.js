@@ -1,3 +1,4 @@
+const constants = require("./constants");
 
 /**
  * Module for determining the type of prompt.
@@ -13,27 +14,22 @@ const getPromptType = (prompt) => {
   const lcPrompt = prompt.toLowerCase();
   // Check if the prompt is a request for help
   if (lcPrompt.includes("help")) {
-    return "help";
+    return constants.HELP;
   }
 
-  // Check if the prompt is a question
-  if (lcPrompt.includes("graph") || lcPrompt.includes("chart")) {
-    return "graph";
-  }
-
-  // Check if the prompt is a link
+   // Check if the prompt is a link
   if (lcPrompt.includes("link") || lcPrompt.includes("links")) {
-    return "link";
+    return constants.LINK;
   }
 
   // Check if the prompt is a file
   if (lcPrompt.includes("excel")) {
-    return "export";
+    return constants.EXPORT;
   }
 
   // Order or sort statement
   if (lcPrompt.includes("order by") || lcPrompt.includes("sort")) {
-    return "sort";
+    return constants.SORT;
   }
 
   // Check for files prompt
@@ -42,11 +38,16 @@ const getPromptType = (prompt) => {
       lcPrompt.includes("doc") || lcPrompt.includes("presentation") ||
       lcPrompt.includes("ppt") || lcPrompt.includes("pdf")      
     ) {
-    return "file";
+    return constants.FILE;
+  }
+
+  // Reminder prompt
+  if (lcPrompt.includes("reminder") || lcPrompt.includes("reminders")) {
+    return constants.REMINDER;
   }
 
   // Check if the prompt is a statement
-  return "question";
+  return constants.QUESTION;
 }
 
 module.exports = { getPromptType };

@@ -7,11 +7,12 @@ const MAX_LINES_SLACK = 20;
 
 const ALL = 'all';
 const EXPORT = 'export';
+const FILE = 'file';
 const HELP = 'help';
 const LINK = 'link';
 const QUESTION = 'question';
+const REMINDER = 'reminder';
 const SORT = 'sort';
-const FILE = 'file';
 
 module.exports = { 
   ALL,
@@ -21,5 +22,6 @@ module.exports = {
   LINK,
   MAX_LINES_SLACK,
   QUESTION,
-  SORT  
+  REMINDER,
+  SORT
 };

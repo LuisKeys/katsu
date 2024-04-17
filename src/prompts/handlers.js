@@ -13,6 +13,7 @@ const nl2sql = require("../nl/translate");
 const openAI = require("openai");
 const openAIAPI = require("../openai/openai_api");
 const sortFieldFinder = require("../nl/sort_field_finder");
+const reminders= require("./reminders");
 
 openai = new openAI();
 
@@ -128,11 +129,17 @@ const filesHandler = async (prompt, result) => {
   }
   
   return result;
-}  
+} 
+
+const remindersHandler = async (prompt) => {
+  await reminders.createReminder(openai, openAIAPI, prompt);
+}
+
 
 module.exports = {
   questionHandler,
   linkHandler,
   sortHandler,
-  filesHandler
+  filesHandler,
+  remindersHandler
 };
