@@ -27,7 +27,7 @@ const questionHandler = async (prompt) => {
   
   const resultSQL = await nl2sql.generateSQL(openai, openAIAPI, prompt);
   sql = resultSQL.sql;  
-  console.log(sql);
+  // console.log(sql);
 
   let resultData = {result:null, dispFields:[], sql:""};
   if(sql === '') {
@@ -132,7 +132,8 @@ const filesHandler = async (prompt, result) => {
 } 
 
 const remindersHandler = async (prompt) => {
-  await reminders.createReminder(openai, openAIAPI, prompt);
+  const result = await reminders.createReminder(openai, openAIAPI, prompt);
+  return result;
 }
 
 

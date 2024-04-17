@@ -79,6 +79,12 @@ const getColumnWidths = function (tableData) {
  */
 const getMarkdownTableRow = function (row, columnLengths, numColumns, truncate) {
   let markdownRow = "";
+  let truncatRow = truncate;
+
+  // If only one field  do not truncate the row
+  if (numColumns <= 1) {
+    truncatRow = false;
+  }
 
   for (let i = 0; i < row.length; i++) {
     let field = row[i].toString();
@@ -86,7 +92,7 @@ const getMarkdownTableRow = function (row, columnLengths, numColumns, truncate) 
     conlumnLength = columnLengths[i];    
 
     // If the field length is greater than the column length, wrap the text
-    if (field.length > conlumnLength && truncate) {
+    if (field.length > conlumnLength && truncatRow) {
       field = field.substring(0, conlumnLength - 3) + "...";
     }
 
