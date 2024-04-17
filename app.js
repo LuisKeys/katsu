@@ -34,22 +34,25 @@ if (isDebug) {
       );
       return;
     } else {
-      const prompt = "list all sow files for alliance.";
-      // const prompt = "list all the active engagements";
-      // const prompt = "help link";
-      let result = await promptHandler.promptHandler(
-        prompt,
-        memberId,
-        false,
-        "luis"
-      );
+      let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
+      // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
 
-      let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
-      hey += prompt + "\n";
-      let output = resultObject.render(result);
-      output = hey + "```" + output + "```";
+      for (let i = 0; i < prompts.length; i++) {
+        let prompt = prompts[i];
+        let result = await promptHandler.promptHandler(
+          prompt,
+          memberId,
+          false,
+          "luis"
+        );
 
-      console.log(output);
+        let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
+        hey += prompt + "\n";
+        let output = resultObject.render(result);
+        output = hey + "```" + output + "```";
+
+        console.log(output);
+      }
     }
   };
 

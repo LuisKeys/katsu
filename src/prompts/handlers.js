@@ -103,6 +103,8 @@ const filesHandler = async (prompt, result) => {
   
   files = filesIndex.searchFiles(files, wordsList);
 
+  filesClean.cleanReports();
+
   files = filesIndex.copyFilesToReports(files)
 
   const headerTitle = "Found_Files"

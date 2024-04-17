@@ -57,11 +57,13 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   if (promptType === constants.FILE) {    
     // File prompt
+    resultData.dispFields = [];
     result = await handlers.filesHandler(promptTr);
   }
 
   if (promptType === constants.HELP) {    
     // Sort prompt
+    resultData.dispFields = [];
     result = await help.getHelp(promptTr);
   }
 

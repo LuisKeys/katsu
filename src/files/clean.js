@@ -19,7 +19,7 @@ function cleanReports() {
     const filePath = path.join(directory, file);
     const stats = fs.statSync(filePath);
     const now = new Date().getTime();
-    const endTime = new Date(stats.ctime).getTime() + 3600000;
+    const endTime = new Date(stats.ctime).getTime() + 30000;
 
     if (now > endTime) {
       fs.unlinkSync(filePath);
