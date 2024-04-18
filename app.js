@@ -14,16 +14,17 @@ const remindersChecker = require("./src/process/reminders_checker");
 require("dotenv").config();
 
 let users;
+let app
 const isDebug = process.env.KATSU_DEBUG == "true";
 
 // Timer
 setInterval(backProcessTick, 5000);
 
 // Handler function
-const backProcessHandler = async (users) => {
+const backProcessHandler = async (users, app) => {
 
   // Check reminders
-  await remindersChecker.checkReminders(users);
+  await remindersChecker.checkReminders(users, app);
 
   // clean reports
   await clean.cleanReports();
@@ -31,7 +32,7 @@ const backProcessHandler = async (users) => {
 
 // Timer ick function
 function backProcessTick() { 
-  backProcessHandler(users)
+  backProcessHandler(users, app)
   .then(() => {
       
   })
@@ -50,25 +51,25 @@ if (isDebug) {
 
   test();
 
-} else {
-  // Bolt app Initialization
-  const app = new App({
-    token: process.env.SLACK_BOT_TOKEN,
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-  });
-
-  // Load workspace users
-  const loadUsers = async () => {
-    users = await app.client.users.list();
-    messages.initSlack(app, users);
-  };
-
-  loadUsers();  
-  
-  (async () => {
-    // Start your app
-    await app.start(3000);
-
-    console.log("⚡ Bolt app is running on port 3000");
-  })();
 }
+
+// Bolt app Initialization
+app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+
+// Load workspace users
+const loadUsers = async () => {
+  users = await app.client.users.list();
+  messages.initSlack(app, users);
+};
+
+loadUsers();  
+
+(async () => {
+  // Start your app
+  await app.start(3000);
+
+  console.log("⚡ Bolt app is running on port 3000");
+})();
