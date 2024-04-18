@@ -19,6 +19,7 @@ const isDebug = process.env.KATSU_DEBUG == "true";
 // Timer
 setInterval(backProcessTick, 5000);
 
+// Handler function
 const backProcessHandler = async () => {
 
   // Check reminders
@@ -28,7 +29,7 @@ const backProcessHandler = async () => {
   await clean.cleanReports();
 }
 
-// Handler function
+// Timer ick function
 function backProcessTick() { 
   backProcessHandler()
   .then(() => {
