@@ -26,7 +26,10 @@ const checkReminders = async (users, app) => {
             // Update reminder
             sql = getSQLUpdateReminder(id);
             await db.execute(sql);
-
+            
+            // Delete reminder with no repeat
+            sql = getSQLDeleteDueRemindersId(id);
+            await db.execute(sql);
           }
         }
       }
@@ -55,6 +58,12 @@ const getSQLCurReminders = () => {
 const getSQLDeleteDueReminders = () => {
   let sql = "";
   sql = `delete from schedule where lower(repeat) = 'none' and starts_at < now()`;
+  return sql;
+}
+
+const getSQLDeleteDueRemindersId = (id) => {
+  let sql = "";
+  sql = `delete from schedule where lower(repeat) = 'none' and id = ${id}`;
   return sql;
 }
 
