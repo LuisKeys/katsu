@@ -33,7 +33,7 @@ const backProcessHandler = async (users) => {
 function backProcessTick() { 
   backProcessHandler(users)
   .then(() => {
-      console.log("Async function called from timer handler");
+      
   })
   .catch((error) => {
       console.error("Error occurred:", error);
