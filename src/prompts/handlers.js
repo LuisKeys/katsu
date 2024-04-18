@@ -145,7 +145,23 @@ const filesHandler = async (prompt, result) => {
 } 
 
 const remindersHandler = async (prompt, memberId) => {
-  const result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
+  const action = await reminders.getReminderAction(openai, openAIAPI, prompt);
+  console.log(action);
+  let result = null;
+  switch(action) {
+    case 'create':
+      result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
+      break;
+    case 'delete':
+      result = await reminders.deleteReminder(openai, openAIAPI, prompt, memberId);
+      break;
+    case 'list':
+      result = await reminders.listReminders(openai, openAIAPI, prompt, memberId);
+      break;
+    default:
+      break;
+  }
+  
   return result;
 }
 

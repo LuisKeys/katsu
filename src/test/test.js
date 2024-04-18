@@ -16,8 +16,8 @@ const promptHandler = require("../prompts/prompt_handler");
       let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
       // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
       // prompts = ["help hr"];
-      // prompts = ["create a reminder with text 'send email to luis' to happen in one hour and repeat weekly"];
-      prompts = ["list all the recent records of prompt history"];
+      prompts = ["delete the  reminder to 'send email to luis'"];
+      // prompts = ["list all the recent records of prompt history"];
       
 
       for (let i = 0; i < prompts.length; i++) {
