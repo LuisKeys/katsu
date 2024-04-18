@@ -66,11 +66,13 @@ const getMessageObject = (output, promptType) => {
     ],
   };
 
-  msgObject = [sectionOutput, sectionDivider];
+  msgObject = [sectionOutput];
 
   if (promptType === constants.QUESTION) {
     msgObject.push(sectionExportToExcel);
   }
+
+  msgObject.push(sectionDivider);
 
   return msgObject;
 };
