@@ -4,7 +4,7 @@ const db = require("../db/db_commands");
  * Checks for reminders based on the current time.
  * @returns {Promise<void>} A promise that resolves once the reminders have been checked.
  */
-const checkReminders = async () => {
+const checkReminders = async (users) => {
   let sql = "";
   await db.connect();
   // Get reminders for the current time
@@ -17,6 +17,7 @@ const checkReminders = async () => {
   sql += " AND EXTRACT(MINUTE FROM NOW()) + 10; ";
 
   const reminders = await db.execute(sql);
+  console.log(users);
 
   for (const reminder of reminders.rows) {
     title = reminder.title;

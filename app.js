@@ -20,10 +20,10 @@ const isDebug = process.env.KATSU_DEBUG == "true";
 setInterval(backProcessTick, 5000);
 
 // Handler function
-const backProcessHandler = async () => {
+const backProcessHandler = async (users) => {
 
   // Check reminders
-  await remindersChecker.checkReminders();
+  await remindersChecker.checkReminders(users);
 
   // clean reports
   await clean.cleanReports();
@@ -31,7 +31,7 @@ const backProcessHandler = async () => {
 
 // Timer ick function
 function backProcessTick() { 
-  backProcessHandler()
+  backProcessHandler(users)
   .then(() => {
       console.log("Async function called from timer handler");
   })
