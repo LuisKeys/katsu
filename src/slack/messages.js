@@ -1,9 +1,6 @@
 let app;
 let users;
 
-const answerPhrase = require("../prompts/answer_phrases");
-const resultObject = require("../prompts/result_object");
-const promptHandler = require("../prompts/prompt_handler");
 const messagesUtils = require("./messages_utils");
 
 const initSlack = (appObj, usersList) => {

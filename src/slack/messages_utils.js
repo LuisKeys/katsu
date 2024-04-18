@@ -1,4 +1,7 @@
+const answerPhrase = require("../prompts/answer_phrases");
 const getMember = require("../members/get_member");
+const promptHandler = require("../prompts/prompt_handler");
+const resultObject = require("../prompts/result_object");
 
 /**
    * Retrieves the answer based on the given prompt and user profile.
