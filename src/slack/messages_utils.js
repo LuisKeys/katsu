@@ -28,8 +28,8 @@ const getAnswer = async (prompt, profile) => {
   hey += prompt + "\n";
   let output = resultObject.render(response);
   output = hey + "```" + output + "```";
-  answerPhrase = { output: output, response: response };
-  return answerPhrase;
+  const answer = { output: output, response: response };
+  return answer;
 };
 
 /**
