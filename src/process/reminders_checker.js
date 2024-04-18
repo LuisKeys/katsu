@@ -21,7 +21,7 @@ const checkReminders = async (users, app) => {
           if(user.profile.email.toLowerCase() === email.toLowerCase()) {
             app.client.chat.postMessage({
               channel: user.id,
-              text: `Reminder: ${title}`
+              text: `------ :alarm_clock: Reminder: ${title} ------`
             });
             // Update reminder
             sql = getSQLUpdateReminder(id);
