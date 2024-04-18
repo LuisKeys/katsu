@@ -1,6 +1,7 @@
-const db = require("../db/db_commands");
-const createRmndr = require("./reminder_create");
-const deleteRmndr = require("./reminder_delete");
+const remindersCreate = require("./reminder_create");
+const remindersDelete = require("./reminder_delete");
+const remindersUtils = require("./reminders_utils");
+const remindersList = require("./reminders_list");
 
 /**
  * Retrieves the action of a reminder statement.
@@ -35,16 +36,16 @@ const getReminderAction = async (openai, openAIAPI, prompt) => {
  */
 const createReminder = async (openai, openAIAPI, prompt, memberId) => {
   // Get the reminder full prompt
-  let fullPrompt = createRmndr.getCreateReminderPrompt(prompt, memberId);
+  let fullPrompt = remindersCreate.getCreateReminderPrompt(prompt, memberId);
 
   // Execute the SQL statement
-  await execSQL(openai, openAIAPI, fullPrompt);
+  await remindersUtils.execSQL(openai, openAIAPI, fullPrompt);
 
   // Get reminder text
-  let text = await getReminderText(openai, openAIAPI, prompt);
+  let text = await remindersUtils.getReminderText(openai, openAIAPI, prompt);
 
   // Get reminder result
-  let result = await getReminderResult(text, "created");
+  let result = await remindersUtils.getReminderResult(text, "created");
 
   return result;
 };
@@ -60,17 +61,17 @@ const createReminder = async (openai, openAIAPI, prompt, memberId) => {
  */
 const deleteReminder = async (openai, openAIAPI, prompt, memberId) => {
   // Get reminder text
-  let text = await getReminderText(openai, openAIAPI, prompt);
+  let text = await remindersUtils.getReminderText(openai, openAIAPI, prompt);
 
   // Get the reminder full prompt
-  let fullPrompt = deleteRmndr.getDeleteReminderPrompt(text, memberId);
+  let fullPrompt = remindersDelete.getDeleteReminderPrompt(text, memberId);
 
   // Execute the SQL statement
-  await execSQL(openai, openAIAPI, fullPrompt);
+  await remindersUtils.execSQL(openai, openAIAPI, fullPrompt);
 
   
   // Get reminder result
-  let result = await getReminderResult(text, "removed");
+  let result = await remindersUtils.getReminderResult(text, "removed");
 
   return result;
 };
@@ -84,39 +85,13 @@ const deleteReminder = async (openai, openAIAPI, prompt, memberId) => {
  * @param {string} memberId - The ID of the member.
  * @returns {Promise<void>} - A promise that resolves when the reminders are listed.
  */
-const listReminders = async (openai, openAIAPI, prompt, memberId) => {};
-
-const getReminderText = async (openai, openAIAPI, prompt) => {
-  fullPrompt =
-    "which is the text or subject of the following reminder statement:\n";
-  fullPrompt += `${prompt}\n`;
-  fullPrompt +=
-    "Only answer with the text without any additional description or explanation";
-
-  const text = await openAIAPI.ask(openai, fullPrompt);
-
-  return text;
-};
-
-const execSQL = async (openai, openAIAPI, fullPrompt) => {
-  const sql = await openAIAPI.ask(openai, fullPrompt);  
-
-  await db.connect();
-  await db.execute(sql);
-  await db.close();
-};
-
-const getReminderResult = async (text, action) => {
-  // Create response
-  const headerTitle = "Reminder";
-  result = { rows: [], fields: [] };
-  field = { name: headerTitle };
-  result.fields.push(field);
-
-  let record = {};
-  record[headerTitle] = `Your reminder '${text}' has been ${action} successfully`;
-  result.rows.push(record);
-
+const listReminders = async (openai, openAIAPI, prompt, memberId) => {
+  // Get the list reminders full prompt
+  let fullPrompt = remindersList.getListRemindersPrompt(memberId);
+  
+  // Execute the SQL statement
+  const result = await remindersUtils.execSQL(openai, openAIAPI, fullPrompt);
+  console.log(result);
   return result;
 };
 

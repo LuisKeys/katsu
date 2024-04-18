@@ -7,12 +7,11 @@ const getDeleteReminderPrompt = (text, memberId) => {
   fullPrompt += ' repeat VARCHAR(20)\n';
   fullPrompt += ' member_id int\n';
   fullPrompt += ' )\n';
+  fullPrompt += ' The  possible values for the field \'repeat\' are:\n';
   fullPrompt += ' - None\n';
   fullPrompt += ' - Daily\n';
-  fullPrompt += ' The  possible values for the field \'repeat\' are:\n';
   fullPrompt += ' - Weekly\n';
   fullPrompt += ' - Monthly\n';
-  fullPrompt += ' based on this prompt\n';
   fullPrompt += `For the where statement use:\n`;
   fullPrompt += `the title=${text}\n`;
   fullPrompt += `and the member_id=${memberId}\n`;  
