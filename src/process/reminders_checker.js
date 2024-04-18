@@ -45,16 +45,16 @@ const getSQLCurReminders = () => {
   sql = "SELECT s.id, s.title, m.email ";
   sql += "FROM schedule s, members m ";
   sql += "WHERE m.id = s.member_id ";
-  sql += " AND EXTRACT(DAY FROM s.starts_at AT TIME ZONE 'UTC+3') = EXTRACT(DAY FROM NOW()) ";
-  sql += " AND EXTRACT(HOUR FROM s.starts_at AT TIME ZONE 'UTC+3') = EXTRACT(HOUR FROM NOW()) ";
-  sql += " AND EXTRACT(MINUTE FROM s.starts_at AT TIME ZONE 'UTC+3') BETWEEN EXTRACT(MINUTE FROM NOW()) ";
+  sql += " AND EXTRACT(DAY FROM s.starts_at) = EXTRACT(DAY FROM NOW()) ";
+  sql += " AND EXTRACT(HOUR FROM s.starts_at) = EXTRACT(HOUR FROM NOW()) ";
+  sql += " AND EXTRACT(MINUTE FROM s.starts_at) BETWEEN EXTRACT(MINUTE FROM NOW()) ";
   sql += " AND EXTRACT(MINUTE FROM NOW()) + 10; ";
   return sql;
 }
 
 const getSQLDeleteDueReminders = () => {
   let sql = "";
-  sql = `delete from schedule where lower(repeat) = 'none' and starts_at AT TIME ZONE 'UTC+3' < now()`;
+  sql = `delete from schedule where lower(repeat) = 'none' and starts_at < now()`;
   return sql;
 }
 
