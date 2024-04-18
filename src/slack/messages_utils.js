@@ -68,7 +68,7 @@ const getMessageObject = (output, promptType) => {
 
   msgObject = [sectionOutput];
 
-  if (promptType === constants.QUESTION) {
+  if (promptType === constants.QUESTION || promptType === constants.SORT) {
     msgObject.push(sectionExportToExcel);
   }
 

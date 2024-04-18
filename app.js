@@ -8,11 +8,37 @@
 const { App } = require("@slack/bolt");
 const messages = require("./src/slack/messages");
 const testFunctions = require("./src/test/test");
+const clean = require("./src/files/clean");
+const remindersChecker = require("./src/process/reminders_checker");
+
 require("dotenv").config();
 
 let users;
-
 const isDebug = process.env.KATSU_DEBUG == "true";
+
+// Timer
+setInterval(backProcessTick, 5000);
+
+const backProcessHandler = async () => {
+
+  // Check reminders
+  await remindersChecker.checkReminders();
+
+  // clean reports
+  await clean.cleanReports();
+}
+
+// Handler function
+function backProcessTick() { 
+  backProcessHandler()
+  .then(() => {
+      console.log("Async function called from timer handler");
+  })
+  .catch((error) => {
+      console.error("Error occurred:", error);
+  });
+
+}
 
 const test = async() => {
   await testFunctions.test()
