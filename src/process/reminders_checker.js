@@ -63,6 +63,7 @@ const getSQLUpdateReminder = (id) => {
   sql = " UPDATE schedule ";
   sql += "SET starts_at  = DATE_TRUNC('day', now()) + INTERVAL '1 day' + (starts_at  - DATE_TRUNC('day', starts_at )) ";
   sql += `where id = ${id} `;
+  sql += `and lower(repeat) <> 'none';`;
   return sql;
 }
 
