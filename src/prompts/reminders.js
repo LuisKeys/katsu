@@ -90,8 +90,7 @@ const listReminders = async (openai, openAIAPI, prompt, memberId) => {
   let fullPrompt = remindersList.getListRemindersPrompt(memberId);
   
   // Execute the SQL statement
-  const result = await remindersUtils.execSQL(openai, openAIAPI, fullPrompt);
-  console.log(result);
+  const result = await remindersUtils.execSQL(openai, openAIAPI, fullPrompt);  
   return result;
 };
 

@@ -6,6 +6,9 @@ const getListRemindersPrompt = (memberId) => {
   fullPrompt += ' repeat VARCHAR(20)\n';
   fullPrompt += ' member_id int\n';
   fullPrompt += ' )\n';
+  fullPrompt += `For the select  statement use fields:\n`;
+  fullPrompt += ' title\n';
+  fullPrompt += ' repeat\n';
   fullPrompt += `For the where statement use:\n`;
   fullPrompt += `the member_id=${memberId}\n`;  
   fullPrompt += ' Only display the sql statement without any additional explanation or description';
