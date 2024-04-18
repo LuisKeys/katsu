@@ -18,9 +18,11 @@ const initSlack = (appObj, usersList) => {
         const profile = users.members.filter(
           (member) => member.id === payload.user_id
         )[0].profile;
-        const output = await messagesUtils.getAnswer(prompt, profile);
+        const answer = await messagesUtils.getAnswer(prompt, profile);
+        const output = answer.output;
         const token = process.env.SLACK_BOT_TOKEN;
-        await sendMessage(token, payload.channel_id, output);
+        const promptType = answer.result.promptType;
+        await sendMessage(token, payload.channel_id, output, promptType);
       } catch (error) {
         console.error(error);
       }
@@ -37,11 +39,13 @@ const initSlack = (appObj, usersList) => {
       )[0].profile;
 
       const prompt = "export to excel";
-      const output = await messagesUtils.getAnswer(prompt, profile);
+      const answer = await messagesUtils.getAnswer(prompt, profile);
+      const output = answer.output;
       const token = process.env.SLACK_BOT_TOKEN;
       const channelId = body.container.channel_id;
+      const promptType = answer.result.promptType;
 
-      await sendMessage(token, channelId, output);
+      await sendMessage(token, channelId, promptType);
     }
   );
 
@@ -54,7 +58,8 @@ const initSlack = (appObj, usersList) => {
           (member) => member.id === message.user
         )[0].profile;
   
-        const output = await messagesUtils.getAnswer(prompt, profile);
+        const answer = await messagesUtils.getAnswer(prompt, profile);
+        const output = answer.output;
         await say(output);
       } catch (error) {
         console.error(error);
@@ -71,8 +76,8 @@ const initSlack = (appObj, usersList) => {
    * @param {string} output - The message content to send.
    * @returns {Promise<void>} - A promise that resolves when the message is sent successfully.
    */
-  const sendMessage = async (token, channelId, output) => {
-    const msgObject = messagesUtils.getMessageObject(output)
+  const sendMessage = async (token, channelId, output, promptType) => {
+    const msgObject = messagesUtils.getMessageObject(output, promptType)
     await app.client.chat.postMessage({
       token: token,
       channel: channelId,

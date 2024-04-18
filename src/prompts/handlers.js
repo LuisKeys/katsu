@@ -146,7 +146,6 @@ const filesHandler = async (prompt, result) => {
 
 const remindersHandler = async (prompt, memberId) => {
   const action = await reminders.getReminderAction(openai, openAIAPI, prompt);
-  console.log(action);
   let result = null;
   switch(action) {
     case 'create':
