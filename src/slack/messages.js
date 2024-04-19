@@ -45,7 +45,7 @@ const initSlack = (appObj, usersList) => {
       const channelId = body.container.channel_id;
       const promptType = answer.result.promptType;
 
-      await sendMessage(token, channelId, promptType);
+      await sendMessage(token, channelId, output, promptType);
     }
   );
 
