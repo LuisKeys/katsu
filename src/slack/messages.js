@@ -43,7 +43,7 @@ const initSlack = (appObj, usersList) => {
       const output = answer.output;
       const token = process.env.SLACK_BOT_TOKEN;
       const channelId = body.container.channel_id;
-      const promptType = answer.result.promptType;
+      const promptType = answer.response.promptType;
 
       await sendMessage(token, channelId, output, promptType);
     }
