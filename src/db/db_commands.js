@@ -49,6 +49,7 @@ const execute = async function (sql) {
     const rows = await client.query(sql);
     return rows;
   } catch (error) {
+    console.error("Error with sql", sql);
     console.error("Error with database operation", error);        
     gerror = error.message;
     return null;

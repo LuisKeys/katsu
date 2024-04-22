@@ -18,7 +18,7 @@ let app
 const isDebug = process.env.KATSU_DEBUG == "true";
 
 // Timer
-setInterval(backProcessTick, 5000);
+setInterval(backProcessTick, 50000);
 
 // Handler function
 const backProcessHandler = async (users, app) => {
