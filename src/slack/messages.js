@@ -1,6 +1,7 @@
 let app;
 let users;
 
+const constants = require("../prompts/constants");
 const messagesUtils = require("./messages_utils");
 
 const initSlack = (appObj, usersList) => {
