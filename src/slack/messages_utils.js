@@ -16,7 +16,7 @@ const getAnswer = async (prompt, profile) => {
   let output;
   if (!isValid) {
     output = "You are not a registered user. Please contact the administrator to register.";
-    const answer = { output: output, response: response };
+    const answer = { output: output, response: null };
     return answer;    
   }
 
