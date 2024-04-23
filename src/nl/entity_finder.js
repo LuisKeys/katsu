@@ -39,7 +39,7 @@ const getEntity = function (prompt) {
 const loadEntities  = () => {
   const account = {
     name: "account",
-    alias: ["accounts"],
+    alias: ["accounts", "account"],
     view : "v_account",
     source: "salesforce",
     dispFields: []
@@ -47,7 +47,7 @@ const loadEntities  = () => {
 
   const contact = {
     name: "contact",
-    alias: ["contacts"],
+    alias: ["contacts", "contact"],
     view : "v_contact",
     source: "salesforce",
     dispFields: ["lastname", "firstname", "phone", "email"]
@@ -55,7 +55,7 @@ const loadEntities  = () => {
 
   const lead = { 
     name: "lead",
-    alias: ["leads"],
+    alias: ["leads", "lead"],
     view : "v_lead",
     source: "salesforce",
     dispFields: ["lastname", "firstname", "company", "leadsource"]
@@ -63,7 +63,7 @@ const loadEntities  = () => {
 
   const opportunity = {
     name: "opportunity",
-    alias: ["opportunities"],
+    alias: ["opportunities", "opportunitys"],
     view : "v_opportunity",
     source: "salesforce",
     dispFields: ["name", "stagename", "amount", "probability"]

@@ -15,7 +15,9 @@ const getAnswer = async (prompt, profile) => {
   const isValid = memberId != -1;
 
   if (!isValid) {
-    return "You are not a registered user. Please contact the administrator to register.";
+    output = "You are not a registered user. Please contact the administrator to register.";
+    const answer = { output: output, response: response };
+    return answer;    
   }
 
   const response = await promptHandler.promptHandler(
@@ -24,6 +26,7 @@ const getAnswer = async (prompt, profile) => {
     false,
     profile.first_name
   );
+  
   let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
   hey += prompt + "\n";
   let output = resultObject.render(response);
