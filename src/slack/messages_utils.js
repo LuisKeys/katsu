@@ -13,7 +13,7 @@ const constants = require("../prompts/constants");
 const getAnswer = async (prompt, profile) => {
   const memberId = await getMember.getMemberId(profile.email);
   const isValid = memberId != -1;
-
+  let output;
   if (!isValid) {
     output = "You are not a registered user. Please contact the administrator to register.";
     const answer = { output: output, response: response };
@@ -26,10 +26,10 @@ const getAnswer = async (prompt, profile) => {
     false,
     profile.first_name
   );
-  
+
   let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
   hey += prompt + "\n";
-  let output = resultObject.render(response);
+  output = resultObject.render(response);
   output = hey + "```" + output + "```";
   const answer = { output: output, response: response };
   return answer;
