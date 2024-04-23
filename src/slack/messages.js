@@ -22,7 +22,7 @@ const initSlack = (appObj, usersList) => {
         const answer = await messagesUtils.getAnswer(prompt, profile);
         const output = answer.output;
         const token = process.env.SLACK_BOT_TOKEN;
-        const promptType = constants.HELP;
+        let promptType = constants.HELP;
         if(answer.response) {
           promptType = answer.response.promptType;
         }
