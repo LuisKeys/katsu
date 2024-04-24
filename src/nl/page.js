@@ -2,6 +2,7 @@ const PAGE_NEXT = 'next';
 const PAGE_PREV = 'prev';
 const PAGE_FIRST = 'first';
 const PAGE_LAST = 'last';
+const PAGE_NUMBER = 'number';
 
 /**
  * Retrieves the page command based on the given prompt.
@@ -10,7 +11,12 @@ const PAGE_LAST = 'last';
  * @returns {string} The page command.
  */
 const getPageCommand = (prompt) => {
-  let cmd = prompt.toloLowerCase().replace('page', '').trim();
+  let cmd = prompt.toLowerCase().replace('page', '').trim();  
+  if (/^\d+$/.test(cmd)) {
+    cmd = PAGE_NUMBER;
+    return cmd;
+  }
+
   switch(cmd) {
     case 'last':
       cmd = PAGE_LAST;
@@ -28,10 +34,21 @@ const getPageCommand = (prompt) => {
   return cmd;
 }
 
+const getPageNumber = (prompt) => {
+  let cmd = prompt.toLowerCase().replace('page', '').trim();  
+  if (/^\d+$/.test(cmd)) {
+    return parseInt(cmd);
+  }
+
+  return 1;
+}
+
 module.exports = { 
   PAGE_FIRST,
   PAGE_LAST,
   PAGE_NEXT,
+  PAGE_NUMBER,
   PAGE_PREV,
-  getPageCommand
+  getPageCommand,
+  getPageNumber
 };

@@ -15,6 +15,7 @@ const openAIAPI = require("../openai/openai_api");
 const pageCalc = require("./page_calc");
 const reminders= require("./reminders");
 const sortFieldFinder = require("../nl/sort_field_finder");
+const pageNL = require("../nl/page");
 
 openai = new openAI();
 
@@ -172,25 +173,34 @@ const remindersHandler = async (prompt, memberId) => {
  * @param {Object} result - The result object.
  * @returns {Promise<Object>} The updated result object.
  */
-const pageHandler = async (prompt) => {
+const pageHandler = (prompt, pageNum, result) => {
   // Pages prompt
-  const cmd = page.getPageCommand(prompt);
+  const cmd = pageNL.getPageCommand(prompt);  
   let page = 1;
   switch(cmd) {
-    case page.PAGE_LAST:
+    case pageNL.PAGE_LAST:
       page = pageCalc.getLastPage(result);
       break;
-    case page.PAGE_NEXT:
-      page = pageCalc.getNextPage(result);
+    case pageNL.PAGE_NEXT:
+      page = pageCalc.getNextPage(pageNum, result);
       break;
-    case page.PAGE_PREV:
-      page = pageCalc.getPrevPage(result);
+    case pageNL.PAGE_PREV:
+      page = pageCalc.getPrevPage(pageNum);
       break;
-    default:
-      page = pageCalc.getFirstPage(result);
+      case pageNL.PAGE_NUMBER:
+        page = pageNL.getPageNumber(prompt);
+        if(page < 1) {
+          page = 1;
+        }
+        if(page > pageCalc.getLastPage(result)) {
+          page = pageCalc.getLastPage(result);
+        }
+        break;
+      default:
+      page = 1
       break;
   }
-
+  
   return page;
 }  
 

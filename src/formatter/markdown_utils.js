@@ -5,7 +5,7 @@ const constants = require("../prompts/constants");
  * @param {Object} result - The result object containing fields and rows.
  * @returns {Array} - The table data as a 2D array.
  */
-const getTableData = function (result, dispFields, maxColumns) {
+const getTableData = function (result, dispFields, maxColumns, pageNum) {
   let tableData = [];
 
   // Get the header
@@ -24,11 +24,10 @@ const getTableData = function (result, dispFields, maxColumns) {
   tableData.push(header);
 
   // Get the rows
-  for (
-    let i = 0;
-    i < result.rows.length && i < constants.PAGE_SIZE;
-    i++
-  ) {
+  const startIndex = (pageNum - 1) * constants.PAGE_SIZE;
+  const endIndex = startIndex + constants.PAGE_SIZE;
+
+  for (let i = startIndex; i < result.rows.length && i < endIndex; i++) {
     let row = result.rows[i];
     let values = [];
     for (let j = 0; j < header.length; j++) {

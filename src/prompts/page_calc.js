@@ -1,47 +1,50 @@
+const constants = require("./constants");
+
 /**
- * Calculates the last page number based on the total number of rows and the maximum number of lines per page.
+ * Calculates the last page number based on the total number of rows and the page size.
+ *
  * @param {Object} result - The result object containing the rows.
- * @returns {Object} - The updated result object with the last page number.
+ * @returns {number} The last page number.
  */
 const getLastPage = (result) => {
-  const lastPage = Math.ceil(result.rows.length / constants.PAGE_SIZE);
-  result.page = lastPage;
-  return result;
+  const lastPage = Math.ceil(result.rows.length / constants.PAGE_SIZE);  
+  return lastPage;
 }
 
 /**
- * Increments the page number of the given result object.
+ * Gets the next page number based on the current page number and the result.
  *
- * @param {Object} result - The result object containing the current page number.
- * @returns {Object} - The updated result object with the incremented page number.
+ * @param {number} pageNum - The current page number.
+ * @param {any} result - The result object.
+ * @returns {number} - The next page number.
  */
-const getNextPage = (result) => {
-  result.page++;
-  return result;
+const getNextPage = (pageNum, result) => {
+  page = pageNum;
+  page++;
+  const lastPage = getLastPage(result);
+  if (page > lastPage) {
+    page = lastPage;
+  }
+  return page;
 }
 
 /**
- * Decreases the page number of the given result object by 1.
- * @param {Object} result - The result object containing the page number.
- * @returns {Object} - The updated result object with the decreased page number.
+ * Returns the previous page number based on the given page number.
+ *
+ * @param {number} pageNum - The current page number.
+ * @returns {number} - The previous page number.
  */
-const getPrevPage = (result) => {
-  result.page--;
-  return result;
-}
+const getPrevPage = (pageNum) => {
+  let page = pageNum;
+  page--;
+  if (page < 1) {
+    page = 1;
+  }
 
-/**
- * Sets the page number to 1 for the given result object.
- * @param {Object} result - The result object.
- * @returns {Object} - The updated result object with the page number set to 1.
- */
-const getFirstPage = (result) => {
-  result.page = 1;
-  return result;
+  return page;
 }
 
 module.exports = {
-  getFirstPage,
   getLastPage,
   getNextPage,
   getPrevPage

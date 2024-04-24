@@ -13,10 +13,11 @@ const nlPromptType = require("./prompt_type");
 const resultObj = require("./result_object");
 const cleanPrompt = require("./clean");
 const savePrompt = require("./save_prompt");
+const pageCalc = require("./page_calc");
 
 let result;
 let resultData;
-let page = 1;
+let pageNum = 1;
 resultData = {dispFields:[], result:{rows:[], fields:[]}};
 
 /**
@@ -34,7 +35,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   if (promptType === constants.QUESTION) {    
     // Question prompt
-    page = 1;
+    pageNum = 1;
     resultData = await handlers.questionHandler(promptTr);
     result = resultData.result;
     if(result && result.rows.length > 0) {
@@ -45,45 +46,45 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   if (promptType === constants.EXPORT) {
     // Export prompt
     fileURL = excel.createExcel(result);
-    page = 1;
+    pageNum = 1;
   }
   
   if (promptType === constants.LINK) {
     // Link prompt
     result = await handlers.linkHandler(promptTr);
-    page = 1;
+    pageNum = 1;
   } 
   
   if (promptType === constants.SORT) {    
     // Sort prompt
     result = await handlers.sortHandler(promptTr, result);
-    page = 1;
+    pageNum = 1;
   }
 
   if (promptType === constants.PAGE) {    
     // Page prompt
-    page = handlers.pageHandler(promptTr);
+    pageNum = handlers.pageHandler(promptTr, pageNum, result);
   }
 
   if (promptType === constants.FILE) {    
     // File prompt
     resultData.dispFields = [];
     result = await handlers.filesHandler(promptTr);
-    page = 1;
+    pageNum = 1;
   }
 
   if (promptType === constants.HELP) {    
     // Sort prompt
     resultData.dispFields = [];
     result = await help.getHelp(promptTr);
-    page = 1;
+    pageNum = 1;
   }
 
   if (promptType === constants.REMINDER) {    
     // Reminder prompt
     resultData.dispFields = [];
     result = await handlers.remindersHandler(promptTr, memberId);
-    page = 1;
+    pageNum = 1;
   }
 
   // Format the result
@@ -92,7 +93,8 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   if (result && result.rows.length > 0) {        
     // Data found
     if(result.rows.length > constants.PAGE_SIZE) {
-      messages.push('Only ' + constants.PAGE_SIZE + ' records are displayed. To see the complete list, use the Export to Excel prompt.');        
+      const lastPage = pageCalc.getLastPage(result);
+      messages.push('Page ' + pageNum + ' of ' + lastPage);                    
     }
 
     if(promptType === constants.EXPORT) {
@@ -102,7 +104,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       messages.push(fileURL);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, page, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, pageNum, isDebug);
 
   } else {
     // No data found
@@ -116,7 +118,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       header.push(result.fields[i].name);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, header, page, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, header, pageNum, isDebug);
   }
   
   return resultObject;

@@ -19,7 +19,7 @@ const formatTable = require("../formatter/format_result");
  * @param {boolean} isDebug - Indicates if debug mode is enabled.
  * @returns {Object} - The result object containing the result and messages.
  */
-const getResultObject = function (result, messages, promptType, dispFields, page, isDebug) {
+const getResultObject = function (result, messages, promptType, dispFields, pageNum, isDebug) {
   const resultObject = {
     rows:result.rows,
     fields:result.fields,
@@ -27,7 +27,7 @@ const getResultObject = function (result, messages, promptType, dispFields, page
     promptType:promptType,
     table:"",
     dispFields:dispFields,
-    page:page
+    pageNum:pageNum
   };
 
   if (isDebug) {
@@ -40,7 +40,7 @@ const getResultObject = function (result, messages, promptType, dispFields, page
 
   const truncate = promptType == constants.FILE ? false : true;
   
-  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug, truncate);
+  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug, truncate, pageNum);
 
   return resultObject;
 }

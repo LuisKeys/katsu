@@ -52,24 +52,27 @@ if (isDebug) {
   test();
 
 }
+else {
+  console.log("Debug mode is off.");
 
-// Bolt app Initialization
-app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
+  // Bolt app Initialization
+  app = new App({
+    token: process.env.SLACK_BOT_TOKEN,
+    signingSecret: process.env.SLACK_SIGNING_SECRET,
+  });
 
-// Load workspace users
-const loadUsers = async () => {
-  users = await app.client.users.list();
-  messages.initSlack(app, users);
-};
+  // Load workspace users
+  const loadUsers = async () => {
+    users = await app.client.users.list();
+    messages.initSlack(app, users);
+  };
 
-loadUsers();  
+  loadUsers();
 
-(async () => {
-  // Start your app
-  await app.start(3000);
+  (async () => {
+    // Start your app
+    await app.start(3000);
 
-  console.log("⚡ Bolt app is running on port 3000");
-})();
+    console.log("⚡ Bolt app is running on port 3000");
+  })();
+}
