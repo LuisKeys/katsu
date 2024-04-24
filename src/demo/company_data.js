@@ -21,7 +21,18 @@ function getEmail(firstName, lastName, companyName) {
   return email;
 }
 
+/**
+ * Retrieves a random amount between 50000 and 400000.
+ * @returns {number} A random amount.
+ */
+function getAmount() {
+  const min = 50000;
+  const max = 400000;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
   module.exports = { 
-    getEmail,
-    getCompanyName
+    getAmount,
+    getCompanyName,
+    getEmail
   };

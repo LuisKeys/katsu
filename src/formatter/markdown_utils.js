@@ -239,6 +239,8 @@ const formatNumber = function(number) {
   if (isNaN(parsedNumber)) {
     return "";
   }
+
+  return parsedNumber.toLocaleString();
 }
 
 module.exports = {
