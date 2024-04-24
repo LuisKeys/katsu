@@ -1,4 +1,5 @@
 const constants = require("../prompts/constants");
+const phoneFormatter = require("./phone_formatter");
 
 /**
  * Retrieves table data from the given result object.
@@ -128,18 +129,79 @@ const getMarkdownTableSeparator = function (columnWidths) {
   return separator;
 };
 
+/**
+ * Formats the table data by applying formatting rules to numeric columns.
+ *
+ * @param {Array<Array<any>>} tableData - The table data to be formatted.
+ * @returns {Object} - An object containing the formatted table data and the number of numeric columns.
+ */
 const formatTableData = function (tableData) {
   if(tableData.length === 0) {
     return tableData;
   }
 
-  const numColumns = getNumericColumns(tableData);
-  const formattedTableData = formatNumericColumns(tableData, numColumns);
+  const phoneColumns = getPhoneColumns(tableData);
+  let formattedTableData = phoneFormatter.formatPhoneNumber(tableData, phoneColumns);
+
+  const numColumns = getNumericColumns(formattedTableData);
+  formattedTableData = formatNumericColumns(formattedTableData, numColumns);
 
   result = {tableData: formattedTableData, numColumns: numColumns};
   
   return result;
 };
+
+
+/**
+ * Retrieves the indices of phone number columns in a table.
+ *
+ * @param {Array<Array<any>>} tableData - The table data.
+ * @returns {Array<number>} - The indices of phone number columns.
+ */
+const getPhoneColumns = function(tableData) {
+  let phoneColumns = [];
+  
+  const header = tableData[0];
+  
+  for(let i = 0; i < header.length; i++) {
+    const fieldName = header[i].toLowerCase().trim();
+    
+    if(fieldName.includes('phone')) {
+      phoneColumns.push(i);
+    }
+  }
+  
+  return phoneColumns;
+}
+
+/**
+ * Retrieves the indices of numeric columns in a table.
+ *
+ * @param {Array<Array<any>>} tableData - The table data.
+ * @returns {Array<number>} - The indices of numeric columns.
+ */
+const getNumericColumns = function(tableData) {
+  let numericColumns = [];
+
+  const header = tableData[0];
+  
+  for(let i = 0; i < header.length; i++) {
+    let isNumeric = true;
+    
+    for(let j = 1; j < tableData.length; j++) {
+      if(isNaN(tableData[j][i])) {
+        isNumeric = false;
+        break;
+      }
+    }
+    
+    if(isNumeric) {
+      numericColumns.push(i);
+    }
+  }
+  
+  return numericColumns;
+}
 
 /**
  * Formats the numeric columns of a table data array.
@@ -171,40 +233,6 @@ const formatNumber = function(number) {
   if (isNaN(parsedNumber)) {
     return "";
   }
-
-  // Format the number with separators
-  const formattedNumber = parsedNumber.toLocaleString();
-
-  return formattedNumber;
-};
-
-/**
- * Retrieves the indices of numeric columns in a table.
- *
- * @param {Array<Array<any>>} tableData - The table data.
- * @returns {Array<number>} - The indices of numeric columns.
- */
-const getNumericColumns = function(tableData) {
-  let numericColumns = [];
-
-  const header = tableData[0];
-  
-  for(let i = 0; i < header.length; i++) {
-    let isNumeric = true;
-    
-    for(let j = 1; j < tableData.length; j++) {
-      if(isNaN(tableData[j][i])) {
-        isNumeric = false;
-        break;
-      }
-    }
-    
-    if(isNumeric) {
-      numericColumns.push(i);
-    }
-  }
-  
-  return numericColumns;
 }
 
 module.exports = {
