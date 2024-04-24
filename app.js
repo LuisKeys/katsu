@@ -15,7 +15,12 @@ require("dotenv").config();
 
 let users;
 let app
-const isDebug = process.env.KATSU_DEBUG == "true";
+const isDebugMode = process.env.KATSU_DEBUG == "true";
+const isDemoMode = process.env.DEMO_MODE == "true";
+
+
+console.log("Debug mode:", isDebugMode);
+console.log("Demo mode: ", isDemoMode);
 
 // Timer
 setInterval(backProcessTick, 50000);
@@ -46,11 +51,8 @@ const test = async() => {
   await testFunctions.test()
 }
 
-if (isDebug) {
-  console.log("Debug mode is on.");
-
+if (isDebugMode) {
   test();
-
 }
 else {
   console.log("Debug mode is off.");

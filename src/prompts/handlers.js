@@ -45,14 +45,14 @@ const getSQL = async (prompt, reflection, error) => {
   sql = resultSQL.sql;  
   console.log(sql);
 
-  let resultData = {result:null, dispFields:[], sql:""};
+  let resultData = {result:null, dispFields:[], sql:"", entity:""};
   if(sql === '') {
     return resultData;
   }
   await db.connect();
   const result = await db.execute(sql);
   await db.close();
-  resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql};
+  resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql, entity:resultSQL.entity};
   return resultData;
 }
 

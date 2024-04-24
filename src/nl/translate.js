@@ -65,8 +65,7 @@ const generateSQL = async function (openai, openaiapi, userPrompt, reflection, e
   sql = sanitizeSQL(sql);
   sql = replaceEqualityWithLike(sql);
 
-  result = {sql:sql, dispFields:entity.dispFields};
-
+  result = {sql:sql, dispFields:entity.dispFields, entity:entity}  
   return result;
 }
 

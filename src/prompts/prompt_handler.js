@@ -5,15 +5,16 @@
 
 // Required External Modules
 require("dotenv").config();
+const cleanPrompt = require("./clean");
 const constants = require("./constants");
+const demoData = require("../demo/demo_data");
 const excel = require("../excel/create_excel");
 const handlers = require("./handlers");
 const help = require("../nl/help");
 const nlPromptType = require("./prompt_type");
-const resultObj = require("./result_object");
-const cleanPrompt = require("./clean");
-const savePrompt = require("./save_prompt");
 const pageCalc = require("./page_calc");
+const resultObj = require("./result_object");
+const savePrompt = require("./save_prompt");
 
 let result;
 let resultData;
@@ -38,6 +39,11 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     pageNum = 1;
     resultData = await handlers.questionHandler(promptTr);
     result = resultData.result;
+    
+  if(process.env.DEMO_MODE == "true") {
+    result = demoData.replaceDemoValues(result, resultData.entity.name);    
+  }
+
     if(result && result.rows.length > 0) {
       await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length, memberName);
     }
