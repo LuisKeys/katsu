@@ -56,6 +56,10 @@ const getColumnWidths = function (tableData) {
         row[i] = "";
       }
 
+      if (typeof row[i] == 'undefined') {     
+        row[i] = '';
+      }
+      
       if (columnWidths[i] === undefined || row[i].length > columnWidths[i]) {
         columnWidths[i] = row[i].length;
         if (columnWidths[i] < 3) {
@@ -65,6 +69,8 @@ const getColumnWidths = function (tableData) {
           columnWidths[i] = maxColumnWidth;
         }
       }
+
+
     }
   }
 
