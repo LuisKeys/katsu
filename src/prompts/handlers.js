@@ -67,12 +67,12 @@ const linkHandler = async (prompt) => {
   let result;
   await db.connect();
   if(prompt.includes(constants.ALL)) {
-    page = await db.execute('SELECT name, URL FROM links order by name');
+    result = await db.execute('SELECT name, URL FROM links order by name');
   }
   else{    
-    page = await db.execute('SELECT words FROM links');
+    result = await db.execute('SELECT words FROM links');
     sql = await nl2sql.getLinkSQL(prompt, result.rows);
-    page = await db.execute(sql);    
+    result = await db.execute(sql);    
   }
   await db.close();
 
@@ -124,7 +124,7 @@ const filesHandler = async (prompt, result) => {
   files = filesIndex.copyFilesToReports(files)
 
   const headerTitle = "Found_Files"
-  page = {rows:[], fields:[]};
+  result = {rows:[], fields:[]};
   field = {name:headerTitle};
   result.fields.push(field);
 
@@ -148,16 +148,16 @@ const filesHandler = async (prompt, result) => {
 
 const remindersHandler = async (prompt, memberId) => {
   const action = await reminders.getReminderAction(openai, openAIAPI, prompt);
-  let page = null;
+  let result = null;
   switch(action) {
     case 'create':
-      page = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
+      result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
       break;
     case 'delete':
-      page = await reminders.deleteReminder(openai, openAIAPI, prompt, memberId);
+      result = await reminders.deleteReminder(openai, openAIAPI, prompt, memberId);
       break;
     case 'list':
-      page = await reminders.listReminders(openai, openAIAPI, prompt, memberId);
+      result = await reminders.listReminders(openai, openAIAPI, prompt, memberId);
       break;
     default:
       break;
