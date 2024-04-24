@@ -55,9 +55,13 @@ const initSlack = (appObj, usersList) => {
   );
 
     // Listening for a message event
-    app.message("katsu", async ({ message, say }) => {
+    app.message("ka", async ({ message, say }) => {
       try {
-        let prompt = message.text.replace("katsu", "");
+        let prompt = message.text;
+        
+        if (prompt.toLowerCase().startsWith("ka ")) {
+          prompt = prompt.slice(3).trim();
+        }        
   
         const profile = users.members.filter(
           (member) => member.id === message.user
