@@ -16,6 +16,7 @@ const savePrompt = require("./save_prompt");
 
 let result;
 let resultData;
+let page = 1;
 resultData = {dispFields:[], result:{rows:[], fields:[]}};
 
 /**
@@ -33,6 +34,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   if (promptType === constants.QUESTION) {    
     // Question prompt
+    page = 1;
     resultData = await handlers.questionHandler(promptTr);
     result = resultData.result;
     if(result && result.rows.length > 0) {
@@ -43,34 +45,45 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   if (promptType === constants.EXPORT) {
     // Export prompt
     fileURL = excel.createExcel(result);
+    page = 1;
   }
   
   if (promptType === constants.LINK) {
     // Link prompt
     result = await handlers.linkHandler(promptTr);
+    page = 1;
   } 
   
   if (promptType === constants.SORT) {    
     // Sort prompt
     result = await handlers.sortHandler(promptTr, result);
+    page = 1;
+  }
+
+  if (promptType === constants.PAGE) {    
+    // Page prompt
+    page = handlers.pageHandler(promptTr);
   }
 
   if (promptType === constants.FILE) {    
     // File prompt
     resultData.dispFields = [];
     result = await handlers.filesHandler(promptTr);
+    page = 1;
   }
 
   if (promptType === constants.HELP) {    
     // Sort prompt
     resultData.dispFields = [];
     result = await help.getHelp(promptTr);
+    page = 1;
   }
 
   if (promptType === constants.REMINDER) {    
     // Reminder prompt
     resultData.dispFields = [];
     result = await handlers.remindersHandler(promptTr, memberId);
+    page = 1;
   }
 
   // Format the result
@@ -78,8 +91,8 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   let messages = [];
   if (result && result.rows.length > 0) {        
     // Data found
-    if(result.rows.length > constants.MAX_LINES_SLACK) {
-      messages.push('Only ' + constants.MAX_LINES_SLACK + ' records are displayed. To see the complete list, use the Export to Excel prompt.');        
+    if(result.rows.length > constants.PAGE_SIZE) {
+      messages.push('Only ' + constants.PAGE_SIZE + ' records are displayed. To see the complete list, use the Export to Excel prompt.');        
     }
 
     if(promptType === constants.EXPORT) {
@@ -89,7 +102,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       messages.push(fileURL);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, page, isDebug);
 
   } else {
     // No data found
@@ -103,7 +116,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       header.push(result.fields[i].name);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, header, isDebug);
+    resultObject = resultObj.getResultObject(result, messages, promptType, header, page, isDebug);
   }
   
   return resultObject;

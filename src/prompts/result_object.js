@@ -19,14 +19,15 @@ const formatTable = require("../formatter/format_result");
  * @param {boolean} isDebug - Indicates if debug mode is enabled.
  * @returns {Object} - The result object containing the result and messages.
  */
-const getResultObject = function (result, messages, promptType, dispFields, isDebug) {
+const getResultObject = function (result, messages, promptType, dispFields, page, isDebug) {
   const resultObject = {
     rows:result.rows,
     fields:result.fields,
     messages:messages,
     promptType:promptType,
     table:"",
-    dispFields:dispFields
+    dispFields:dispFields,
+    page:page
   };
 
   if (isDebug) {

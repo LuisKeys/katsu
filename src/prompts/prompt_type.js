@@ -46,6 +46,11 @@ const getPromptType = (prompt) => {
     return constants.REMINDER;
   }
 
+  // Reminder prompt
+  if (lcPrompt.includes("page")) {
+    return constants.PAGE;
+  }
+
   // Check if the prompt is a statement
   return constants.QUESTION;
 }

@@ -12,8 +12,9 @@ const filesIndex = require("../files/files_index");
 const nl2sql = require("../nl/translate");
 const openAI = require("openai");
 const openAIAPI = require("../openai/openai_api");
-const sortFieldFinder = require("../nl/sort_field_finder");
+const pageCalc = require("./page_calc");
 const reminders= require("./reminders");
+const sortFieldFinder = require("../nl/sort_field_finder");
 
 openai = new openAI();
 
@@ -65,12 +66,12 @@ const linkHandler = async (prompt) => {
   let result;
   await db.connect();
   if(prompt.includes(constants.ALL)) {
-    result = await db.execute('SELECT name, URL FROM links order by name');
+    page = await db.execute('SELECT name, URL FROM links order by name');
   }
   else{    
-    result = await db.execute('SELECT words FROM links');
+    page = await db.execute('SELECT words FROM links');
     sql = await nl2sql.getLinkSQL(prompt, result.rows);
-    result = await db.execute(sql);    
+    page = await db.execute(sql);    
   }
   await db.close();
 
@@ -122,7 +123,7 @@ const filesHandler = async (prompt, result) => {
   files = filesIndex.copyFilesToReports(files)
 
   const headerTitle = "Found_Files"
-  result = {rows:[], fields:[]};
+  page = {rows:[], fields:[]};
   field = {name:headerTitle};
   result.fields.push(field);
 
@@ -146,16 +147,16 @@ const filesHandler = async (prompt, result) => {
 
 const remindersHandler = async (prompt, memberId) => {
   const action = await reminders.getReminderAction(openai, openAIAPI, prompt);
-  let result = null;
+  let page = null;
   switch(action) {
     case 'create':
-      result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
+      page = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
       break;
     case 'delete':
-      result = await reminders.deleteReminder(openai, openAIAPI, prompt, memberId);
+      page = await reminders.deleteReminder(openai, openAIAPI, prompt, memberId);
       break;
     case 'list':
-      result = await reminders.listReminders(openai, openAIAPI, prompt, memberId);
+      page = await reminders.listReminders(openai, openAIAPI, prompt, memberId);
       break;
     default:
       break;
@@ -164,10 +165,41 @@ const remindersHandler = async (prompt, memberId) => {
   return result;
 }
 
+/**
+ * Handles the page prompt.
+ *
+ * @param {Object} prompt - The page prompt object.
+ * @param {Object} result - The result object.
+ * @returns {Promise<Object>} The updated result object.
+ */
+const pageHandler = async (prompt) => {
+  // Pages prompt
+  const cmd = page.getPageCommand(prompt);
+  let page = 1;
+  switch(cmd) {
+    case page.PAGE_LAST:
+      page = pageCalc.getLastPage(result);
+      break;
+    case page.PAGE_NEXT:
+      page = pageCalc.getNextPage(result);
+      break;
+    case page.PAGE_PREV:
+      page = pageCalc.getPrevPage(result);
+      break;
+    default:
+      page = pageCalc.getFirstPage(result);
+      break;
+  }
+
+  return page;
+}  
+
+
 module.exports = {
   questionHandler,
   linkHandler,
   sortHandler,
   filesHandler,
+  pageHandler,
   remindersHandler
 };

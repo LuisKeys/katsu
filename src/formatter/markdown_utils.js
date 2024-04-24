@@ -26,7 +26,7 @@ const getTableData = function (result, dispFields, maxColumns) {
   // Get the rows
   for (
     let i = 0;
-    i < result.rows.length && i < constants.MAX_LINES_SLACK;
+    i < result.rows.length && i < constants.PAGE_SIZE;
     i++
   ) {
     let row = result.rows[i];
