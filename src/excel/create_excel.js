@@ -6,6 +6,7 @@
 
 const excel = require("excel4node");
 const clean = require('../files/clean');
+const { alignment } = require("excel4node/distribution/lib/types");
 
 /**
  * Creates an Excel file with the provided data.
@@ -25,7 +26,11 @@ const createExcel = function(result) {
       size: 12,  
       bold: true,    
     },
-    fill: { // §18.8.20 fill (Fill)
+    alignment: {
+      horizontal: 'center',
+      vertical: 'center',
+    },
+    fill: {
       type: 'pattern',
       patternType: 'solid',
       bgColor: 'd0d0d0',
@@ -48,6 +53,7 @@ const createExcel = function(result) {
   // Add the header row
   for (let i = 0; i < header.length; i++) {
     ws.cell(1, i + 1).string(header[i]).style(headerStyle);
+    ws.column(i + 1).setWidth(header[i].length + 2);
   }
 
   for (let i = 0; i < result.rows.length; i++) {

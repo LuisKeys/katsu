@@ -17,10 +17,10 @@ const resultObj = require("./result_object");
 const savePrompt = require("./save_prompt");
 const promptsHistory = require("./check_history");
 
-let result;
-let resultData;
+let result = [];
+let resultData = [];
 let pageNum = 1;
-resultData = {dispFields:[], result:{rows:[], fields:[]}};
+
 
 /**
  * Handles different types of prompts and performs corresponding actions.
@@ -30,6 +30,7 @@ resultData = {dispFields:[], result:{rows:[], fields:[]}};
  * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
  */
 const promptHandler = async (prompt, memberId, isDebug, memberName) => {    
+  resultData[memberId] = {dispFields:[], result:{rows:[], fields:[]}};
   const promptType = nlPromptType.getPromptType(prompt);  
   let fileURL = '';
 
@@ -38,36 +39,36 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   if (promptType === constants.QUESTION) {    
     // Question prompt
     pageNum = 1;
-    resultData = await handlers.questionHandler(promptTr);
-    result = resultData.result;
+    resultData[memberId] = await handlers.questionHandler(promptTr);
+    result[memberId] = resultData[memberId].result;
     
   if(process.env.DEMO_MODE == "true") {
-    result = demoData.replaceDemoValues(result, resultData.entity.name);    
+    result[memberId] = demoData.replaceDemoValues(result[memberId], resultData[memberId].entity.name);    
   }
 
-    if(result) {
-      await savePrompt.savePrompt(memberId, promptTr, resultData.sql, result.rows.length, memberName, promptType);
+    if(result[memberId]) {
+      await savePrompt.savePrompt(memberId, promptTr, resultData[memberId].sql, result[memberId].rows.length, memberName, promptType);
     }
   }
 
   if (promptType === constants.EXPORT) {
     // Export prompt
-    fileURL = excel.createExcel(result);
+    fileURL = excel.createExcel(result[memberId]);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
     pageNum = 1;
   }
   
   if (promptType === constants.LINK) {
     // Link prompt
-    result = await handlers.linkHandler(promptTr);
+    result[memberId] = await handlers.linkHandler(promptTr);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
     pageNum = 1;
   } 
   
   if (promptType === constants.SORT) {    
     // Sort prompt
-    result = await handlers.sortHandler(promptTr, result);
-    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
+    result[memberId] = await handlers.sortHandler(promptTr, result[memberId]);
+    await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
     pageNum = 1;
   }
 
@@ -79,43 +80,43 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   if (promptType === constants.FILE) {    
     // File prompt
-    resultData.dispFields = [];
-    result = await handlers.filesHandler(promptTr);
-    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
+    resultData[memberId].dispFields = [];
+    result[memberId] = await handlers.filesHandler(promptTr);
+    await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
     pageNum = 1;
   }
 
   if (promptType === constants.HELP) {    
     // Sort prompt
-    resultData.dispFields = [];
-    result = await help.getHelp(promptTr);
-    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
+    resultData[memberId].dispFields = [];
+    result[memberId] = await help.getHelp(promptTr);
+    await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
     pageNum = 1;
   }
 
   if (promptType === constants.PROMPT) {    
     // Sort prompt
-    resultData.dispFields = [];
-    result = await promptsHistory.listHistory(memberId);
-    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
+    resultData[memberId].dispFields = [];
+    result[memberId] = await promptsHistory.listHistory(memberId);
+    await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
     pageNum = 1;
   }
 
   if (promptType === constants.REMINDER) {    
     // Reminder prompt
-    resultData.dispFields = [];
-    result = await handlers.remindersHandler(promptTr, memberId);
-    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
+    resultData[memberId].dispFields = [];
+    result[memberId] = await handlers.remindersHandler(promptTr, memberId);
+    await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
     pageNum = 1;
   }
 
   // Format the result
   let resultObject
   let messages = [];
-  if (result && result.rows.length > 0) {        
+  if (result[memberId] && result[memberId].rows.length > 0) {        
     // Data found
-    if(result.rows.length > constants.PAGE_SIZE) {
-      const lastPage = pageCalc.getLastPage(result);
+    if(result[memberId].rows.length > constants.PAGE_SIZE) {
+      const lastPage = pageCalc.getLastPage(result[memberId]);
       messages.push('Page ' + pageNum + ' of ' + lastPage);                    
     }
 
@@ -126,21 +127,21 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       messages.push(fileURL);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, resultData.dispFields, pageNum, isDebug);
+    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum, isDebug);
 
   } else {
     // No data found
     messages.push('No data found for your request.');
     messages.push('Try the following Help prompts to get a list of possible valid prompts.');
     
-    result = await help.getHelp(constants.HELP);
+    result[memberId] = await help.getHelp(constants.HELP);
 
     let header = [];
-    for(i = 0; i < result.fields.length; i++) {
-      header.push(result.fields[i].name);
+    for(i = 0; i < result[memberId].fields.length; i++) {
+      header.push(result[memberId].fields[i].name);
     }
 
-    resultObject = resultObj.getResultObject(result, messages, promptType, header, pageNum, isDebug);
+    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum, isDebug);
   }
   
   return resultObject;
