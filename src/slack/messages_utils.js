@@ -41,9 +41,11 @@ const getAnswer = async (prompt, profile) => {
 const getMessageObject = (output, promptType) => {
   const sectionOutput = {
     type: "section",
-    fields: output
-    };
-  
+    text: {
+      type: "mrkdwn",
+      text: output, // Output message
+    },
+  };
 
   const sectionDivider = {
     type: "divider",
