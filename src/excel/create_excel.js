@@ -4,9 +4,9 @@
  * @module createExcel
  */
 
-const excel = require("excel4node");
 const clean = require('../files/clean');
-const { alignment } = require("excel4node/distribution/lib/types");
+const excel = require("excel4node");
+const mdUtils = require('../formatter/markdown_utils');
 
 /**
  * Creates an Excel file with the provided data.
@@ -19,6 +19,9 @@ const createExcel = function(result) {
   let fileName = excelFileName();
   const folder = process.env.REPORTS_FOLDER;
   fullPath = `${folder}/` + fileName;
+
+  let tableData = mdUtils.getTableData(result, [], 1000, 1, true);    
+  let columnWidths = mdUtils.getColumnWidths(tableData, false);
 
   var headerStyle = wb.createStyle({
     font: {
@@ -53,7 +56,7 @@ const createExcel = function(result) {
   // Add the header row
   for (let i = 0; i < header.length; i++) {
     ws.cell(1, i + 1).string(header[i]).style(headerStyle);
-    ws.column(i + 1).setWidth(header[i].length + 2);
+    ws.column(i + 1).setWidth(columnWidths[i] + 2);
   }
 
   for (let i = 0; i < result.rows.length; i++) {

@@ -7,7 +7,7 @@ const mdUtils = require('./markdown_utils');
 
 const getMarkDownTable = function(result, maxColumns, dispFields, isDebug, truncate, pageNum) {
 
-  let tableData = mdUtils.getTableData(result, dispFields, maxColumns, pageNum);
+  let tableData = mdUtils.getTableData(result, dispFields, maxColumns, pageNum, false);
   result = mdUtils.formatTableData(tableData);
   let columnWidths = mdUtils.getColumnWidths(result.tableData, truncate);
   
@@ -33,7 +33,7 @@ const getMarkDownTable = function(result, maxColumns, dispFields, isDebug, trunc
 
 const getSlackFields = function(result, maxColumns, dispFields, truncate, pageNum) {
 
-  let tableData = mdUtils.getTableData(result, dispFields, maxColumns, pageNum);
+  let tableData = mdUtils.getTableData(result, dispFields, maxColumns, pageNum, false);
   result = mdUtils.formatTableData(tableData);
   let columnWidths = mdUtils.getColumnWidths(result.tableData, truncate);
   

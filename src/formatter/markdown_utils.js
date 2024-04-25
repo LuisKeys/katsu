@@ -6,7 +6,7 @@ const phoneFormatter = require("./phone_formatter");
  * @param {Object} result - The result object containing fields and rows.
  * @returns {Array} - The table data as a 2D array.
  */
-const getTableData = function (result, dispFields, maxColumns, pageNum) {
+const getTableData = function (result, dispFields, maxColumns, pageNum, allRows) {
   let tableData = [];
 
   // Get the header
@@ -25,8 +25,13 @@ const getTableData = function (result, dispFields, maxColumns, pageNum) {
   tableData.push(header);
 
   // Get the rows
-  const startIndex = (pageNum - 1) * constants.PAGE_SIZE;
-  const endIndex = startIndex + constants.PAGE_SIZE;
+  let startIndex = (pageNum - 1) * constants.PAGE_SIZE;
+  let endIndex = startIndex + constants.PAGE_SIZE;
+
+  if(allRows) {
+    startIndex = 0;
+    endIndex = result.rows.length;
+  }
 
   for (let i = startIndex; i < result.rows.length && i < endIndex; i++) {
     let row = result.rows[i];
@@ -66,7 +71,7 @@ const getColumnWidths = function (tableData) {
           columnWidths[i] = 3;
         }
         if (columnWidths[i] > maxColumnWidth) {
-          columnWidths[i] = maxColumnWidth;
+          columnWidths[i] = parseInt(maxColumnWidth);
         }
       }
 
