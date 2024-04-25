@@ -28,8 +28,8 @@ const getAnswer = async (prompt, profile) => {
   );
 
   let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
-  output = resultObject.render(response);
-  output = hey + "```" + output + "```";
+  output = resultObject.render(response, false);
+  // output = hey + "```" + output + "```";
   const answer = { output: output, response: response };
   return answer;
 };
@@ -41,11 +41,9 @@ const getAnswer = async (prompt, profile) => {
 const getMessageObject = (output, promptType) => {
   const sectionOutput = {
     type: "section",
-    text: {
-      type: "mrkdwn",
-      text: output, // Output message
-    },
-  };
+    fields: output
+    };
+  
 
   const sectionDivider = {
     type: "divider",

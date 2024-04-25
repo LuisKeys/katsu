@@ -30,7 +30,7 @@ const promptHandler = require("../prompts/prompt_handler");
         );
 
         let hey = answerPhrase.getAnswerPhrase("Luis") + "!\n";
-        let output = resultObject.render(result);
+        let output = resultObject.render(result, true);
         output = hey + "```" + output + "```";
 
         console.log(output);

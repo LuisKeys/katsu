@@ -41,6 +41,7 @@ const getResultObject = function (result, messages, promptType, dispFields, page
   const truncate = promptType == constants.FILE ? false : true;
   
   resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug, truncate, pageNum);
+  resultObject.slackFields = formatTable.getSlackFields(result, maxColumns, dispFields, truncate, pageNum);
 
   return resultObject;
 }
@@ -51,9 +52,12 @@ const getResultObject = function (result, messages, promptType, dispFields, page
  * @param {Object} resultObject - The result object.
  * @returns {string} - The formatted output string.
  */
-const render = function (resultObject) {  
-  let output = ""
-  
+const render = function (resultObject, ismarkdown) {  
+
+  let output = resultObject.slackFields;
+
+  if(ismarkdown) {
+    output = "";
   for(i = 0; i < resultObject.messages.length; i++) {
     output += resultObject.messages[i] + '\n\n';
   }
@@ -61,6 +65,8 @@ const render = function (resultObject) {
   if(resultObject.promptType != constants.EXPORT) {
     output += resultObject.table;
   }
+  }
+  
   
   return output;
 }
