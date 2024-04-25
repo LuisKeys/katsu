@@ -28,7 +28,7 @@ const getAnswer = async (prompt, profile) => {
   );
 
   let hey = answerPhrase.getAnswerPhrase(profile.first_name) + "!\n";
-  output = resultObject.render(response, false);
+  output = resultObject.render(response, true);
   // output = hey + "```" + output + "```";
   const answer = { output: output, response: response };
   return answer;
