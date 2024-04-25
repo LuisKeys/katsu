@@ -16,10 +16,7 @@ const replaceDemoValues = (result, entityName) => {
     const firstNameIndex = fieldNames.findIndex(
       (field) => field.name === "firstname"
     );
-    const emailIndex = fieldNames.findIndex((field) => field.name === "email");
-    const phoneIndex = fieldNames.findIndex(
-      (field) => field.name.indexOf("phone") > -1
-    );
+
     const fullNameIndex = fieldNames.findIndex(
       (field) => field.name === "full_name"
     );
@@ -27,6 +24,20 @@ const replaceDemoValues = (result, entityName) => {
     const customerNameIndex = fieldNames.findIndex(
       (field) => field.name === "customer_name"
     );
+
+    let emailFields = [];
+    for (let i = 0; i < fieldNames.length; i++) {
+      if (fieldNames[i].name.indexOf("email") > -1) {
+        emailFields.push(fieldNames[i].name);
+      }
+    }
+
+    let phoneFields = [];
+    for (let i = 0; i < fieldNames.length; i++) {
+      if (fieldNames[i].name.indexOf("phone") > -1) {
+        phoneFields.push(fieldNames[i].name);
+      }
+    }
 
     let amountFields = [];
     for (let i = 0; i < fieldNames.length; i++) {
@@ -51,12 +62,16 @@ const replaceDemoValues = (result, entityName) => {
         result.rows[i][fieldNames[firstNameIndex].name] = firstName;
       }
 
-      if (emailIndex !== -1) {
-        result.rows[i][fieldNames[emailIndex].name] = email;
+      if (emailFields.length > 0) {
+        for (let j = 0; j < emailFields.length; j++) {
+          result.rows[i][emailFields[j]] = email;
+        }
       }
 
-      if (phoneIndex !== -1) {
-        result.rows[i][fieldNames[phoneIndex].name] = phone;
+      if (phoneFields.length > 0) {
+        for (let j = 0; j < phoneFields.length; j++) {
+          result.rows[i][phoneFields[j]] = phone;
+        }
       }
 
       if (fullNameIndex !== -1) {
