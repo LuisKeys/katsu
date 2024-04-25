@@ -23,7 +23,7 @@ const checkPrompt = async (prompt) => {
 
 const listHistory = async (memberId) => {
 
-  let sql = `SELECT prompt FROM (`;
+  let sql = `SELECT prompt as "My most used prompts" FROM (`;
   sql += `SELECT prompt, COUNT(*) AS prompt_count `;
   sql += `FROM prompts_history `;
   sql += `WHERE userid = ${memberId} `;
