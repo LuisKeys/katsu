@@ -30,7 +30,12 @@ let pageNum = 1;
  * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
  */
 const promptHandler = async (prompt, memberId, isDebug, memberName) => {    
-  resultData[memberId] = {dispFields:[], result:{rows:[], fields:[]}};
+  if(resultData[memberId]) {
+  } else {
+    resultData[memberId] = {dispFields:[], result:{rows:[], fields:[]}};
+  }
+
+  
   const promptType = nlPromptType.getPromptType(prompt);  
   let fileURL = '';
 
