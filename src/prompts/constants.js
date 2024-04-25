@@ -11,6 +11,7 @@ const FILE = 'file';
 const HELP = 'help';
 const LINK = 'link';
 const PAGE = 'page';
+const PROMPT = 'prompt';
 const QUESTION = 'question';
 const REMINDER = 'reminder';
 const SORT = 'sort';
@@ -21,7 +22,9 @@ module.exports = {
   FILE,
   HELP, 
   LINK,
+  PAGE,
   PAGE_SIZE,
+  PROMPT,
   QUESTION,
   REMINDER,
   SORT

@@ -9,14 +9,14 @@ const db = require("../db/db_commands");
  * @param {number} rowsCount - The number of rows affected by the SQL query.
  * @returns {Promise<void>} - A Promise that resolves when the prompt is saved.
  */
-const savePrompt = async (memberId, prompt, sql, rowsCount, memberName) => {
+const savePrompt = async (memberId, prompt, sql, rowsCount, memberName, promptType) => {
 
   const promptSafe = prompt.replace(/'/g, "''");
   const sqlSafe = sql.replace(/'/g, "''");  
   let insertSQL = "insert into prompts_history ";
-  insertSQL += "(userId, prompt, SQL, rows_count, member_name, prompt_cmp) ";
+  insertSQL += "(userId, prompt, SQL, rows_count, member_name, prompt_cmp, prompt_type) ";
   const promptClean = cleanPrompt(prompt);  
-  insertSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${memberName}', '${promptClean}') `;
+  insertSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${memberName}', '${promptClean}', '${promptType}') `;
   
   await db.connect();
   const result = await db.execute(insertSQL, [memberId, promptSafe, sqlSafe, rowsCount]);

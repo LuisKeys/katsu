@@ -21,6 +21,24 @@ const checkPrompt = async (prompt) => {
   }
 }
 
+const listHistory = async (memberId) => {
+
+  let sql = `SELECT prompt FROM (`;
+  sql += `SELECT prompt, COUNT(*) AS prompt_count `;
+  sql += `FROM prompts_history `;
+  sql += `WHERE userid = ${memberId} `;
+  sql += `GROUP BY prompt `;
+  sql += `ORDER BY prompt_count desc `;
+  sql += `limit 20) t; `;
+  
+  await db.connect();
+  const result = await db.execute(sql);
+  await db.close(); 
+
+  return result;
+}
+
 module.exports = {
-  checkPrompt
+  checkPrompt,
+  listHistory
 }

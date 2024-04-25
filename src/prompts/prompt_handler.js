@@ -15,6 +15,7 @@ const nlPromptType = require("./prompt_type");
 const pageCalc = require("./page_calc");
 const resultObj = require("./result_object");
 const savePrompt = require("./save_prompt");
+const promptsHistory = require("./check_history");
 
 let result;
 let resultData;
@@ -44,38 +45,43 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     result = demoData.replaceDemoValues(result, resultData.entity.name);    
   }
 
-    if(result && result.rows.length > 0) {
-      await savePrompt.savePrompt(memberId, prompt, resultData.sql, result.rows.length, memberName);
+    if(result) {
+      await savePrompt.savePrompt(memberId, promptTr, resultData.sql, result.rows.length, memberName, promptType);
     }
   }
 
   if (promptType === constants.EXPORT) {
     // Export prompt
     fileURL = excel.createExcel(result);
+    await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
     pageNum = 1;
   }
   
   if (promptType === constants.LINK) {
     // Link prompt
     result = await handlers.linkHandler(promptTr);
+    await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
     pageNum = 1;
   } 
   
   if (promptType === constants.SORT) {    
     // Sort prompt
     result = await handlers.sortHandler(promptTr, result);
+    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
     pageNum = 1;
   }
 
   if (promptType === constants.PAGE) {    
     // Page prompt
     pageNum = handlers.pageHandler(promptTr, pageNum, result);
+    await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
   }
 
   if (promptType === constants.FILE) {    
     // File prompt
     resultData.dispFields = [];
     result = await handlers.filesHandler(promptTr);
+    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
     pageNum = 1;
   }
 
@@ -83,6 +89,15 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     // Sort prompt
     resultData.dispFields = [];
     result = await help.getHelp(promptTr);
+    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
+    pageNum = 1;
+  }
+
+  if (promptType === constants.PROMPT) {    
+    // Sort prompt
+    resultData.dispFields = [];
+    result = await promptsHistory.listHistory(memberId);
+    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
     pageNum = 1;
   }
 
@@ -90,6 +105,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     // Reminder prompt
     resultData.dispFields = [];
     result = await handlers.remindersHandler(promptTr, memberId);
+    await savePrompt.savePrompt(memberId, promptTr, '', result.rows.length, memberName, promptType);
     pageNum = 1;
   }
 

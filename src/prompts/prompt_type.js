@@ -12,27 +12,32 @@ const constants = require("./constants");
  */
 const getPromptType = (prompt) => {
   const lcPrompt = prompt.toLowerCase();
-  // Check if the prompt is a request for help
+  // Check help command
   if (lcPrompt.includes("help")) {
     return constants.HELP;
   }
 
-   // Check if the prompt is a link
+   // Check prompt command
+   if (lcPrompt.includes("prompt") || lcPrompt.includes("prompts")) {
+    return constants.PROMPT;
+  }
+
+  // Check link command
   if (lcPrompt.includes("link") || lcPrompt.includes("links")) {
     return constants.LINK;
   }
 
-  // Check if the prompt is a file
+  // Check file command
   if (lcPrompt.includes("excel")) {
     return constants.EXPORT;
   }
 
-  // Order or sort statement
+  // Order or sort command
   if (lcPrompt.includes("order by") || lcPrompt.includes("sort")) {
     return constants.SORT;
   }
 
-  // Check for files prompt
+  // Check for files command
   if (lcPrompt.includes("file") || lcPrompt.includes("files") || 
       lcPrompt.includes("folder") || lcPrompt.includes("document") || 
       lcPrompt.includes("doc") || lcPrompt.includes("presentation") ||
@@ -41,17 +46,17 @@ const getPromptType = (prompt) => {
     return constants.FILE;
   }
 
-  // Reminder prompt
+  // Reminder command
   if (lcPrompt.includes("reminder") || lcPrompt.includes("reminders")) {
     return constants.REMINDER;
   }
 
-  // Reminder prompt
+  // Page command
   if (lcPrompt.includes("page")) {
     return constants.PAGE;
   }
 
-  // Check if the prompt is a statement
+  // it is not a command then it could be a question
   return constants.QUESTION;
 }
 
