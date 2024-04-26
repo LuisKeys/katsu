@@ -22,7 +22,28 @@ const getSortfield = (prompt, result) => {
     }
   }
 
+  if (sortFields.length === 0) {
+    // Try by field index
+    for (i = 0; i < promptWords.length; i++) {
+      let word = promptWords[i].toLowerCase();
+      if (!isNaN(word)) {
+        let index = parseInt(word);
+        index--;
+        if(index < 1) {
+          index = 1;
+        }
+        if (index > result.fields.length) {
+          index = 1;
+        }
+        if (index < result.fields.length) {
+          sortFields.push(result.fields[index].name);
+        }
+      }
+    }    
+  }
+
   return sortFields;
+
 };
 
 /**
