@@ -16,7 +16,7 @@ const promptHandler = require("../prompts/prompt_handler");
       let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
       // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
       // prompts = ["help hr"];
-      prompts = ["list the total bill amount for each quarter for engagements", "list the total bill amount for each year for engagements"]; ;
+      prompts = ["list the total bill amount for each quarter for engagements", "sort by year and quarter desc"]; ;
       // prompts = ["list all the recent records of prompt history"];
       
 

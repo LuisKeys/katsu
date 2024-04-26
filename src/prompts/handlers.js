@@ -88,9 +88,11 @@ const linkHandler = async (prompt) => {
  */
 const sortHandler = async (prompt, result) => {
   // Sort prompt
-  field = sortFieldFinder.getSortfield(prompt, result);
-  if (field) {
-    result.rows = dbSortResult.sortResult(result, field);
+  sortFields = [];
+  sortFields = sortFieldFinder.getSortfield(prompt, result);
+  if (sortFields.length > 0){
+    const sortDir = sortFieldFinder.getSortDirection(prompt);
+    result.rows = dbSortResult.sortResult(result, sortFields, sortDir);
   }
 
   return result;
