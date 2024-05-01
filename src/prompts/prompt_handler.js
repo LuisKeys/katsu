@@ -56,6 +56,13 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     }
   }
 
+  if (promptType === constants.LLM) {
+    // Export prompt
+    fileURL = await handlers.llmHandler(promptTr);
+    await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
+    pageNum = 1;
+  }
+
   if (promptType === constants.EXPORT) {
     // Export prompt
     fileURL = excel.createExcel(result[memberId]);

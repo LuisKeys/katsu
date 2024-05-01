@@ -17,7 +17,12 @@ const getPromptType = (prompt) => {
     return constants.HELP;
   }
 
-   // Check prompt command
+   // Check LLM command
+   if (lcPrompt.includes("gpt") || lcPrompt.includes("llm")) {
+    return constants.LLM;
+  }
+
+  // Check prompt command
    if (lcPrompt.includes("prompt") || lcPrompt.includes("prompts")) {
     return constants.PROMPT;
   }

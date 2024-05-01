@@ -10,6 +10,7 @@ const EXPORT = 'export';
 const FILE = 'file';
 const HELP = 'help';
 const LINK = 'link';
+const LLM = 'llm';
 const PAGE = 'page';
 const PROMPT = 'prompt';
 const QUESTION = 'question';
@@ -22,6 +23,7 @@ module.exports = {
   FILE,
   HELP, 
   LINK,
+  LLM,
   PAGE,
   PAGE_SIZE,
   PROMPT,

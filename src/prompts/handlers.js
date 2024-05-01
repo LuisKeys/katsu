@@ -57,6 +57,24 @@ const getSQL = async (prompt, reflection, error) => {
 }
 
 /**
+ * Handles the LLM prompt.
+ *
+ * @param {string} prompt - The prompt to be sent to the OpenAI API.
+ * @returns {Promise<any>} - A promise that resolves to the result of the OpenAI API call.
+ */
+const llmHandler = async (prompt) => {
+  let finalPrompt = prompt;
+  finalPrompt += " Provide only the answer without any additional introduction or conclusion.";
+  // LLM prompt
+  let result = await openAIAPI.ask(
+    openai,
+    finalPrompt
+  );
+
+  return result;
+}
+
+/**
  * Handles the link prompt.
  * @async
  * @param {string} prompt - The link prompt.
@@ -140,8 +158,8 @@ const filesHandler = async (prompt, result) => {
     record[headerTitle] = files[i].urlPath;
     result.rows.push(record);
     // separator
-    record = {};
-    record[headerTitle] = '////////////////////////////////////////';
+    record = {};    
+    record[headerTitle] = '----------------------------------------';
     result.rows.push(record);
   }
   
@@ -212,6 +230,7 @@ module.exports = {
   linkHandler,
   sortHandler,
   filesHandler,
+  llmHandler,
   pageHandler,
   remindersHandler
 };
