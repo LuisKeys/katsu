@@ -72,7 +72,13 @@ const llmHandler = async (prompt) => {
     finalPrompt
   );  
 
-  const url = await word.createWord(result);
+  let url = "";
+
+  if(result.length > 100) {
+    url = await word.createWord(result);
+  } else {
+    url = result;
+  } 
 
   return url;
 }
