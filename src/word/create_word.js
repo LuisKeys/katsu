@@ -15,7 +15,12 @@ const createWord = async function(text) {
         children: [
           new Paragraph({
             children: [
-              new TextRun(text),
+              new TextRun({
+                text: text,
+                bold: false,
+                font: "Calibri",
+                size: 24
+              }),
             ],
           }),
         ],
