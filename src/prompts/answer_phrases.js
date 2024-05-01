@@ -28,6 +28,12 @@ const getAnswerPhrase = (name) => {
   ];
     
   const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  const showFace = process.env.SHOW_EMOJI == "true";
+  
+  if (!showFace) {
+    return phrase.replace("#name#", name);
+  }
+
   return getRandomEmoji() + " " + phrase.replace("#name#", name);
 }
 

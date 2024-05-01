@@ -16,8 +16,8 @@ const promptHandler = require("../prompts/prompt_handler");
       let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
       // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
       // prompts = ["help hr"];
-      prompts = ["From LLM which is the average salary of a data scientist?"];
-      // prompts = ["list all the recent records of prompt history"];
+      // prompts = ["Provide a detailed job description for a Data Scientist, including soft and hard skills, and responsibilities from your llm"];
+      prompts = ["list all the active engagements"];
       
 
       for (let i = 0; i < prompts.length; i++) {
