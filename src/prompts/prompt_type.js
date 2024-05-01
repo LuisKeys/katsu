@@ -34,7 +34,7 @@ const getPromptType = (prompt) => {
 
   // Check file command
   if (lcPrompt.includes("excel")) {
-    return constants.EXPORT;
+    return constants.EXCEL;
   }
 
   // Order or sort command

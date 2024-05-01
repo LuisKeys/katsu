@@ -6,7 +6,7 @@
 const PAGE_SIZE = 20;
 
 const ALL = 'all';
-const EXPORT = 'export';
+const EXCEL = 'excel';
 const FILE = 'file';
 const HELP = 'help';
 const LINK = 'link';
@@ -19,7 +19,7 @@ const SORT = 'sort';
 
 module.exports = { 
   ALL,
-  EXPORT,
+  EXCEL,
   FILE,
   HELP, 
   LINK,

@@ -57,14 +57,15 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   }
 
   if (promptType === constants.LLM) {
-    // Export prompt
+    // LLM prompt
+    resultData[memberId].dispFields = [];
     fileURL = await handlers.llmHandler(promptTr);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
     pageNum = 1;
   }
 
-  if (promptType === constants.EXPORT) {
-    // Export prompt
+  if (promptType === constants.EXCEL) {
+    // Export to excel prompt
     fileURL = excel.createExcel(result[memberId]);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
     pageNum = 1;
@@ -125,14 +126,14 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   // Format the result
   let resultObject
   let messages = [];
-  if (result[memberId] && result[memberId].rows.length > 0) {        
+  if (result[memberId] && result[memberId].rows.length > 0) {
     // Data found
     if(result[memberId].rows.length > constants.PAGE_SIZE) {
       const lastPage = pageCalc.getLastPage(result[memberId]);
       messages.push('Page ' + pageNum + ' of ' + lastPage);                    
     }
 
-    if(promptType === constants.EXPORT) {
+    if(promptType === constants.EXCEL) {
       // Export prompt
       messages = [];
       messages.push('The data has been exported to an Excel file.');
@@ -145,10 +146,17 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     // No data found
     messages.push('No data found for your request.');
     messages.push('Try the following Help prompts to get a list of possible valid prompts.');
-    
-    result[memberId] = await help.getHelp(constants.HELP);
-
     let header = [];
+
+    if(promptType === constants.LLM) {
+      // Export prompt
+      messages = [];
+      result[memberId] = {rows:[{"Your answer here:":fileURL}], fields:[{name:"Your answer here:"}]};
+    } else {
+      result[memberId] = await help.getHelp(constants.HELP);
+    }
+
+    header = [];
     for(i = 0; i < result[memberId].fields.length; i++) {
       header.push(result[memberId].fields[i].name);
     }

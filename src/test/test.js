@@ -16,7 +16,7 @@ const promptHandler = require("../prompts/prompt_handler");
       let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
       // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
       // prompts = ["help hr"];
-      prompts = ["provide a job description for a Data Engineer from your llm."]; ;
+      prompts = ["provide a short job description for a Data Engineer of no more than 200 words, from your llm"];
       // prompts = ["list all the recent records of prompt history"];
       
 

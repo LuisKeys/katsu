@@ -62,7 +62,7 @@ const render = function (resultObject, ismarkdown) {
     output += resultObject.messages[i] + '\n\n';
   }
 
-  if(resultObject.promptType != constants.EXPORT) {
+  if(resultObject.promptType != constants.EXCEL) {
     output += resultObject.table;
   }
   }

@@ -7,6 +7,7 @@
 const clean = require('../files/clean');
 const excel = require("excel4node");
 const mdUtils = require('../formatter/markdown_utils');
+const filesName = require('../files/file_name');
 
 /**
  * Creates an Excel file with the provided data.
@@ -85,17 +86,9 @@ const createExcel = function(result) {
  * @returns {string} The generated filename.
  */
 const excelFileName = function() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const milliseconds = date.getMilliseconds();
-  const random = Math.floor(Math.random() * 1000);
+  const fileName = filesName.randomFileName('xlsx');
 
-  return `katsu_report_${year}_${month}_${day}_${hours}_${minutes}_${seconds}_${milliseconds}_${random}.xlsx`;
+  return fileName;
 }
 
 module.exports = { createExcel };

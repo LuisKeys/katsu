@@ -16,6 +16,7 @@ const pageCalc = require("./page_calc");
 const reminders= require("./reminders");
 const sortFieldFinder = require("../nl/sort_field_finder");
 const pageNL = require("../nl/page");
+const word = require("../word/create_word");
 
 openai = new openAI();
 
@@ -64,14 +65,18 @@ const getSQL = async (prompt, reflection, error) => {
  */
 const llmHandler = async (prompt) => {
   let finalPrompt = prompt;
-  finalPrompt += " Provide only the answer without any additional introduction or conclusion.";
+  finalPrompt += "Format the output for a word document,  including '\n' char for new lines. Provide only the answer without any additional introduction or conclusion.";
   // LLM prompt
-  let result = await openAIAPI.ask(
-    openai,
-    finalPrompt
-  );
+  // let result = await openAIAPI.ask(
+  //   openai,
+  //   finalPrompt
+  // );
 
-  return result;
+  let result = "This is a test";
+
+  const url = await word.createWord(result);
+
+  return url;
 }
 
 /**
