@@ -67,12 +67,10 @@ const llmHandler = async (prompt) => {
   let finalPrompt = prompt;
   finalPrompt += "Format the output for a word document,  including '\n' char for new lines. Provide only the answer without any additional introduction or conclusion.";
   // LLM prompt
-  // let result = await openAIAPI.ask(
-  //   openai,
-  //   finalPrompt
-  // );
-
-  let result = "This is a test";
+  let result = await openAIAPI.ask(
+    openai,
+    finalPrompt
+  );  
 
   const url = await word.createWord(result);
 
