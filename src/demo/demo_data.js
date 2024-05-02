@@ -20,9 +20,15 @@ const replaceDemoValues = (result, entityName) => {
     const fullNameIndex = fieldNames.findIndex(
       (field) => field.name === "full_name"
     );
+
     const nameIndex = fieldNames.findIndex((field) => field.name === "name");
+    
     const customerNameIndex = fieldNames.findIndex(
       (field) => field.name === "customer_name"
+    );
+
+        const companyIndex = fieldNames.findIndex(
+      (field) => field.name === "company"
     );
 
     let emailFields = [];
@@ -77,6 +83,10 @@ const replaceDemoValues = (result, entityName) => {
       if (fullNameIndex !== -1) {
         result.rows[i][fieldNames[fullNameIndex].name] =
           firstName + " " + lastName;
+      }
+
+      if (companyIndex !== -1) {
+        result.rows[i][fieldNames[companyIndex].name] = companyName;
       }
 
       if (nameIndex !== -1) {
