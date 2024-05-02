@@ -19,8 +19,7 @@ const promptsHistory = require("./check_history");
 
 let result = [];
 let resultData = [];
-let pageNum = 1;
-
+let pageNum = [];
 
 /**
  * Handles different types of prompts and performs corresponding actions.
@@ -43,7 +42,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   if (promptType === constants.QUESTION) {    
     // Question prompt
-    pageNum = 1;
+    pageNum[memberId] = 1;
     resultData[memberId] = await handlers.questionHandler(promptTr);
     result[memberId] = resultData[memberId].result;
     
@@ -62,33 +61,33 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     result[memberId].rows = [];
     fileURL = await handlers.llmHandler(promptTr);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
 
   if (promptType === constants.EXCEL) {
     // Export to excel prompt
     fileURL = excel.createExcel(result[memberId]);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
   
   if (promptType === constants.LINK) {
     // Link prompt
     result[memberId] = await handlers.linkHandler(promptTr);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   } 
   
   if (promptType === constants.SORT) {    
     // Sort prompt
     result[memberId] = await handlers.sortHandler(promptTr, result[memberId]);
     await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
 
   if (promptType === constants.PAGE) {    
     // Page prompt
-    pageNum = handlers.pageHandler(promptTr, pageNum, result);
+    pageNum[memberId] = handlers.pageHandler(promptTr, pageNum[memberId], result[memberId]);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
   }
 
@@ -97,7 +96,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     resultData[memberId].dispFields = [];
     result[memberId] = await handlers.filesHandler(promptTr);
     await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
 
   if (promptType === constants.HELP) {    
@@ -105,7 +104,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     resultData[memberId].dispFields = [];
     result[memberId] = await help.getHelp(promptTr);
     await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
 
   if (promptType === constants.PROMPT) {    
@@ -113,7 +112,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     resultData[memberId].dispFields = [];
     result[memberId] = await promptsHistory.listHistory(memberId);
     await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
 
   if (promptType === constants.REMINDER) {    
@@ -121,7 +120,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     resultData[memberId].dispFields = [];
     result[memberId] = await handlers.remindersHandler(promptTr, memberId);
     await savePrompt.savePrompt(memberId, promptTr, '', result[memberId].rows.length, memberName, promptType);
-    pageNum = 1;
+    pageNum[memberId] = 1;
   }
 
   // Format the result
@@ -131,7 +130,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     // Data found
     if(result[memberId].rows.length > constants.PAGE_SIZE) {
       const lastPage = pageCalc.getLastPage(result[memberId]);
-      messages.push('Page ' + pageNum + ' of ' + lastPage);                    
+      messages.push('Page ' + pageNum[memberId] + ' of ' + lastPage);                    
     }
 
     if(promptType === constants.EXCEL) {
@@ -141,7 +140,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       messages.push(fileURL);
     }
 
-    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum, isDebug);
+    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum[memberId], isDebug);
 
   } else {
     // No data found
@@ -162,7 +161,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       header.push(result[memberId].fields[i].name);
     }
 
-    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum, isDebug);
+    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum[memberId], isDebug);
   }
   
   return resultObject;
