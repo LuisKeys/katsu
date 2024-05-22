@@ -124,12 +124,13 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   }
 
   // Format the result
-  let resultObject
+  let resultObject = {};
+  let lastPage = 1;
   let messages = [];
   if (result[memberId] && result[memberId].rows.length > 0) {
     // Data found
     if(result[memberId].rows.length > constants.PAGE_SIZE) {
-      const lastPage = pageCalc.getLastPage(result[memberId]);
+      lastPage = pageCalc.getLastPage(result[memberId]);      
       messages.push('Page ' + pageNum[memberId] + ' of ' + lastPage);                    
     }
 
@@ -139,8 +140,9 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       messages.push('The data has been exported to an Excel file.');
       messages.push(fileURL);
     }
-
+    
     resultObject = resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum[memberId], isDebug);
+    resultObject.lastPage = lastPage;
 
   } else {
     // No data found

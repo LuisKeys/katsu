@@ -1,5 +1,3 @@
-
-
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
  * getResultObject creates a result object with the given result and messages.
@@ -19,32 +17,52 @@ const formatTable = require("../formatter/format_result");
  * @param {boolean} isDebug - Indicates if debug mode is enabled.
  * @returns {Object} - The result object containing the result and messages.
  */
-const getResultObject = function (result, messages, promptType, dispFields, pageNum, isDebug) {
+const getResultObject = function (
+  result,
+  messages,
+  promptType,
+  dispFields,
+  pageNum,
+  isDebug
+) {
   const resultObject = {
-    rows:result.rows,
-    fields:result.fields,
-    messages:messages,
-    promptType:promptType,
-    table:"",
-    dispFields:dispFields,
-    pageNum:pageNum
+    rows: result.rows,
+    fields: result.fields,
+    messages: messages,
+    promptType: promptType,
+    table: "",
+    dispFields: dispFields,
+    pageNum: pageNum,
   };
 
   if (isDebug) {
-    for(i = 0; i < messages.length; i++) {
+    for (i = 0; i < messages.length; i++) {
       console.log(messages[i]);
     }
-  }  
+  }
 
   const maxColumns = process.env.MAX_COLUMNS;
 
   const truncate = promptType == constants.FILE ? false : true;
-  
-  resultObject.table = formatTable.getMarkDownTable(result, maxColumns, dispFields, isDebug, truncate, pageNum);
-  resultObject.slackFields = formatTable.getSlackFields(result, maxColumns, dispFields, truncate, pageNum);
+
+  resultObject.table = formatTable.getMarkDownTable(
+    result,
+    maxColumns,
+    dispFields,
+    isDebug,
+    truncate,
+    pageNum
+  );
+  resultObject.slackFields = formatTable.getSlackFields(
+    result,
+    maxColumns,
+    dispFields,
+    truncate,
+    pageNum
+  );
 
   return resultObject;
-}
+};
 
 /**
  * Takes a result object and returns a formatted output string.
@@ -52,23 +70,94 @@ const getResultObject = function (result, messages, promptType, dispFields, page
  * @param {Object} resultObject - The result object.
  * @returns {string} - The formatted output string.
  */
-const render = function (resultObject, ismarkdown) {  
-
+const render = function (resultObject, ismarkdown) {
   let output = resultObject.slackFields;
 
-  if(ismarkdown) {
+  if (ismarkdown) {
     output = "";
-  for(i = 0; i < resultObject.messages.length; i++) {
-    output += resultObject.messages[i] + '\n\n';
+    for (i = 0; i < resultObject.messages.length; i++) {
+      output += resultObject.messages[i] + "\n\n";
+    }
+
+    if (resultObject.promptType != constants.EXCEL) {
+      output += resultObject.table;
+    }
   }
 
-  if(resultObject.promptType != constants.EXCEL) {
-    output += resultObject.table;
-  }
-  }
-  
-  
   return output;
-}
+};
 
-module.exports = { getResultObject, render };
+const transfResAPI = function (resultObject) {
+  let output = {};
+  const fields = resultObject.fields;
+
+  output.pageNum = resultObject.pageNum;  
+  output.lastPage = resultObject.lastPage;
+
+  delete result.table;
+  delete result.slackFields;
+
+
+  if (resultObject.rows.length == 0) {
+    output.rows = [];
+  } else {
+    let rows = [];
+    let dispFields = resultObject.dispFields;
+
+    // Add header
+    if (dispFields.length > 0) {      
+      let header = [];
+      for (i = 0; i < dispFields.length; i++) {        
+        header.push(dispFields[i]);
+      }
+
+      rows.push(header);
+
+      // Add rows
+      for (i = 0; i < resultObject.rows.length; i++) {
+        let row = resultObject.rows[i];
+        let newRow = [];
+
+        for (let j = 0; j < fields.length; j++) {
+          const field = fields[j];
+          if (dispFields.includes(field.name)) {            
+            newRow.push(row[field.name]);
+          }
+        }
+
+        rows.push(newRow);
+      }
+    } else {
+      // Get header
+      let header = [];
+      const row = resultObject.rows[0];
+      for (let j = 0; j < fields.length; j++) {
+        const field = fields[j];        
+        header.push(field.name);
+      }
+
+      rows.push(header);
+
+      for (i = 0; i < resultObject.rows.length; i++) {
+        const row = resultObject.rows[i];
+        let newRow = [];
+
+        for (let j = 0; j < fields.length; j++) {
+          const field = fields[j];
+          newRow.push(row[field.name]);
+        }
+
+        rows.push(newRow);
+      }
+
+    }
+
+    output.rows = rows;
+
+    delete output.dispFields;
+    delete output.fields;    
+    return output;
+  }
+};
+
+module.exports = { getResultObject, render, transfResAPI };

@@ -9,6 +9,7 @@ const { authUser } = require("./src/authentication/auth_user");
 const { generateToken } = require("./src/authentication/token");
 const { validateToken } = require("./src/authentication/token");
 const { getPayloadFromToken } = require("./src/authentication/token");
+const { transfResAPI } = require("./src/prompts/result_object");
 
 require("dotenv").config();
 
@@ -64,7 +65,7 @@ const apiApp = function () {
         throw new Error("Invalid token");
       }
 
-      const result = await new Promise((resolve, reject) => {
+      let result = await new Promise((resolve, reject) => {
         const user = getPayloadFromToken(token);
         const memberId = process.env.AUTH_MEMBER_ID;
         askPrompt(prompt, user, memberId)
@@ -72,6 +73,8 @@ const apiApp = function () {
           .catch((error) => reject(error));
       });
 
+      result = transfResAPI(result);
+      
       res.status(200).json({ answer: result });
     } catch (error) {
       res.status(401).json({ message: error.message });
