@@ -9,7 +9,7 @@ const { authUser } = require("./src/authentication/auth_user");
 const { generateToken } = require("./src/authentication/token");
 const { validateToken } = require("./src/authentication/token");
 const { getPayloadFromToken } = require("./src/authentication/token");
-const { transfResAPI } = require("./src/prompts/result_object");
+const { transfResAPI } = require("./src/prompts/api_transf");
 
 require("dotenv").config();
 
@@ -74,7 +74,7 @@ const apiApp = function () {
       });
 
       result = transfResAPI(result);
-      
+        
       res.status(200).json({ answer: result });
     } catch (error) {
       res.status(401).json({ message: error.message });
@@ -87,7 +87,7 @@ const apiApp = function () {
    * @param {number} port - The port number to listen on.
    */
   app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`api listening at http://localhost:${port}`);
   });
 };
 
