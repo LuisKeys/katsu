@@ -1,4 +1,4 @@
-
+const { formatAPIResult } = require('../formatter/format_api_result.js');
 const {getAPIOutput, transfResultObj} = require('./api_transf_utils.js');
 
 /**
@@ -15,6 +15,7 @@ const transfResAPI = function (resultObject) {
     output.rows = [];
   } else {
     output = transfResultObj(resultObject, output);
+    output = formatAPIResult(output);
     return output;
   }
 };

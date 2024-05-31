@@ -1,5 +1,6 @@
 const constants = require("../prompts/constants");
-const phoneFormatter = require("./phone_formatter");
+const { formatPhoneNumber } = require("./phone_formatter");
+const { formatNumber } = require("./number_formatter");
 
 /**
  * Retrieves table data from the given result object.
@@ -159,7 +160,7 @@ const formatTableData = function (tableData) {
   }
 
   const phoneColumns = getPhoneColumns(tableData);
-  let formattedTableData = phoneFormatter.formatPhoneNumber(tableData, phoneColumns);
+  let formattedTableData = formatPhoneNumber(tableData, phoneColumns);
 
   const numColumns = getNumericColumns(formattedTableData);
   formattedTableData = formatNumericColumns(formattedTableData, numColumns);
@@ -238,27 +239,11 @@ const formatNumericColumns = function(tableData, numColumns) {
   return tableData;
 };
 
-/**
- * Formats a number with thousand and decimal separators.
- * @param {string} number - The non-formatted number as a string.
- * @returns {string} - The formatted number with separators.
- */
-const formatNumber = function(number) {
-  // Convert the number to a float
-  const parsedNumber = parseFloat(number);
-
-  // Check if the number is valid
-  if (isNaN(parsedNumber)) {
-    return "";
-  }
-
-  return parsedNumber.toLocaleString();
-}
 
 module.exports = {
   getColumnWidths,
   getMarkdownTableRow,
   getTableData,
   getMarkdownTableSeparator,
-  formatTableData,
+  formatTableData  
 };
