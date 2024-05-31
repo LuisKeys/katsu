@@ -66,8 +66,11 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   if (promptType === constants.EXCEL) {
     // Export to excel prompt
+    fileURL = '';
+    if(result.length > 0 && result[memberId].rows.length > 0) {
     fileURL = excel.createExcel(result[memberId]);
     await savePrompt.savePrompt(memberId, promptTr, '', 0, memberName, promptType);
+    }
     pageNum[memberId] = 1;
   }
   
@@ -125,8 +128,10 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   // Format the result
   let resultObject = {};
+  resultObject.docUrl = "";
   let lastPage = 1;
   let messages = [];
+  let docUrl = "";
   if (result[memberId] && result[memberId].rows.length > 0) {
     // Data found
     if(result[memberId].rows.length > constants.PAGE_SIZE) {
@@ -139,10 +144,12 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       messages = [];
       messages.push('The data has been exported to an Excel file.');
       messages.push(fileURL);
+      docUrl = fileURL;
     }
     
     resultObject = resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum[memberId], isDebug);
     resultObject.lastPage = lastPage;
+    resultObject.docUrl = docUrl;
 
   } else {
     // No data found
@@ -164,6 +171,8 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
     }
 
     resultObject = resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum[memberId], isDebug);
+    resultObject.lastPage = lastPage;
+    resultObject.docUrl = docUrl;
   }
   
   return resultObject;
