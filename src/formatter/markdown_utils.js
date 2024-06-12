@@ -14,8 +14,8 @@ const getTableData = function (result, dispFields, maxColumns, pageNum, allRows)
   let header = [];
   let useDispFields = false;
 
-  if(dispFields.length > 0 && result.rows.length > 1) {
-    if(result.fields.length > maxColumns) {
+  if(dispFields.length > 0 && result.rows.length >= 1) {
+    if(result.fields.length > 1) {
       useDispFields = true;
     }
   }

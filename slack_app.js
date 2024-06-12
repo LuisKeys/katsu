@@ -37,7 +37,7 @@ const slackApp = function () {
     await clean.cleanReports();
   };
 
-  // Timer ick function
+  // Timer tick function
   function backProcessTick() {
     backProcessHandler(users, app)
       .then(() => {})

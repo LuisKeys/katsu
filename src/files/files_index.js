@@ -63,7 +63,7 @@ function searchFiles(files, words) {
       }
     }
 
-    const containsWords = count >= 2;
+    const containsWords = count >= 1;
 
     if (containsWords) {
       searchResults.push(file);

@@ -68,7 +68,7 @@ const apiApp = function () {
       let result = await new Promise((resolve, reject) => {
         const user = getPayloadFromToken(token);
         const memberId = process.env.AUTH_MEMBER_ID;
-        askPrompt(prompt, user, memberId)
+        askPrompt(prompt, user, memberId, openai, openaiapi)
           .then((result) => resolve(result))
           .catch((error) => reject(error));
       });
@@ -91,7 +91,7 @@ const apiApp = function () {
   });
 };
 
-const askPrompt = async (prompt, user, memberId) => {
+const askPrompt = async (prompt, user, memberId, openai, openaiapi) => {
   if (user != process.env.AUTH_USER) {
     console.log(
       "You are not a registered user. Please contact the administrator to register."
@@ -102,7 +102,9 @@ const askPrompt = async (prompt, user, memberId) => {
       prompt,
       memberId,
       false,
-      userName
+      userName,
+      openai,
+      openaiapi
     );
     
     return result;

@@ -40,27 +40,26 @@ const getLinkSQL = async function (prompt, rows) {
 const generateSQL = async function (openai, openaiapi, userPrompt, reflection, error) {
 
   // Get the entity from the prompt
-  const entity = await finder.getEntity(userPrompt);
+  const entities = await finder.getEntity(userPrompt, openai, openaiapi);
   let result = {sql:"", dispFields:[]};
 
-  if(entity === '') {    
+  if(entities.length == 0) {    
     return result;
   }
 
   // Get the fields for the entity
-  const fields = await dbFields.getViewFields(entity);
+  const entity = entities[0];
+  const fields = await dbFields.getViewFields(entity.view);
 
   // Get the prompt for the SQL statement
   const fullPrompt = getPrompt(openai, openaiapi, entity.view, fields, userPrompt, reflection, error);
 
-  let sql = await checkPrompt.checkPrompt(userPrompt);
+  // let sql = await checkPrompt.checkPrompt(userPrompt);
 
-  if(sql == null) {
-    sql = await openaiapi.ask(
-      openai,
-      fullPrompt
-    );
-  }
+  sql = await openaiapi.ask(
+    openai,
+    fullPrompt
+  );
 
   sql = sanitizeSQL(sql);
   sql = replaceEqualityWithLike(sql);
@@ -151,7 +150,8 @@ const createReflectionPrompt = (prompt, error, origPrompt) => {
     reflectionPrompt = "This is the original prompt:.\n";
     reflectionPrompt += origPrompt + "\n";
     reflectionPrompt += "The query you provided did not return any results.\n";
-    reflectionPrompt += "Try again with a different query without a where clause at all.";
+    reflectionPrompt += "Try again with a different query using a related different field in the 'where' statement.";
+    reflectionPrompt += "For example if 'firstname' was used try with 'lastname'.";
   }
 
   return reflectionPrompt;

@@ -12,34 +12,37 @@ const constants = require("./constants");
  */
 const getPromptType = (prompt) => {
   const lcPrompt = prompt.toLowerCase();
+
+  let type = constants.QUESTION;
+
   // Check help command
   if (lcPrompt.includes("help")) {
-    return constants.HELP;
+    type = constants.HELP;
   }
 
    // Check LLM command
    if (lcPrompt.includes("gpt") || lcPrompt.includes("llm")) {
-    return constants.LLM;
+    type = constants.LLM;
   }
 
   // Check prompt command
    if (lcPrompt.includes("prompt") || lcPrompt.includes("prompts")) {
-    return constants.PROMPT;
+    type = constants.PROMPT;
   }
 
   // Check link command
   if (lcPrompt.includes("link") || lcPrompt.includes("links")) {
-    return constants.LINK;
+    type = constants.LINK;
   }
 
   // Check file command
   if (lcPrompt.includes("excel")) {
-    return constants.EXCEL;
+    type = constants.EXCEL;
   }
 
   // Order or sort command
   if (lcPrompt.includes("order by") || lcPrompt.includes("sort")) {
-    return constants.SORT;
+    type = constants.SORT;
   }
 
   // Check for files command
@@ -48,21 +51,23 @@ const getPromptType = (prompt) => {
       lcPrompt.includes("doc") || lcPrompt.includes("presentation") ||
       lcPrompt.includes("ppt") || lcPrompt.includes("pdf")      
     ) {
-    return constants.FILE;
+    type = constants.FILE;
   }
 
   // Reminder command
   if (lcPrompt.includes("reminder") || lcPrompt.includes("reminders")) {
-    return constants.REMINDER;
+    type = constants.REMINDER;
   }
 
   // Page command
   if (lcPrompt.includes("page")) {
-    return constants.PAGE;
+    type = constants.PAGE;
   }
 
+  console.log("Prompt Type: ", type);
+
   // it is not a command then it could be a question
-  return constants.QUESTION;
+  return type;
 }
 
 module.exports = { getPromptType };

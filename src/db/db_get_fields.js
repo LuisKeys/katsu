@@ -21,7 +21,7 @@ const getViewFields = async function (entity) {
   sql += `INNER JOIN pg_attribute a ON a.attrelid = c.oid `;
   sql += `INNER JOIN pg_type t ON t.oid = a.atttypid `;
   sql += `WHERE c.relkind = 'v' `;
-  sql += `AND c.relname = '${entity.view}'`;
+  sql += `AND c.relname = '${entity}'`;
  
 
 let result = await db.execute(sql);

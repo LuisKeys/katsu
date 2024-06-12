@@ -4,32 +4,55 @@
  * @module entity_finder
  */
 
+const openAI = require("openai");
+const openAIAPI = require("../openai/openai_api");
+
 var entities = []
+
+const openai = new openAI();
 
 /**
  * Finds the entity that matches the given prompt.
  * @param {string} prompt - The prompt to match against entity names and aliases.
  * @returns {Object|string} The matching entity object if found, or an empty string if not found.
  */
-const getEntity = function (prompt) {
+const getEntity = async function (prompt) {
+
+  let context = "";
+
+  context += `Which is the entity for the prompt '${prompt}' within the following list:`;
 
   let entities = loadEntities();
   for (let i = 0; i < entities.length; i++) {
     let entity = entities[i];
 
-    if (prompt.includes(entity.name)) {
-      return entity;
-    }
-
-    for (let j = 0; j < entity.alias.length; j++) {
-      let alias = entity.alias[j];
-      if (prompt.includes(alias)) {
-        return entity;
-      }
-    }
+    context += `-${entity.name}\n`;
   }
 
-  return '';
+  context += "\nExpress the result as a list of one or more elements.";
+  context += "\nUse strictly only the names in the list.";
+
+  const entitiesNames = await openAIAPI.ask(
+    openai,
+    context
+  );
+
+    let clentities = entitiesNames.split("\n");
+  clentities = clentities.map(entity => entity.replace(/-/g, "").replace(/\s/g, ""));
+
+  console.log("Entities: ", clentities);
+
+  let foundEntities = [];
+  for (let i = 0; i < entities.length; i++) {
+    let entity = entities[i];
+    for (let j = 0; j < clentities.length; j++) {
+      if (entity.name === clentities[j]) {
+        foundEntities.push(entity);        
+      }
+    }    
+  }
+
+  return foundEntities;
 }
 
 /**
@@ -39,92 +62,70 @@ const getEntity = function (prompt) {
 const loadEntities  = () => {
   const account = {
     name: "account",
-    alias: ["accounts", "account"],
     view : "v_account",
-    source: "salesforce",
     dispFields: []
   }
 
   const contact = {
     name: "contact",
-    alias: ["contacts", "contact"],
     view : "v_contact",
-    source: "salesforce",
     dispFields: ["lastname", "firstname", "phone", "email"]
   }
 
   const lead = { 
     name: "lead",
-    alias: ["leads", "lead"],
     view : "v_lead",
-    source: "salesforce",
     dispFields: ["lastname", "firstname", "company", "leadsource"]
   }
 
   const opportunity = {
     name: "opportunity",
-    alias: ["opportunities", "opportunitys"],
     view : "v_opportunity",
-    source: "salesforce",
     dispFields: ["name", "stagename", "amount", "probability"]
   }
 
   // Requires view
   const engagement = {
     name: "engagement",
-    alias: ["engagements", "projects", "project"],
     view : "v_engagement",
-    source: "salesforce",
     dispFields: ["name", "project_type", "total_project_amount"]
   }
 
   // Requires view
   const project_role = {
     name: "project_role",
-    alias: ["project_roles", "role", "roles"],
     view : "v_project_role",
-    source: "salesforce",
     dispFields: ["role", "customer_name", "bill_rate", "pay_rate"]
   }
 
   // Requires view
   const time_entry = {
     name: "time_entry",
-    alias: ["time entries", "time entry"],
     view : "v_time_entry",
-    source: "salesforce",
     dispFields: ["name", "engagementname", "contactname", "status"]
   }
 
   const engagement_approver = {
     name: "engagement_approver",
-    alias: ["engagement approvers", "engagement approver", "approver", "approvers"],
     view : "v_engagement_approver",
-    source: "salesforce",
     dispFields: ["name"]
   }
 
   const employees = {
     name: "employees",
-    alias: ["employees", "heads", "resources", "contractors", "ftes", "employee"],
     view : "v_employees",
-    source: "bamboohr",
     dispFields: ["firstname", "lastname", "mobilephone", "workemail"]
   }
 
   const links = {
     name: "links",
-    alias: ["links", "link"],
     view : "v_links",
-    source: "katsu",
     dispFields: []
   }
   
   const prompts_history = {
     name: "prompts_history",
-    alias: ["prompts_history", "prompt history", "prompts history"],
     view : "v_prompts_history",
-    source: "katsu",
     dispFields: ["prompt"]
   }
 

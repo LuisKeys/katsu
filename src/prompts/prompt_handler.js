@@ -35,7 +35,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
   }
 
   
-  const promptType = nlPromptType.getPromptType(prompt);  
+  const promptType = await nlPromptType.getPromptType(prompt);  
   let fileURL = '';
 
   const promptTr = cleanPrompt.cleanPrompt(prompt);
@@ -153,22 +153,10 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
   } else {
     // No data found
-    messages.push('No data found for your request.');
-    messages.push('Try the following Help prompts to get a list of possible valid prompts.');
+    messages.push('No data found for your request.\nPlease provide more context or try a different prompt.\nYou can also type \'Help\' to get a list of sample prompts.');
     let header = [];
 
-    if(promptType === constants.LLM) {
-      // Export prompt
-      messages = [];
-      result[memberId] = {rows:[{"Your answer here:":fileURL}], fields:[{name:"Your answer here:"}]};
-    } else {
-      result[memberId] = await help.getHelp(constants.HELP);
-    }
-
-    header = [];
-    for(i = 0; i < result[memberId].fields.length; i++) {
-      header.push(result[memberId].fields[i].name);
-    }
+    result[memberId] = {rows:[{"":""}], fields:[{name:"No data found for your request."}]};
 
     resultObject = resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum[memberId], isDebug);
     resultObject.lastPage = lastPage;

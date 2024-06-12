@@ -6,16 +6,15 @@
 const PAGE_SIZE = 20;
 
 const ALL = 'all';
-const EXCEL = 'excel';
-const FILE = 'file';
+const EXCEL = 'export excel';
+const FILE = 'search file operation';
 const HELP = 'help';
-const LINK = 'link';
-const LLM = 'llm';
-const PAGE = 'page';
-const PROMPT = 'prompt';
-const QUESTION = 'question';
-const REMINDER = 'reminder';
-const SORT = 'sort';
+const LINK = 'platforms link';
+const PAGE = 'result page command';
+const PROMPT = 'my prompts';
+const QUESTION = 'question prompt';
+const REMINDER = 'reminder operation';
+const SORT = 'result sort operation';
 
 module.exports = { 
   ALL,
@@ -23,7 +22,6 @@ module.exports = {
   FILE,
   HELP, 
   LINK,
-  LLM,
   PAGE,
   PAGE_SIZE,
   PROMPT,

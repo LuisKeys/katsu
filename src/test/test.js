@@ -13,12 +13,7 @@ const promptHandler = require("../prompts/prompt_handler");
       );
       return;
     } else {
-      let prompts = ["list all the active engagements", "list all sow files for alliance", "sort by found_files"];
-      // prompts = ["list all the active engagements", "list all sow files for alliance", "help link", "sort by engagement name", "export to excel"];
-      // prompts = ["help hr"];
-      // prompts = ["Provide a detailed job description for a Data Scientist, including soft and hard skills, and responsibilities from your llm"];
-      prompts = ["list all the leads created during the last couple of months", "next page"];
-      
+      let prompts = ["Who is tassi?"];      
 
       for (let i = 0; i < prompts.length; i++) {
         let prompt = prompts[i];
