@@ -162,7 +162,7 @@ const formatTableData = function (tableData) {
   const phoneColumns = getPhoneColumns(tableData);
   let formattedTableData = formatPhoneNumber(tableData, phoneColumns);
 
-  const numColumns = getNumericColumns(formattedTableData);
+  const numColumns = getNumericColumns(formattedTableData, phoneColumns);
   formattedTableData = formatNumericColumns(formattedTableData, numColumns);
 
   result = {tableData: formattedTableData, numColumns: numColumns};
@@ -199,7 +199,7 @@ const getPhoneColumns = function(tableData) {
  * @param {Array<Array<any>>} tableData - The table data.
  * @returns {Array<number>} - The indices of numeric columns.
  */
-const getNumericColumns = function(tableData) {
+const getNumericColumns = function(tableData, phoneColumns) {
   let numericColumns = [];
 
   const header = tableData[0];
@@ -215,7 +215,9 @@ const getNumericColumns = function(tableData) {
     }
     
     if(isNumeric) {
-      numericColumns.push(i);
+      if (!phoneColumns.includes(i)) {
+        numericColumns.push(i);
+      }      
     }
   }
   
