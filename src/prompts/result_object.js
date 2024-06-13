@@ -5,8 +5,12 @@
  * @module result_object
  */
 
-const constants = require("./constants");
+const openAIAPI = require("../openai/openai_api");
+const openAI = require("openai");
 const formatTable = require("../formatter/format_result");
+const constants = require("./constants");
+
+openai = new openAI();
 
 /**
  * Creates a result object with the given result and messages.
@@ -17,7 +21,7 @@ const formatTable = require("../formatter/format_result");
  * @param {boolean} isDebug - Indicates if debug mode is enabled.
  * @returns {Object} - The result object containing the result and messages.
  */
-const getResultObject = function (
+const getResultObject = async function (
   result,
   messages,
   promptType,
@@ -61,6 +65,16 @@ const getResultObject = function (
     pageNum
   );
 
+  // Convert result to a human user friendly text
+  if(result.rows.length == 1) { 
+    const answer = await getAnswer(resultObject.table)
+    resultObject.messages = [answer];
+  }
+
+  if (isDebug) {
+    console.log(resultObject.messages[0]);
+  }
+
   return resultObject;
 };
 
@@ -86,5 +100,17 @@ const render = function (resultObject, ismarkdown) {
 
   return output;
 };
+
+const getAnswer = async function (table) {
+  let prompt = "convert the following tabular result into a friendly text in one short paragraph:"
+  prompt += table;
+
+  let answer = await openAIAPI.ask(
+    openai,
+    prompt
+  );
+
+  return answer;
+}
 
 module.exports = { getResultObject, render };

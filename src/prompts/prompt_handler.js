@@ -31,7 +31,7 @@ let pageNum = [];
 const promptHandler = async (prompt, memberId, isDebug, memberName) => {    
   if(resultData[memberId]) {
   } else {
-    resultData[memberId] = {dispFields:[], result:{rows:[], fields:[]}};
+    resultData[memberId] = {dispFields:[], result:{rows:[], fields:[], requiresAnswer:false}};
   }
 
   
@@ -147,7 +147,7 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
       docUrl = fileURL;
     }
     
-    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum[memberId], isDebug);
+    resultObject = await resultObj.getResultObject(result[memberId], messages, promptType, resultData[memberId].dispFields, pageNum[memberId], isDebug);
     resultObject.lastPage = lastPage;
     resultObject.docUrl = docUrl;
 
@@ -158,11 +158,16 @@ const promptHandler = async (prompt, memberId, isDebug, memberName) => {
 
     result[memberId] = {rows:[{"":""}], fields:[{name:"No data found for your request."}]};
 
-    resultObject = resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum[memberId], isDebug);
+    resultObject = await resultObj.getResultObject(result[memberId], messages, promptType, header, pageNum[memberId], isDebug);
     resultObject.lastPage = lastPage;
     resultObject.docUrl = docUrl;
   }
   
+  // Add original prompt
+  resultObject.prompt = prompt;
+
+  resultObject.requiresAnswer = result[memberId].requiresAnswer;
+
   return resultObject;
 }
 

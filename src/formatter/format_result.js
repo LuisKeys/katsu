@@ -24,7 +24,7 @@ const getMarkDownTable = function(result, maxColumns, dispFields, isDebug, trunc
     }
   }
 
-  if (isDebug) {
+  if (isDebug) {    
     console.log(table);
   }
 

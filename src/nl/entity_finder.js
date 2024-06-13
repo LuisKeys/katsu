@@ -16,28 +16,27 @@ const openai = new openAI();
  * @param {string} prompt - The prompt to match against entity names and aliases.
  * @returns {Object|string} The matching entity object if found, or an empty string if not found.
  */
-const getEntity = async function (prompt) {
+const getEntities = async function (prompt) {
 
   let context = "";
 
-  context += `Which is the entity for the prompt '${prompt}' within the following list:`;
+  context += `Which of the following entities apply for the prompt='${prompt}':`;
 
   let entities = loadEntities();
   for (let i = 0; i < entities.length; i++) {
     let entity = entities[i];
 
-    context += `-${entity.name}\n`;
+    context += `${entity.name}, `;
   }
 
-  context += "\nExpress the result as a list of one or more elements.";
-  context += "\nUse strictly only the names in the list.";
+  context += ";express the result as a comma separated list of elements.More than one entity can be selected. Do not use any other";  
 
   const entitiesNames = await openAIAPI.ask(
     openai,
     context
   );
 
-    let clentities = entitiesNames.split("\n");
+    let clentities = entitiesNames.split(",");
   clentities = clentities.map(entity => entity.replace(/-/g, "").replace(/\s/g, ""));
 
   console.log("Entities: ", clentities);
@@ -151,4 +150,4 @@ const loadEntities  = () => {
   return entities;
 }
 
-module.exports = { getEntity };
+module.exports = { getEntities };

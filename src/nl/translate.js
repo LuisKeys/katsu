@@ -5,7 +5,6 @@
  */
 
 const finder = require("./entity_finder");
-const checkPrompt = require("../prompts/check_history");
 const dbFields = require("../db/db_get_fields");
 
 /**
@@ -40,7 +39,7 @@ const getLinkSQL = async function (prompt, rows) {
 const generateSQL = async function (openai, openaiapi, userPrompt, reflection, error) {
 
   // Get the entity from the prompt
-  const entities = await finder.getEntity(userPrompt, openai, openaiapi);
+  const entities = await finder.getEntities(userPrompt, openai, openaiapi);
   let result = {sql:"", dispFields:[]};
 
   if(entities.length == 0) {    

@@ -1,4 +1,3 @@
-
 /**
  * This module contains the handlers for different prompts types.
  * @module handlers
@@ -9,13 +8,14 @@ const db = require("../db/db_commands");
 const dbSortResult = require("../db/sort_result");
 const filesClean = require("../files/clean");
 const filesIndex = require("../files/files_index");
+const finder = require("../nl/entity_finder");
 const nl2sql = require("../nl/translate");
 const openAI = require("openai");
 const openAIAPI = require("../openai/openai_api");
 const pageCalc = require("./page_calc");
-const reminders= require("./reminders");
-const sortFieldFinder = require("../nl/sort_field_finder");
 const pageNL = require("../nl/page");
+const reminders = require("./reminders");
+const sortFieldFinder = require("../nl/sort_field_finder");
 const word = require("../word/create_word");
 
 openai = new openAI();
@@ -27,35 +27,70 @@ openai = new openAI();
  * @returns {Promise} - A promise that resolves to the result of the database query.
  */
 const questionHandler = async (prompt) => {
- 
-  let resultData = await getSQL(prompt, false, '');
+  let resultData = {dispFields: []};
+  resultData.result = { rows: [], fields: []};
+  resultData.sql = "";
+  resultData.requiresAnswer = true;
+  resultData.messages = [];
+  // Get the entities from the prompt
+  const entities = await finder.getEntities(prompt, openai, openAIAPI);
+  // const entities = ["leads", "contacts"];
+  // If it is only one entity, get the SQL
+  if (entities.length === 1) {
+    resultData = await getSQL(prompt, false, "");
 
-  // Reflection
-  if(resultData.result === null || resultData.result.rows.length === 0) {
-    const error = db.getError();
-    resultData = await getSQL(prompt, true, error);
+    // Reflection
+    if (resultData.result === null || resultData.result.rows.length === 0) {
+      const error = db.getError();
+      resultData = await getSQL(prompt, true, error);
+    }
+  } else {
+    // If there are multiple entities, ask the user to specify the entity    
+    resultData.result.fields = [{name:"source"}];
+    resultData.result.rows = [];
+    let msg = "Please specify where do you want me to search from the following options:"    
+    for(let i = 0; i < entities.length; i++) {
+      let record = {};
+      record.source = entities[i];
+      resultData.result.rows.push(record);
+      msg += entities[i] + ", ";
+    }
+    
+    msg = msg.slice(0, -2);
+    msg += ".";
+
+    resultData.messages.push(msg);
   }
 
   return resultData;
-}
-    
-     
+};
 
 const getSQL = async (prompt, reflection, error) => {
-  const resultSQL = await nl2sql.generateSQL(openai, openAIAPI, prompt, reflection, error);
-  sql = resultSQL.sql;  
+  const resultSQL = await nl2sql.generateSQL(
+    openai,
+    openAIAPI,
+    prompt,
+    reflection,
+    error
+  );
+  sql = resultSQL.sql;
   console.log(sql);
 
-  let resultData = {result:null, dispFields:[], sql:"", entity:""};
-  if(sql === '') {
+  let resultData = { result: null, dispFields: [], sql: "", entity: "" };
+  if (sql === "") {
     return resultData;
   }
   await db.connect();
   const result = await db.execute(sql);
   await db.close();
-  resultData = {result:result, dispFields:resultSQL.dispFields, sql:sql, entity:resultSQL.entity};
+  resultData = {
+    result: result,
+    dispFields: resultSQL.dispFields,
+    sql: sql,
+    entity: resultSQL.entity,
+  };
   return resultData;
-}
+};
 
 /**
  * Handles the LLM prompt.
@@ -65,23 +100,21 @@ const getSQL = async (prompt, reflection, error) => {
  */
 const llmHandler = async (prompt) => {
   let finalPrompt = prompt;
-  finalPrompt += "Format the output for a word document,  including '\n' char for new lines. Provide only the answer without any additional introduction or conclusion.";
+  finalPrompt +=
+    "Format the output for a word document,  including '\n' char for new lines. Provide only the answer without any additional introduction or conclusion.";
   // LLM prompt
-  let result = await openAIAPI.ask(
-    openai,
-    finalPrompt
-  );  
+  let result = await openAIAPI.ask(openai, finalPrompt);
 
   let url = "";
 
-  if(result.length > 100) {
+  if (result.length > 100) {
     url = await word.createWord(result);
   } else {
     url = result;
-  } 
+  }
 
   return url;
-}
+};
 
 /**
  * Handles the link prompt.
@@ -93,18 +126,17 @@ const linkHandler = async (prompt) => {
   // Link prompt
   let result;
   await db.connect();
-  if(prompt.includes(constants.ALL)) {
-    result = await db.execute('SELECT name, URL FROM links order by name');
-  }
-  else{    
-    result = await db.execute('SELECT words FROM links');
+  if (prompt.includes(constants.ALL)) {
+    result = await db.execute("SELECT name, URL FROM links order by name");
+  } else {
+    result = await db.execute("SELECT words FROM links");
     sql = await nl2sql.getLinkSQL(prompt, result.rows);
-    result = await db.execute(sql);    
+    result = await db.execute(sql);
   }
   await db.close();
 
   return result;
-}    
+};
 
 /**
  * Handles the sort prompt.
@@ -117,27 +149,24 @@ const sortHandler = async (prompt, result) => {
   // Sort prompt
   sortFields = [];
   sortFields = sortFieldFinder.getSortfield(prompt, result);
-  if (sortFields.length > 0){
+  if (sortFields.length > 0) {
     const sortDir = sortFieldFinder.getSortDirection(prompt);
     result.rows = dbSortResult.sortResult(result, sortFields, sortDir);
   }
 
   return result;
-}  
+};
 
 const filesHandler = async (prompt, result) => {
-
   let fullPrompt = "get the subject words for the prompt: '";
   fullPrompt += prompt;
-  fullPrompt += "'.Only answer with a list of single words separated with comma.";
+  fullPrompt +=
+    "'.Only answer with a list of single words separated with comma.";
   fullPrompt += "Ignore the words file, files, doc, documents or similar";
 
-  words = await openAIAPI.ask(
-    openai,
-    fullPrompt
-  );
+  words = await openAIAPI.ask(openai, fullPrompt);
 
-  const wordsList = words.split(',').map(word => word.trim());
+  const wordsList = words.split(",").map((word) => word.trim());
 
   const filesDir = process.env.FILES_FOLDER;
   // clean up not indexable files and folders
@@ -145,19 +174,19 @@ const filesHandler = async (prompt, result) => {
   // filesClean.cleanEmptyDirs(filesDir);
   // get file list
   let files = filesIndex.exploreFolder(filesDir);
-  
+
   files = filesIndex.searchFiles(files, wordsList);
 
   filesClean.cleanReports();
 
-  files = filesIndex.copyFilesToReports(files)
+  files = filesIndex.copyFilesToReports(files);
 
-  const headerTitle = "Found_Files"
-  result = {rows:[], fields:[]};
-  field = {name:headerTitle};
+  const headerTitle = "Found_Files";
+  result = { rows: [], fields: [] };
+  field = { name: headerTitle };
   result.fields.push(field);
 
-  for(let i = 0; i < files.length; i++) {
+  for (let i = 0; i < files.length; i++) {
     // File name
     let record = {};
     record[headerTitle] = files[i].fileName;
@@ -167,33 +196,48 @@ const filesHandler = async (prompt, result) => {
     record[headerTitle] = files[i].urlPath;
     result.rows.push(record);
     // separator
-    record = {};    
-    record[headerTitle] = '----------------------------------------';
+    record = {};
+    record[headerTitle] = "----------------------------------------";
     result.rows.push(record);
   }
-  
+
   return result;
-} 
+};
 
 const remindersHandler = async (prompt, memberId) => {
   const action = await reminders.getReminderAction(openai, openAIAPI, prompt);
   let result = null;
-  switch(action) {
-    case 'create':
-      result = await reminders.createReminder(openai, openAIAPI, prompt, memberId);
+  switch (action) {
+    case "create":
+      result = await reminders.createReminder(
+        openai,
+        openAIAPI,
+        prompt,
+        memberId
+      );
       break;
-    case 'delete':
-      result = await reminders.deleteReminder(openai, openAIAPI, prompt, memberId);
+    case "delete":
+      result = await reminders.deleteReminder(
+        openai,
+        openAIAPI,
+        prompt,
+        memberId
+      );
       break;
-    case 'list':
-      result = await reminders.listReminders(openai, openAIAPI, prompt, memberId);
+    case "list":
+      result = await reminders.listReminders(
+        openai,
+        openAIAPI,
+        prompt,
+        memberId
+      );
       break;
     default:
       break;
   }
-  
+
   return result;
-}
+};
 
 /**
  * Handles the page prompt.
@@ -204,9 +248,9 @@ const remindersHandler = async (prompt, memberId) => {
  */
 const pageHandler = (prompt, pageNum, result) => {
   // Pages prompt
-  const cmd = pageNL.getPageCommand(prompt);  
+  const cmd = pageNL.getPageCommand(prompt);
   let page = 1;
-  switch(cmd) {
+  switch (cmd) {
     case pageNL.PAGE_LAST:
       page = pageCalc.getLastPage(result);
       break;
@@ -216,23 +260,22 @@ const pageHandler = (prompt, pageNum, result) => {
     case pageNL.PAGE_PREV:
       page = pageCalc.getPrevPage(pageNum);
       break;
-      case pageNL.PAGE_NUMBER:
-        page = pageNL.getPageNumber(prompt);
-        if(page < 1) {
-          page = 1;
-        }
-        if(page > pageCalc.getLastPage(result)) {
-          page = pageCalc.getLastPage(result);
-        }
-        break;
-      default:
-      page = 1
+    case pageNL.PAGE_NUMBER:
+      page = pageNL.getPageNumber(prompt);
+      if (page < 1) {
+        page = 1;
+      }
+      if (page > pageCalc.getLastPage(result)) {
+        page = pageCalc.getLastPage(result);
+      }
+      break;
+    default:
+      page = 1;
       break;
   }
-  
-  return page;
-}  
 
+  return page;
+};
 
 module.exports = {
   questionHandler,
@@ -241,5 +284,5 @@ module.exports = {
   filesHandler,
   llmHandler,
   pageHandler,
-  remindersHandler
+  remindersHandler,
 };

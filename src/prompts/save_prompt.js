@@ -19,9 +19,8 @@ const savePrompt = async (memberId, prompt, sql, rowsCount, memberName, promptTy
   insertSQL += `values (${memberId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${memberName}', '${promptClean}', '${promptType}') `;
   
   await db.connect();
-  const result = await db.execute(insertSQL, [memberId, promptSafe, sqlSafe, rowsCount]);
+  await db.execute(insertSQL, [memberId, promptSafe, sqlSafe, rowsCount]);
   await db.close(); 
-
 }
 
 /**
