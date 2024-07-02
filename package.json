@@ -4,7 +4,9 @@
   "description": "AskMe slack app",
   "main": "app.js",
   "scripts": {
-    "run": "node app.js"
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "ts-node src/app.ts"
   },
   "repository": {
     "type": "git",
@@ -29,5 +31,10 @@
     "jsonwebtoken": "^9.0.2",
     "openai": "^4.26.0",
     "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
   }
 }

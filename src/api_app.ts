@@ -1,13 +1,13 @@
 import express, { Request, Response } from "express";
-import { promptHandler } from "./src/prompts/prompt_handler";
-import { authUser } from "./src/authentication/auth_user";
-import { generateToken } from "./src/authentication/token";
-import { validateToken } from "./src/authentication/token";
-import { getPayloadFromToken } from "./src/authentication/token";
-import { transfResAPI } from "./src/prompts/api_transf";
+import { promptHandler } from "./prompts/prompt_handler";
+import { authUser } from "./authentication/auth_user";
+import { generateToken } from "./authentication/token";
+import { validateToken } from "./authentication/token";
+import { getPayloadFromToken } from "./authentication/token";
+import { transfResAPI } from "./prompts/api_transf";
 import openai from "openai";
 import dotenv from "dotenv";
-import { ResultObject } from "./src/prompts/result_object";
+import { ResultObject } from "./prompts/result_object";
 
 /**
  * Module for initializing the API application.
