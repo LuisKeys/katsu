@@ -1,13 +1,14 @@
 import { formatPhoneNumberFieldUS, formatPhoneNumberFieldLA } from "./phone_formatter";
 import { formatNumber } from "./number_formatter";
+import { ResultObject } from "../prompts/result_object";
 
 /**
  * Formats the API result by applying formatting rules to numeric and phone columns.
  *
- * @param {Object[]} result - The API result to be formatted.
+ * @param {ResultObject} result - The API result to be formatted.
  * @returns {Object[]} The formatted API result.
  */
-const formatAPIResult = function (result: Object[]): Object[] {
+const formatAPIResult = function (result: ResultObject): ResultObject {
   const numColumns = getNumericColumns(result);
   result = formatNumericColumns(result, numColumns);
 
@@ -20,7 +21,7 @@ const formatAPIResult = function (result: Object[]): Object[] {
   return result;
 };
 
-const formatCurrency = function (result: Object[], numColumns: number[]): Object[] {
+const formatCurrency = function (result: ResultObject, numColumns: number[]): ResultObject {
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = '$' + result.rows[i][numColumns[j]];
@@ -30,7 +31,7 @@ const formatCurrency = function (result: Object[], numColumns: number[]): Object
   return result;
 };
 
-const formatNumericColumns = function (result: Object[], numColumns: number[]): Object[] {
+const formatNumericColumns = function (result: ResultObject, numColumns: number[]): ResultObject {
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = formatNumber(
@@ -42,7 +43,7 @@ const formatNumericColumns = function (result: Object[], numColumns: number[]): 
   return result;
 };
 
-const getNumericColumns = function (result: Object[]): number[] {
+const getNumericColumns = function (result: ResultObject): number[] {
   let numericColumns: number[] = [];
 
   const header = result.rows[0];
@@ -65,7 +66,7 @@ const getNumericColumns = function (result: Object[]): number[] {
   return numericColumns;
 };
 
-const formatPhoneNumber = function (result: Object[], numColumns: number[]): Object[] {
+const formatPhoneNumber = function (result: ResultObject, numColumns: number[]): ResultObject {
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       const number = result.rows[i][numColumns[j]];
@@ -89,7 +90,7 @@ const formatPhoneNumber = function (result: Object[], numColumns: number[]): Obj
   return result;
 };
 
-const getPhoneColumns = function (result: Object[]): number[] {
+const getPhoneColumns = function (result: ResultObject): number[] {
   let phoneColumns: number[] = [];
 
   const header = result.rows[0];
@@ -105,7 +106,7 @@ const getPhoneColumns = function (result: Object[]): number[] {
   return phoneColumns;
 };
 
-const getCurrencyColumns = function (result: Object[]): number[] {
+const getCurrencyColumns = function (result: ResultObject): number[] {
   let currencyColumns: number[] = [];
 
   const header = result.rows[0];

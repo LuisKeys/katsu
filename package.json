@@ -1,8 +1,9 @@
 {
-  "name": "askme",
+  "name": "katsu",
   "version": "1.0.0",
-  "description": "AskMe slack app",
-  "main": "app.js",
+  "description": "Katsu api",
+  "main": "src/app.ts",
+  "typings": "dist/src/*.d.ts",
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
+    "@types/pg": "^8.11.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   }

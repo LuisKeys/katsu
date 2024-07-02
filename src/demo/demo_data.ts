@@ -1,6 +1,6 @@
 import { getLastName, getFirstName, getPhone } from "./people_data";
 import { getCompanyName, getEmail, getAmount } from "./company_data";
-import { Result } from "../prompts/result_object";
+import { ResultObject } from "../prompts/result_object";
 
 /**
  * Replaces demo values in the table data.
@@ -8,9 +8,9 @@ import { Result } from "../prompts/result_object";
  * @param {string} entityName - The name of the entity.
  * @returns {Array<Array<string>>} - The modified table data.
  */
-const replaceDemoValues = (result: Result, entityName: string): Result => {
+const replaceDemoValues = (result: ResultObject, entityName: string): ResultObject => {
   if (result) {
-    const fieldNames = result[0];
+    const fieldNames = result.fields;
 
     const lastNameIndex = fieldNames.findIndex(
       (field) => field === "lastname"
@@ -63,31 +63,31 @@ const replaceDemoValues = (result: Result, entityName: string): Result => {
       const amount = getAmount();
 
       if (lastNameIndex !== -1) {
-        result[i][lastNameIndex] = lastName;
+        result.rows[i][lastNameIndex] = lastName;
       }
 
       if (firstNameIndex !== -1) {
-        result[i][firstNameIndex] = firstName;
+        result.rows[i][firstNameIndex] = firstName;
       }
 
       if (emailFields.length > 0) {
         for (let j = 0; j < emailFields.length; j++) {
-          result[i][fieldNames.indexOf(emailFields[j])] = email;
+          result.rows[i][fieldNames.indexOf(emailFields[j])] = email;
         }
       }
 
       if (phoneFields.length > 0) {
         for (let j = 0; j < phoneFields.length; j++) {
-          result[i][fieldNames.indexOf(phoneFields[j])] = phone;
+          result.rows[i][fieldNames.indexOf(phoneFields[j])] = phone;
         }
       }
 
       if (fullNameIndex !== -1) {
-        result[i][fullNameIndex] = `${firstName} ${lastName}`;
+        result.rows[i][fullNameIndex] = `${firstName} ${lastName}`;
       }
 
       if (companyIndex !== -1) {
-        result[i][companyIndex] = companyName;
+        result.rows[i][companyIndex] = companyName;
       }
 
       if (nameIndex !== -1) {
@@ -97,16 +97,16 @@ const replaceDemoValues = (result: Result, entityName: string): Result => {
           name = companyName;
         }
 
-        result[i][nameIndex] = name;
+        result.rows[i][nameIndex] = name;
       }
 
       if (customerNameIndex !== -1 && entityName === "project_role") {
-        result[i][customerNameIndex] = companyName;
+        result.rows[i][customerNameIndex] = companyName;
       }
 
       if (amountFields.length > 0) {
         for (let j = 0; j < amountFields.length; j++) {
-          result[i][fieldNames.indexOf(amountFields[j])] = amount;
+          result.rows[i][fieldNames.indexOf(amountFields[j])] = amount;
         }
       }
     }

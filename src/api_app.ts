@@ -49,8 +49,8 @@ const apiApp = function (): void {
       } else {
         throw new Error("Invalid credentials");
       }
-    } catch (error) {
-      res.status(401).json({ message: error.message });
+    } catch (error: any) {
+      res.status(401).json({ message: error["message"] });
     }
   });
 
@@ -82,8 +82,8 @@ const apiApp = function (): void {
       }
 
       res.status(200).json({ answer: result });
-    } catch (error) {
-      res.status(401).json({ message: error.message });
+    } catch (error: any) {
+      res.status(401).json({ message: error["message"] });
     }
   });
 

@@ -14,7 +14,7 @@ import * as filesName from '../files/file_name';
  * @param {Object} result - The data to be included in the Excel file.
  * @returns {string} The filename of the created Excel file.
  */
-const createExcel = function(result: any): string {
+const createExcel = function (result: any): string {
   const wb = new excel.Workbook();
   const ws = wb.addWorksheet('KATSU Report');
   let fileName = excelFileName();
@@ -84,7 +84,7 @@ const createExcel = function(result: any): string {
  * Generates a unique filename for the Excel file based on the current date and time.
  * @returns {string} The generated filename.
  */
-const excelFileName = function(): string {
+const excelFileName = function (): string {
   const fileName = filesName.randomFileName('xlsx');
 
   return fileName;

@@ -3,8 +3,6 @@
  * @module prompts/constants
  */
 
-const PAGE_SIZE = 20;
-
 const ALL = 'all';
 const EXCEL = 'export excel';
 const FILE = 'search file operation';

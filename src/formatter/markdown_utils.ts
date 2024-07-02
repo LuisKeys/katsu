@@ -14,6 +14,7 @@ const getTableData = function (
   allRows: boolean
 ) {
   let tableData: any[] = [];
+  const pageSize = Number(process.env.RESULT_PAGE_SIZE);
 
   // Get the header
   let header: string[] = [];
@@ -38,8 +39,8 @@ const getTableData = function (
   tableData.push(header);
 
   // Get the rows
-  let startIndex = (pageNum - 1) * constants.PAGE_SIZE;
-  let endIndex = startIndex + constants.PAGE_SIZE;
+  let startIndex = (pageNum - 1) * pageSize;
+  let endIndex = startIndex + pageSize;
 
   if (allRows) {
     startIndex = 0;
@@ -66,7 +67,7 @@ const getTableData = function (
  */
 const getColumnWidths = function (tableData: any[]) {
   let columnWidths: number[] = [];
-  const maxColumnWidth:number = Number(process.env.MAX_COLUMN_WIDTH);
+  const maxColumnWidth: number = Number(process.env.MAX_COLUMN_WIDTH);
 
   for (let row of tableData) {
     for (let i = 0; i < row.length; i++) {

@@ -16,7 +16,7 @@ const connect = async function (): Promise<void> {
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
-    port: process.env.POSTGRES_PORT,
+    port: Number(process.env.POSTGRES_PORT),
   });
 
   try {
@@ -34,13 +34,13 @@ const connect = async function (): Promise<void> {
  * @param {string} sql - The SQL statement to execute.
  * @returns {Promise<QueryResult>} - The result of the SQL query.
  */
-const execute = async function (sql: string): Promise<QueryResult> {
+const execute = async function (sql: string): Promise<QueryResult | null> {
   const client = new Client({
     user: process.env.POSTGRES_USER,
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
-    port: process.env.POSTGRES_PORT,
+    port: Number(process.env.POSTGRES_PORT),
   });
 
   try {
@@ -49,10 +49,10 @@ const execute = async function (sql: string): Promise<QueryResult> {
     await client.connect();
     const rows = await client.query(sql);
     return rows;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error with sql", sql);
     console.error("Error with database operation", error);
-    gerror = error.message;
+    gerror = error["message"];
     return null;
   } finally {
     await client.end();
@@ -69,7 +69,7 @@ const close = async function (): Promise<void> {
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
-    port: process.env.POSTGRES_PORT,
+    port: Number(process.env.POSTGRES_PORT),
   });
 
   try {

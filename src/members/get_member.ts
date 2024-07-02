@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
 
 /**
@@ -8,12 +9,12 @@ import { connect, close, execute } from "../db/db_commands";
 const getMemberId = async (email: string): Promise<number> => {
   const sql = `SELECT id FROM members WHERE email = '${email}'`;
   await connect();
-  const result = await execute(sql);
-  await close();
+  const result: QueryResult | null = await execute(sql);
 
-  if (result.rows.length > 0) {
+  if (result !== null && result.rows !== null && result.rows.length > 0) {
     return result.rows[0].id as number;
   }
+  await close();
 
   return -1;
 }

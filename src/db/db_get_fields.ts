@@ -1,4 +1,5 @@
 import * as db from "./db_commands";
+import { QueryResult } from 'pg';
 
 /**
  * @file This module contains a function to retrieve the fields of a database view.
@@ -23,7 +24,12 @@ const getViewFields = async function (entityName: string): Promise<string[]> {
   sql += `WHERE c.relkind = 'v' `;
   sql += `AND c.relname = '${entityName}'`;
 
-  let result = await db.execute(sql);
+  let result: QueryResult | null = await db.execute(sql);
+
+  if (result === null) {
+    db.close();
+    return fields;
+  }
 
   for (let i = 0; i < result.rows.length; i++) {
     fields.push(result.rows[i].attname);

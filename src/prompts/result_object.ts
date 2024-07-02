@@ -79,6 +79,8 @@ const getResultObjectByUser = function (userId: number, results: ResultObject[])
       return results[i];
     }
   }
+
+  return results[0];
 }
 
 const setResultObjectByUser = function (userId: number, result: ResultObject, results: ResultObject[]): ResultObject[] {
