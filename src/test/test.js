@@ -13,7 +13,7 @@ const promptHandler = require("../prompts/prompt_handler");
       );
       return;
     } else {
-      let prompts = ["Who is employee paradela?"];      
+      let prompts = ["Who is employee paradela?"];
 
       for (let i = 0; i < prompts.length; i++) {
         let prompt = prompts[i];

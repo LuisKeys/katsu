@@ -19,6 +19,9 @@ const transfResultObj = function(resultObject, output) {
   output.promptType = resultObject.promptType;  
   output.docUrl = resultObject.docUrl;
 
+  output.prompt = resultObject.prompt;
+  output.requiresAnswer = resultObject.requiresAnswer;
+
   delete output.dispFields;  
   return output;
 }

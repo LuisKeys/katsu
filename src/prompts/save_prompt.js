@@ -12,6 +12,9 @@ const db = require("../db/db_commands");
 const savePrompt = async (memberId, prompt, sql, rowsCount, memberName, promptType) => {
 
   const promptSafe = prompt.replace(/'/g, "''");
+  if (!sql) {
+    sql = "";
+  }
   const sqlSafe = sql.replace(/'/g, "''");  
   let insertSQL = "insert into prompts_history ";
   insertSQL += "(userId, prompt, SQL, rows_count, member_name, prompt_cmp, prompt_type) ";

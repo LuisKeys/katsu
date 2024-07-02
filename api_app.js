@@ -4,7 +4,7 @@
  */
 
 const express = require("express");
-const promptHandler = require("./src/prompts/prompt_handler");
+const { promptHandler } = require("./src/prompts/prompt_handler");
 const { authUser } = require("./src/authentication/auth_user");
 const { generateToken } = require("./src/authentication/token");
 const { validateToken } = require("./src/authentication/token");
@@ -51,7 +51,7 @@ const apiApp = function () {
   });
 
   /**
-   * Handles the auth route.
+   * Handles the prompt route.
    * @name POST /prompt
    * @function
    * @param {Object} req - The request object.
@@ -87,7 +87,7 @@ const apiApp = function () {
    * @param {number} port - The port number to listen on.
    */
   app.listen(port, () => {
-    console.log(`api listening at http://localhost:${port}`);
+    console.log(`api listening at port:${port}`);
   });
 };
 
@@ -98,7 +98,7 @@ const askPrompt = async (prompt, user, memberId, openai, openaiapi) => {
     );
   } else {
     const userName = process.env.AUTH_USER;    
-    let result = await promptHandler.promptHandler(
+    let result = await promptHandler(
       prompt,
       memberId,
       false,
