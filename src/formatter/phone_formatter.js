@@ -1,0 +1,64 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatPhoneNumberFieldLA = exports.formatPhoneNumberFieldUS = exports.formatPhoneNumber = void 0;
+/**
+ * Formats the phone number columns in the table data.
+ *
+ * @param {Array<Array<any>>} tableData - The table data array.
+ * @param {Array<number>} numColumns - The indices of the phone number columns.
+ * @returns {Array<Array<any>>} - The formatted table data array.
+ */
+var formatPhoneNumber = function (tableData, numColumns) {
+    for (var i = 1; i < tableData.length; i++) {
+        for (var j = 0; j < numColumns.length; j++) {
+            var number = tableData[i][numColumns[j]];
+            if (number) {
+                var numberDigitsOnly = number.replace(/\D/g, "");
+                if (numberDigitsOnly.length === 11 && numberDigitsOnly[0] === "1") {
+                    tableData[i][numColumns[j]] = formatPhoneNumberFieldUS(number);
+                }
+                if (numberDigitsOnly.length >= 12 && numberDigitsOnly[0] != "1") {
+                    tableData[i][numColumns[j]] = formatPhoneNumberFieldLA(number);
+                }
+                if (numberDigitsOnly.length < 12 && numberDigitsOnly[0] != "1") {
+                    tableData[i][numColumns[j]] = numberDigitsOnly;
+                }
+            }
+            else {
+                tableData[i][numColumns[j]] = "";
+            }
+        }
+    }
+    return tableData;
+};
+exports.formatPhoneNumber = formatPhoneNumber;
+/**
+ * Formats a phone number field.
+ * @param {string} phoneNumber - The phone number field.
+ * @returns {string} - The formatted phone number.
+ */
+/**
+ * Formats a phone number field for US numbers.
+ * @param {string} phoneNumber - The phone number field.
+ * @returns {string} - The formatted phone number.
+ */
+var formatPhoneNumberFieldUS = function (phoneNumber) {
+    // Remove all non-digit characters from the phone number
+    var digitsOnly = phoneNumber.replace(/\D/g, "");
+    // Format the phone number with parentheses and dashes
+    var formattedPhoneNumber = digitsOnly.replace(/(\d{1})(\d{3})(\d{3})(\d{4})/, "+$1 ($2) $3-$4");
+    return formattedPhoneNumber;
+};
+exports.formatPhoneNumberFieldUS = formatPhoneNumberFieldUS;
+/**
+ * Formats a phone number field for non-US numbers.
+ * @param {string} phoneNumber - The phone number field.
+ * @returns {string} - The formatted phone number.
+ */
+var formatPhoneNumberFieldLA = function (phoneNumber) {
+    var digitsOnly = phoneNumber.replace(/\D/g, "");
+    var formattedPhoneNumber = digitsOnly.slice(0, 2) + " " + digitsOnly.slice(2);
+    formattedPhoneNumber = "+" + formattedPhoneNumber;
+    return formattedPhoneNumber;
+};
+exports.formatPhoneNumberFieldLA = formatPhoneNumberFieldLA;

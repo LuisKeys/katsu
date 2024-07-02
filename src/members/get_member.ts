@@ -19,6 +19,4 @@ const getMemberId = async (email: string): Promise<number> => {
   return -1;
 }
 
-export default {
-  getMemberId
-};
+export { getMemberId };

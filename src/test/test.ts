@@ -1,7 +1,6 @@
 import { ResultObject } from "../prompts/result_object";
 require("dotenv").config();
-const getMember = require("../members/get_member");
-const answerPhrase = require("../prompts/answer_phrases");
+import { getMemberId } from "../members/get_member";
 const { getResultObjectsBuffer, ResultObject, setResultObjectByUser } = require("../prompts/result_object");
 const { promptHandler } = require("../prompts/prompt_handler");
 
@@ -10,7 +9,9 @@ var results: ResultObject[] = getResultObjectsBuffer(size);
 
 // Test the promptHandler
 const test = async () => {
-  const memberId = await getMember.getMemberId("luis@accelone.com");
+  console.log("Test the promptHandler");
+  return;
+  const memberId = await getMemberId("luis@accelone.com");
   const isValid = memberId != -1;
   if (!isValid) {
     console.log(

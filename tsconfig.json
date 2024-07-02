@@ -1,7 +1,22 @@
 {
+  "ts-node": {
+    "compilerOptions": {
+      "target": "ES2022",
+      "module": "CommonJS",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "strict": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "moduleResolution": "node",
+      "skipLibCheck": true,
+      "resolveJsonModule": true,
+      "sourceMap": true
+    }
+  },
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "target": "ES2022",
+    "module": "CommonJS",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -9,13 +24,13 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
   "include": [
     "./src/**/*.ts"
   ],
   "exclude": [
-    "./typings",
     "node_modules",
     "**/*.spec.ts"
   ]
