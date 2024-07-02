@@ -2,15 +2,23 @@ import { readdirSync, statSync, readFileSync, writeFileSync } from 'fs';
 import { join, extname } from 'path';
 import crypto from 'crypto';
 
+type FileObject = {
+  fileName: string;
+  extension: string;
+  size: number;
+  date: Date;
+  relativePath: string;
+  urlPath: string;
+};
+
 /**
  * Explores a folder and returns a list of files in the directory.
  * @param {string} directory - The path of the directory to explore.
  * @returns {Array<Object>} - An array of file objects containing information about each file.
  */
-function exploreFolder(directory: string): Array<Object> {
+function exploreFolder(directory: string): FileObject[] {
   const files = readdirSync(directory);
-  const fileList: Array<Object> = [];
-  const baseFilesURL = process.env.FILES_BASE_URL;
+  const fileList: FileObject[] = [];
   const root = process.env.FILES_FOLDER;
 
   files.forEach((file) => {
@@ -45,8 +53,8 @@ function exploreFolder(directory: string): Array<Object> {
  * @param {Array<string>} words - The list of words to search for.
  * @returns {Array<string>} - An array of file names that match the search criteria.
  */
-function searchFiles(files: Array<Object>, words: Array<string>): Array<string> {
-  const searchResults: Array<string> = [];
+function searchFiles(files: FileObject[], words: Array<string>): FileObject[] {
+  const searchResults: FileObject[] = [];
 
   files.forEach((file) => {
     const fileName = (file as any).fileName.toLowerCase();
@@ -62,7 +70,7 @@ function searchFiles(files: Array<Object>, words: Array<string>): Array<string> 
     const containsWords = count >= 1;
 
     if (containsWords) {
-      searchResults.push((file as any).fileName);
+      searchResults.push(file);
     }
   });
 
@@ -74,12 +82,12 @@ function searchFiles(files: Array<Object>, words: Array<string>): Array<string> 
  * @param {Array<Object>} files - The list of file objects to copy.
  * @returns {Array<Object>} - An array of file objects with updated URL paths.
  */
-function copyFilesToReports(files: Array<Object>): Array<Object> {
+function copyFilesToReports(files: FileObject[]): FileObject[] {
   const copyFolder = process.env.FILES_COPY_FOLDER;
   const reportsUrl = process.env.REPORTS_URL;
   const filesFolder = process.env.FILES_FOLDER;
 
-  const updatedFiles: Array<Object> = [];
+  const updatedFiles: FileObject[] = [];
 
   files.forEach((file) => {
     const { fileName, extension, relativePath, urlPath } = file as any;
@@ -108,6 +116,7 @@ function copyFilesToReports(files: Array<Object>): Array<Object> {
 
 export {
   exploreFolder,
+  FileObject,
   searchFiles,
   copyFilesToReports
 };

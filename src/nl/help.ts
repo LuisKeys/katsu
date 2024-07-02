@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
 import { HELP } from "../prompts/constants";
 
@@ -30,10 +31,10 @@ const getHelp = async function (prompt: string): Promise<any> {
  * @param {string} prompt - The prompt to search for in the help table.
  * @returns {Promise<Array>} - A promise that resolves to an array of help items.
  */
-const getHelpList = async function (prompt: string): Promise<Array<any>> {
+const getHelpList = async function (prompt: string): Promise<QueryResult | null> {
   const sql = `SELECT sample_prompt As "Prompts for ${prompt}" FROM help where topic = '${prompt}' ORDER BY sample_prompt`;
   await connect();
-  const result = await execute(sql);
+  const result: QueryResult | null = await execute(sql);
   await close();
 
   return result;

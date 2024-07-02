@@ -1,4 +1,4 @@
-import { PAGE_SIZE } from "./constants";
+import { PageSize } from "docx";
 import { ResultObject } from "./result_object";
 
 /**
@@ -8,7 +8,8 @@ import { ResultObject } from "./result_object";
  * @returns {number} The last page number.
  */
 const getLastPage = (result: ResultObject): number => {
-  const lastPage = Math.ceil(result.rows.length / PAGE_SIZE);
+  const pageSize = Number(process.env.PAGE_SIZE);
+  const lastPage = Math.ceil(result.rows.length / pageSize);
   return lastPage;
 };
 

@@ -3,21 +3,23 @@
  * @module sort_field_finder
  */
 
+import { ResultObject } from "../prompts/result_object";
+
 /**
  * Finds the sort field based on a prompt and a result object.
  * @param {string} prompt - The prompt to search for in the field names.
  * @param {object} result - The result object containing the fields.
  * @returns {string[]} - An array of sort field names if found, or an empty array if not found.
  */
-const getSortfield = (prompt: string, result: { fields: { name: string }[] }): string[] => {
+const getSortfield = (result: ResultObject): string[] => {
   let sortFields: string[] = [];
-  let sanitizedPrompt = prompt.replace(/[^a-zA-Z0-9\s'"_]/g, "");
+  let sanitizedPrompt = result.prompt.replace(/[^a-zA-Z0-9\s'"_]/g, "");
   let promptWords = sanitizedPrompt.split(" ").map((word) => word.trim());
   for (let i = 0; i < promptWords.length; i++) {
     let word = promptWords[i].toLowerCase();
     for (let field of result.fields) {
-      if (word.toLowerCase() === field.name.toLowerCase()) {
-        sortFields.push(field.name);
+      if (word.toLowerCase() === field.toLowerCase()) {
+        sortFields.push(field);
       }
     }
   }
@@ -35,7 +37,7 @@ const getSortfield = (prompt: string, result: { fields: { name: string }[] }): s
         if (index >= result.fields.length) {
           index = result.fields.length - 1;
         }
-        sortFields.push(result.fields[index].name);
+        sortFields.push(result.fields[index]);
       }
     }
   }

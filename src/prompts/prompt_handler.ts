@@ -25,7 +25,10 @@ import { getResultObjectByUser, ResultObject } from "./result_object";
 const promptHandler = async function (prompt: string, userId: number, isDebug: boolean, results: ResultObject[]): Promise<ResultObject> {
 
   // Get the result object for the user
-  let result: ResultObject = getResultObjectByUser(userId, results);
+  let result: ResultObject | null = getResultObjectByUser(userId, results);
+  if (result === null) {
+    result = results[0];
+  }
 
   const promptType = await nlPromptType.getPromptType(prompt);
   let fileURL = '';
@@ -37,7 +40,7 @@ const promptHandler = async function (prompt: string, userId: number, isDebug: b
   if (promptType === constants.QUESTION) {
     // Question prompt
     result.pageNum = 1;
-    result = await handlers.questionHandler(promptTr);
+    result = await handlers.questionHandler(result);
 
     if (process.env.DEMO_MODE == "true") {
       result = demoData.replaceDemoValues(result, result.entity.name);
@@ -46,57 +49,66 @@ const promptHandler = async function (prompt: string, userId: number, isDebug: b
 
   if (promptType === constants.LLM) {
     // LLM prompt
-    result = await llmHandlerCall(promptTr, userId, result, promptType);
+    result = await llmHandlerCall(result);
   }
 
   if (promptType === constants.EXCEL) {
     // Excel prompt
-    fileURL = await excelHandlerCall(promptTr, userId, result);
+    fileURL = await excelHandlerCall(result);
   }
 
   if (promptType === constants.LINK) {
     // Link prompt
-    result[userId] = await handlers.linkHandler(promptTr);
+    result = await handlers.linkHandler(result);
   }
 
   if (promptType === constants.SORT) {
     // Sort prompt
-    result[userId] = await handlers.sortHandler(promptTr, result[userId]);
-
+    result = await handlers.sortHandler(result);
   }
 
   if (promptType === constants.PAGE) {
     // Page prompt
-    result.pageNum = handlers.pageHandler(promptTr, result);
-    await savePrompt.savePrompt(result);
+    if (result != null) {
+      result.pageNum = handlers.pageHandler(result);
+      await savePrompt.savePrompt(result);
+    }
+
   }
 
   if (promptType === constants.FILE) {
     // File prompt
-    result.dispFields = [];
-    result = await handlers.filesHandler(promptTr);
+    if (result != null) {
+      result.dispFields = [];
+      result = await handlers.filesHandler(result);
+    }
 
   }
 
   if (promptType === constants.HELP) {
     // Sort prompt
-    result.dispFields = [];
-    result = await help.getHelp(promptTr);
-
+    if (result != null) {
+      result.dispFields = [];
+      result = await help.getHelp(promptTr);
+    }
   }
 
   if (promptType === constants.PROMPT) {
     // Sort prompt
-    result.dispFields = [];
-    result = await promptsHistory.listHistory(userId);
+    if (result != null) {
+      result.dispFields = [];
+      result = await promptsHistory.listHistory(result);
+    }
   }
 
   if (promptType != constants.QUESTION && promptType != constants.PAGE) {
-    result.pageNum = 1;
+    if (result != null) { result.pageNum = 1; }
   }
 
-  if (result[userId]) {
+  if (result != null) {
     await savePrompt.savePrompt(result);
+  } else {
+    throw new Error("Result is null.");
   }
 
   // Format the result

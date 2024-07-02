@@ -2,6 +2,7 @@ import * as clean from '../files/clean';
 import * as excel from 'excel4node';
 import * as mdUtils from '../formatter/markdown_utils';
 import * as filesName from '../files/file_name';
+import { ResultObject } from '../prompts/result_object';
 
 /**
  * @file Creates an Excel file with the provided data.
@@ -14,14 +15,14 @@ import * as filesName from '../files/file_name';
  * @param {Object} result - The data to be included in the Excel file.
  * @returns {string} The filename of the created Excel file.
  */
-const createExcel = function (result: any): string {
+const createExcel = function (result: ResultObject): string {
   const wb = new excel.Workbook();
   const ws = wb.addWorksheet('KATSU Report');
   let fileName = excelFileName();
   const folder = process.env.REPORTS_FOLDER;
   const fullPath = `${folder}/` + fileName;
 
-  let tableData = mdUtils.getTableData(result, [], 1000, 1, true);
+  let tableData = mdUtils.getTableData(result, true);
   let columnWidths = mdUtils.getColumnWidths(tableData);
 
   const headerStyle = wb.createStyle({

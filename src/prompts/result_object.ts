@@ -1,6 +1,7 @@
 import { ask } from "../openai/openai_api";
 import { Entity } from "../nl/entity_finder";
 import openAI from "openai";
+import { QueryResult } from "pg";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -16,10 +17,11 @@ type ResultObject = {
   entity: Entity
   fields: string[];
   fileURL: string;
+  lastPage: number;
   pageNum: number;
   prompt: string;
   promptType: string;
-  requiresAnswer: false;
+  requiresAnswer: boolean;
   rows: any[];
   sql: string;
   table: string;
@@ -50,7 +52,8 @@ const getNewResultObject = function () {
     text: "",
     userId: 0,
     fileURL: "",
-    prompt: ""
+    prompt: "",
+    lastPage: 0
   };
 
   return resultObject;
@@ -104,4 +107,17 @@ const getAnswer = async function (table: string) {
   return answer;
 };
 
-export { getNewResultObject, getResultObjectsBuffer, getResultObjectByUser, ResultObject, setResultObjectByUser };
+const convSqlResToResultObject = function (sqlRes: QueryResult | null, result: ResultObject): ResultObject {
+  result.fields = [];
+
+  if (sqlRes !== null) {
+    for (let i = 0; i < sqlRes.fields.length; i++) {
+      result.fields.push(sqlRes.fields[i].name);
+    }
+
+    result.rows = sqlRes.rows;
+  }
+
+  return result;
+}
+export { convSqlResToResultObject, getNewResultObject, getResultObjectsBuffer, getResultObjectByUser, ResultObject, setResultObjectByUser };

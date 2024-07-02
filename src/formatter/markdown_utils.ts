@@ -1,18 +1,16 @@
 import { formatPhoneNumber } from "./phone_formatter";
 import { formatNumber } from "./number_formatter";
+import { ResultObject } from "../prompts/result_object";
 
 /**
  * Retrieves table data from the given result object.
  * @param {Object} result - The result object containing fields and rows.
  * @returns {Array} - The table data as a 2D array.
  */
-const getTableData = function (
-  result: { fields: { name: string }[]; rows: any[] },
-  dispFields: string[],
-  maxColumns: number,
-  pageNum: number,
-  allRows: boolean
-) {
+const getTableData = function (result: ResultObject, allRows: boolean) {
+
+  const maxColumns: number = Number(process.env.MAX_COLUMNS)
+
   let tableData: any[] = [];
   const pageSize = Number(process.env.RESULT_PAGE_SIZE);
 
@@ -20,26 +18,26 @@ const getTableData = function (
   let header: string[] = [];
   let useDispFields = false;
 
-  if (dispFields.length > 0 && result.rows.length >= 1) {
+  if (result.dispFields.length > 0 && result.rows.length >= 1) {
     if (result.fields.length > 1) {
       useDispFields = true;
     }
   }
 
   if (useDispFields) {
-    for (let i = 0; i < dispFields.length && i < maxColumns; i++) {
-      header.push(dispFields[i]);
+    for (let i = 0; i < result.dispFields.length && i < maxColumns; i++) {
+      header.push(result.dispFields[i]);
     }
   } else {
     for (let i = 0; i < result.fields.length && i < maxColumns; i++) {
-      header.push(result.fields[i].name);
+      header.push(result.fields[i]);
     }
   }
 
   tableData.push(header);
 
   // Get the rows
-  let startIndex = (pageNum - 1) * pageSize;
+  let startIndex = (result.pageNum - 1) * pageSize;
   let endIndex = startIndex + pageSize;
 
   if (allRows) {
@@ -88,7 +86,7 @@ const getColumnWidths = function (tableData: any[]) {
           columnWidths[i] = 3;
         }
         if (columnWidths[i] > maxColumnWidth) {
-          columnWidths[i] = parseInt(maxColumnWidth);
+          columnWidths[i] = maxColumnWidth;
         }
       }
     }

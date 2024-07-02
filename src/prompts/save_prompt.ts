@@ -15,7 +15,7 @@ import { getResultObjectByUser, ResultObject } from "./result_object";
 const savePrompt = async (result: ResultObject): Promise<void> => {
   const userId: number = result.userId;
   const prompt: string = result.prompt;
-  const sql: string = result.sql;
+  let sql: string = result.sql;
   const rowsCount: number = result.rows.length;
   const promptType: string = result.promptType;
 

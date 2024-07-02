@@ -1,5 +1,7 @@
+import { QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
 import { cleanPrompt } from "./save_prompt";
+import { convSqlResToResultObject, ResultObject } from "./result_object";
 
 const checkPrompt = async (prompt: string): Promise<string | null> => {
   const promptSafe = cleanPrompt(prompt);
@@ -10,28 +12,32 @@ const checkPrompt = async (prompt: string): Promise<string | null> => {
   sql += `limit 1 `;
 
   await connect();
-  const result = await execute(sql);
+  const sqlRes: QueryResult | null = await execute(sql);
   await close();
 
-  if (result.rows.length === 0) {
+  if (sqlRes && sqlRes.rows.length === 0) {
     return null;
+  } else if (sqlRes) {
+    return sqlRes.rows[0].sql;
   } else {
-    return result.rows[0].sql;
+    return null;
   }
 };
 
-const listHistory = async (memberId: number): Promise<any> => {
+const listHistory = async (result: ResultObject): Promise<ResultObject | null> => {
   let sql = `SELECT prompt as "My most used prompts" FROM (`;
   sql += `SELECT prompt, COUNT(*) AS prompt_count `;
   sql += `FROM prompts_history `;
-  sql += `WHERE userid = ${memberId} `;
+  sql += `WHERE userid = ${result.userId} `;
   sql += `GROUP BY prompt `;
   sql += `ORDER BY prompt_count desc `;
   sql += `limit 20) t; `;
 
   await connect();
-  const result = await execute(sql);
+  const sqlRes: QueryResult | null = await execute(sql);
   await close();
+
+  result = convSqlResToResultObject(sqlRes, result);
 
   return result;
 };

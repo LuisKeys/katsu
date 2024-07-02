@@ -1,5 +1,9 @@
 import { getEntities, Entity } from "./entity_finder";
 import * as dbFields from "../db/db_get_fields";
+import { ResultObject } from "../prompts/result_object";
+import OpenAI from "openai";
+import * as openAIAPI from "../openai/openai_api";
+import { QueryResultRow } from "pg";
 
 /**
  * This module contains functions for generating SQL statements based on user prompts.
@@ -13,15 +17,17 @@ import * as dbFields from "../db/db_get_fields";
  * @param {Array} rows - The rows containing words to be matched with the prompt.
  * @returns {string} The SQL statement for retrieving links.
  */
-const getLinkSQL = async function (prompt: string, rows: any[]): Promise<string> {
+const getLinkSQL = function (prompt: string, rows: QueryResultRow[] | null): string {
   let sql = '';
 
-  for (let i = 0; i < rows.length; i++) {
-    let row = rows[i];
-    let words = row.words.split(',');
-    for (let j = 0; j < words.length; j++) {
-      if (prompt.includes(words[j])) {
-        sql = "SELECT name, url as link FROM links where words like '%" + words[j] + "%' order by name";
+  if (rows) {
+    for (let i = 0; i < rows.length; i++) {
+      let row = rows[i];
+      let words = row.words.split(',');
+      for (let j = 0; j < words.length; j++) {
+        if (prompt.includes(words[j])) {
+          sql = "SELECT name, url as link FROM links where words like '%" + words[j] + "%' order by name";
+        }
       }
     }
   }
@@ -29,18 +35,10 @@ const getLinkSQL = async function (prompt: string, rows: any[]): Promise<string>
   return sql;
 }
 
-/**
- * Generates an SQL statement based on the provided prompt.
- * @param {object} openai - The OpenAI object.
- * @param {object} openaiapi - The OpenAI API object.
- * @param {string} userPrompt - The user prompt for generating the SQL statement.
- * @returns {string} The generated SQL statement.
- */
-const generateSQL = async function (openai: any, openaiapi: any, userPrompt: string, reflection: any, error: string): Promise<any> {
+const generateSQL = async function (openai: OpenAI, result: ResultObject): Promise<ResultObject> {
 
   // Get the entity from the prompt
-  const entities = await getEntities(userPrompt);
-  let result = { sql: "", dispFields: [] };
+  const entities = await getEntities(result.prompt);
 
   if (entities.length == 0) {
     return result;
@@ -51,11 +49,11 @@ const generateSQL = async function (openai: any, openaiapi: any, userPrompt: str
   const fields = await dbFields.getViewFields(entity.view);
 
   // Get the prompt for the SQL statement
-  const fullPrompt = getPrompt(openai, openaiapi, entity.view, fields, userPrompt, reflection, error);
+  const fullPrompt = getPrompt(entity.view, fields, result.prompt);
 
   // let sql = await checkPrompt.checkPrompt(userPrompt);
 
-  let sql = await openaiapi.ask(
+  let sql = await openAIAPI.ask(
     openai,
     fullPrompt
   );
@@ -63,7 +61,10 @@ const generateSQL = async function (openai: any, openaiapi: any, userPrompt: str
   sql = sanitizeSQL(sql);
   sql = replaceEqualityWithLike(sql);
 
-  result = { sql: sql, dispFields: entity.dispFields, entity: entity }
+  result.sql = sql;
+  result.dispFields = entity.dispFields;
+  result.entity = entity;
+
   return result;
 }
 
@@ -100,13 +101,12 @@ const sanitizeSQL = function (sql: string): string {
 /**
  * Generates the prompt for the SQL statement based on the entity, fields, and user prompt.
  * @param {object} openai - The OpenAI object.
- * @param {object} openaiapi - The OpenAI API object.
  * @param {string} entity - The entity for the SQL statement.
  * @param {Array} fields - The fields to be included in the WHERE statement.
  * @param {string} userPrompt - The user prompt for the SQL statement.
  * @returns {string} The generated prompt for the SQL statement.
  */
-const getPrompt = function (openai: any, openaiapi: any, entity: string, fields: string[], userPrompt: string, reflection: any, error: string): string {
+const getPrompt = function (entity: string, fields: string[], userPrompt: string): string {
   let prompt = '';
 
   prompt += "Create a SELECT statement for PostgreSql to retrieve data from the " + entity + " table.";
@@ -127,11 +127,6 @@ const getPrompt = function (openai: any, openaiapi: any, entity: string, fields:
   prompt += " If there is a where clause use the lower() function to compare string fields.";
   prompt += " Limit the results to 100 rows.";
   prompt += " Answer only with the SQL statement.";
-
-  if (reflection) {
-    const origPrompt = prompt;
-    prompt = createReflectionPrompt(userPrompt, error, origPrompt);
-  }
 
   return prompt;
 }
