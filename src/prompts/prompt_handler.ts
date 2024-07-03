@@ -31,7 +31,6 @@ const promptHandler = async function (prompt: string, userId: number, isDebug: b
   }
 
   const promptType = await nlPromptType.getPromptType(prompt);
-  let fileURL = '';
   result.sql = '';
   result.promptType = promptType;
   const promptTr = cleanPrompt(prompt);
