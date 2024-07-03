@@ -1,6 +1,6 @@
 import { readdirSync, statSync, readFileSync, writeFileSync } from 'fs';
 import { join, extname } from 'path';
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 
 type FileObject = {
   fileName: string;
@@ -94,7 +94,7 @@ function copyFilesToReports(files: FileObject[]): FileObject[] {
 
     const fullPath = filesFolder + relativePath;
     const fileData = readFileSync(fullPath);
-    const hash = crypto.createHash('md5').update(fileName).digest('hex');
+    const hash = createHash('md5').update(fileName).digest('hex');
     const newFileName = `${hash}${extension}`;
     const newPath = join(copyFolder as string, newFileName);
 

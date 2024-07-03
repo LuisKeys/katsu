@@ -1,34 +1,17 @@
 {
-  "ts-node": {
-    "compilerOptions": {
-      "target": "ES2022",
-      "module": "CommonJS",
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "strict": true,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "moduleResolution": "node",
-      "skipLibCheck": true,
-      "resolveJsonModule": true,
-      "sourceMap": true
-    }
-  },
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "target": "es2022",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "commonjs",                                /* Specify what module code is generated. */
+    "sourceMap": true,                                /* Create source map files for emitted JavaScript files. */
+    "outDir": "./build",       
+    "rootDir": "./src",                            /* Specify an output folder for all emitted files. */
+    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */
+    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "sourceMap": true
+    "moduleResolution": "node",
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts"    
   ],
   "exclude": [
     "node_modules",

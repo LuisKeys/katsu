@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Client, QueryResult } from 'pg';
 
 let gerror = '';

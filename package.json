@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Katsu api",
   "main": "src/app.ts",
-  "typings": "dist/src/*.d.ts",
+  "typings": "src/**/*.d.ts",  
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "dev": "ts-node src/app.ts"
+    "build": "npx tsc",
+    "start": "node build/app.js",
+    "dev": "npx tsx src/app.ts"
   },
   "repository": {
     "type": "git",

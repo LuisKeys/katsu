@@ -9,7 +9,6 @@ var results: ResultObject[] = getResultObjectsBuffer(size);
 
 // Test the promptHandler
 const test = async () => {
-  console.log("Test the promptHandler");
   return;
   const memberId = await getMemberId("luis@accelone.com");
   const isValid = memberId != -1;
