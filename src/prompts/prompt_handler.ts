@@ -53,7 +53,7 @@ const promptHandler = async function (prompt: string, userId: number, isDebug: b
 
   if (promptType === constants.EXCEL) {
     // Excel prompt
-    fileURL = await excelHandlerCall(result);
+    result.fileURL = await excelHandlerCall(result);
   }
 
   if (promptType === constants.LINK) {

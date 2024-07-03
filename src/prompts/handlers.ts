@@ -1,4 +1,5 @@
 import * as constants from "./constants";
+import { ClientOptions, OpenAI } from "openai";
 import * as db from "../db/db_commands";
 import * as dbSortResult from "../db/sort_result";
 import * as filesClean from "../files/clean";
@@ -19,8 +20,12 @@ import { convSqlResToResultObject, ResultObject } from "./result_object";
  * @module handlers
  */
 
+const clientOptions: ClientOptions = {
+  apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
+};
 
-const openai = new openAI();
+const openai = new OpenAI(clientOptions);
 
 /**
  * Handles the question prompt.

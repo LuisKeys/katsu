@@ -1,5 +1,6 @@
-import openAI from "openai";
 import { ask } from "../openai/openai_api";
+import { ClientOptions, OpenAI } from "openai";
+import dotenv from "dotenv";
 
 /**
  * This module provides functions for finding entities based on prompts.
@@ -14,8 +15,14 @@ interface Entity {
 }
 
 const entities: Entity[] = [];
+dotenv.config();
+const clientOptions: ClientOptions = {
+  apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
+};
 
-const openai = new openAI();
+
+const openai = new OpenAI(clientOptions);
 
 /**
  * Finds the entity that matches the given prompt.

@@ -2,6 +2,7 @@ import { ask } from "../openai/openai_api";
 import { Entity } from "../nl/entity_finder";
 import openAI from "openai";
 import { QueryResult } from "pg";
+import { ClientOptions, OpenAI } from "openai";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -10,7 +11,12 @@ import { QueryResult } from "pg";
  * @module result_object
  */
 
-const openai = new openAI();
+const clientOptions: ClientOptions = {
+  apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
+};
+
+const openai = new OpenAI(clientOptions);
 
 type ResultObject = {
   dispFields: string[];
