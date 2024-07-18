@@ -18,6 +18,9 @@ const connect = async function (): Promise<void> {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     port: Number(process.env.POSTGRES_PORT),
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
 
   try {
@@ -42,6 +45,9 @@ const execute = async function (sql: string): Promise<QueryResult | null> {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     port: Number(process.env.POSTGRES_PORT),
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
 
   try {
@@ -71,6 +77,9 @@ const close = async function (): Promise<void> {
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
     port: Number(process.env.POSTGRES_PORT),
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
 
   try {

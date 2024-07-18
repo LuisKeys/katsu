@@ -25,7 +25,6 @@ const api_root: string = "/api/v1/";
  * @function apiApp
  */
 const apiApp = function (): void {
-  console.log("API mode is on.");
 
   const app = express();
   app.use(express.json());
