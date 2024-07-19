@@ -10,7 +10,6 @@ const open = async () => {
     if (err) {
       console.error(err.message);
     }
-    console.log('Connected to the Katsu database.');
   });
   return db;
 }
@@ -41,40 +40,59 @@ const close = (db: sqlite.Database) => {
     if (err) {
       console.error(err.message);
     }
-    console.log('Closed the Katsu database connection.');
   });
 }
 
-async function loadKatsuState(): Promise<KatsuState> {
+const getUsers = async (db: sqlite.Database): Promise<User[]> => {
+  const sql = `
+    SELECT user_id as userId, email, first_name as firstName, last_name as lastName, 
+    role, title, department, avatar, password
+    FROM users
+  `
+  db.all<User[]>(sql, (err, rows) => {
+    if (err) {
+      return null;
+    } else {
+      let users: User[] = [];
+      rows.forEach((row) => {
+        users.push(row);
+      });
+      return users;
+    }
+  });
+
+  return [];
+};
+
+const getDataSources = async (db: sqlite.Database): Promise<DataSource[]> => {
+  const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables
+    FROM data_sources`;
+
+  db.all<DataSource[]>(sql, (err, rows) => {
+    if (err) {
+      return null;
+    } else {
+      let dataSources: DataSource[] = [];
+      rows.forEach((row) => {
+        dataSources.push(row);
+      });
+      return dataSources;
+    }
+  });
+
+  return [];
+};
+
+
+const loadKatsuState = async (): Promise<KatsuState> => {
   const db = await open();
 
-  const users: User[] = await new Promise<User[]>((resolve, reject) => {
-    db.all<User[]>(`
-      SELECT user_id as userId, email, first_name as firstName, last_name as lastName, role, title, department, avatar
-      FROM users
-    `, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows[0]);
-      }
-    });
-  });
-
-  const dataSources: DataSource[] = await new Promise<DataSource[]>((resolve, reject) => {
-    db.all<DataSource[]>(
-      `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables
-      FROM data_sources`, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows[0]);
-      }
-    });
-  });
+  const users: User[] = await getUsers(db);
+  const dataSources: DataSource[] = await getDataSources(db);
 
   close(db);
 
+  console.log('Loaded Katsu state.');
   return { users, dataSources };
 }
 

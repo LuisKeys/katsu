@@ -7,6 +7,7 @@ import { transfResAPI } from "./prompts/api_transf";
 import openai from "openai";
 import dotenv from "dotenv";
 import { ResultObject } from "./prompts/result_object";
+import { KatsuState } from "./db/katsu_db/katsu_state";
 
 /**
  * Module for initializing the API application.
@@ -23,7 +24,7 @@ const api_root: string = "/api/v1/";
  * Initializes the API application.
  * @function apiApp
  */
-const apiApp = function (): void {
+const apiApp = function (state: KatsuState): void {
 
   const app = express();
   app.use(express.json());
@@ -40,7 +41,7 @@ const apiApp = function (): void {
     const { user, password }: { user: string; password: string } = req.body;
 
     try {
-      if (authUser(user, password)) {
+      if (authUser(user, password, state)) {
         const token: string = generateToken(user);
         res.status(200).json({ token });
         return;

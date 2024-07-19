@@ -7,6 +7,7 @@ interface User {
   title: string;
   department: string;
   avatar: string;
+  password: string;
 }
 
 interface DataSource {

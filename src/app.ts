@@ -1,24 +1,13 @@
 import { apiApp } from "./api_app";
-import { executeTest } from "./test/test";
 import { loadKatsuState } from "./db/katsu_db/katsu_db";
+import { authUser } from "./authentication/auth_user";
 
-loadKatsuState()
-  .then(katsuState => {
-    console.log(katsuState);
-  })
-  .catch(error => {
-    console.error('Error loading KatsuState:', error);
-  });
-
-
-const test = async () => {
-  await executeTest();
+const init = async () => {
+  const state = await loadKatsuState()
+  const result = authUser("luis.paradela@accelone.com", "30ydho93ywqhdoquwdh08w++WWPOj", state);
+  console.log(result);
+  // Start the API server.
+  apiApp(state);
 }
 
-const isTest = process.env.IS_TEST;
-if (isTest === "true") {
-  test();
-}
-
-// Start the API server.
-apiApp();
+init();
