@@ -48,40 +48,64 @@ const getUsers = async (db: sqlite.Database): Promise<User[]> => {
     SELECT user_id as userId, email, first_name as firstName, last_name as lastName, 
     role, title, department, avatar, password
     FROM users
-  `
-  db.all<User[]>(sql, (err, rows) => {
-    if (err) {
-      return null;
-    } else {
-      let users: User[] = [];
-      rows.forEach((row) => {
-        users.push(row);
-      });
-      return users;
-    }
-  });
+  `;
 
-  return [];
+  return new Promise<User[]>((resolve, reject) => {
+    db.all<User[]>(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        const users: User[] = rows.map((row) => convertDBRowToUser(row));
+        resolve(users);
+      }
+    });
+  });
 };
+
+const convertDBRowToUser = (row: any): User => {
+  return {
+    userId: row.user_id,
+    email: row.email,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    role: row.role,
+    title: row.title,
+    department: row.department,
+    avatar: row.avatar,
+    password: row.password
+  };
+}
 
 const getDataSources = async (db: sqlite.Database): Promise<DataSource[]> => {
   const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables
     FROM data_sources`;
 
-  db.all<DataSource[]>(sql, (err, rows) => {
-    if (err) {
-      return null;
-    } else {
-      let dataSources: DataSource[] = [];
-      rows.forEach((row) => {
-        dataSources.push(row);
-      });
-      return dataSources;
-    }
+  return new Promise<DataSource[]>((resolve, reject) => {
+    db.all<DataSource[]>(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        const dataSources: DataSource[] = rows.map((row) => convertDBRowTODataSource(row));
+        resolve(dataSources);
+      }
+    });
   });
-
-  return [];
 };
+
+const convertDBRowTODataSource = (row: any): DataSource => {
+  return {
+    sourceId: row.source_id,
+    name: row.name,
+    description: row.description,
+    type: row.type,
+    host: row.host,
+    user: row.user,
+    password: row.password,
+    port: row.port,
+    db: row.db,
+    tables: row.tables
+  };
+}
 
 
 const loadKatsuState = async (): Promise<KatsuState> => {
