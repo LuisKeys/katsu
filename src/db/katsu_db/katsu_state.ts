@@ -31,6 +31,9 @@ interface KatsuState {
   dataSources: DataSource[];
   openai: OpenAI | null;
   results: ResultObject[];
+  prompt: string;
+  user: User | null;
+  isDebug: boolean;
 }
 
 export { User, DataSource, KatsuState };

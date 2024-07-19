@@ -106,12 +106,7 @@ const askPrompt = async (
       "You are not a registered user. Please contact the administrator to register."
     );
   } else {
-    let result: ResultObject | null = await promptHandler(
-      prompt,
-      user,
-      state,
-      false,
-    );
+    state = await promptHandler(state);
 
     return null;
   }

@@ -1,7 +1,7 @@
 import { ask } from "../openai/openai_api";
 import { QueryResult, QueryResultRow } from "pg";
 import { ClientOptions, OpenAI } from "openai";
-import { User } from "../db/katsu_db/katsu_state";
+import { KatsuState, User } from "../db/katsu_db/katsu_state";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -87,13 +87,13 @@ const getResultObjectByUser = function (userId: number, results: ResultObject[])
   return results[0];
 }
 
-const setResultObjectByUser = function (userId: number, result: ResultObject, results: ResultObject[]): ResultObject[] {
-  for (let i = 0; i < results.length; i++) {
-    if (results[i].user?.userId === userId) {
-      results[i] = result;
+const setResultObjectByUser = function (state: KatsuState, result: ResultObject): KatsuState {
+  for (let i = 0; i < state.results.length; i++) {
+    if (state.results[i].user?.userId === state.user?.userId) {
+      state.results[i] = result;
     }
   }
-  return results;
+  return state;
 }
 
 const getAnswer = async function (table: string) {

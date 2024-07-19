@@ -1,5 +1,6 @@
 import sqlite from 'sqlite3';
 import { User, DataSource, KatsuState } from './katsu_state';
+import { ResultObject } from '../../result/result_object';
 
 /**
  * Opens a connection to the Katsu database.
@@ -117,7 +118,8 @@ const loadKatsuState = async (): Promise<KatsuState> => {
   close(db);
 
   console.log('Loaded Katsu state.');
-  return { users, dataSources, openai: null };
+  const results: ResultObject[] = new Array(users.length);
+  return { users, dataSources, openai: null, results: results, prompt: "", user: null, isDebug: false };
 }
 
 /**

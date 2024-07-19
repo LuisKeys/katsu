@@ -13,7 +13,7 @@ import { getResultObjectByUser, ResultObject } from "../result/result_object";
  * @returns {Promise<void>} - A Promise that resolves when the prompt is saved.
  */
 const savePrompt = async (result: ResultObject): Promise<void> => {
-  const userId: number = result.userId;
+  const userId: number = result.user?.userId || 0;
   const prompt: string = result.prompt;
   let sql: string = result.sql;
   const rowsCount: number = result.rows.length;

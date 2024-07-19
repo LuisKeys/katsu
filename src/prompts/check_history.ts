@@ -28,7 +28,7 @@ const listHistory = async (result: ResultObject): Promise<ResultObject | null> =
   let sql = `SELECT prompt as "My most used prompts" FROM (`;
   sql += `SELECT prompt, COUNT(*) AS prompt_count `;
   sql += `FROM prompts_history `;
-  sql += `WHERE userid = ${result.userId} `;
+  sql += `WHERE userid = ${result.user?.userId} `;
   sql += `GROUP BY prompt `;
   sql += `ORDER BY prompt_count desc `;
   sql += `limit 20) t; `;

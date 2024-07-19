@@ -62,8 +62,6 @@ const generateSQL = async function (openai: OpenAI, result: ResultObject): Promi
   sql = replaceEqualityWithLike(sql);
 
   result.sql = sql;
-  result.dispFields = entity.dispFields;
-  result.entity = entity;
 
   return result;
 }

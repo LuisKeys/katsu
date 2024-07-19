@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const init = async () => {
   const state = await loadKatsuState()
+  state.isDebug = process.env.KATSU_DEBUG === 'true';
   state.openai = getOpenAI();
   const isTest = process.env.IS_TEST === 'true';
   if (isTest) {

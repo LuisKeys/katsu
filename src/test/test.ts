@@ -1,7 +1,7 @@
 import { ResultObject } from "../result/result_object";
 import { getUser } from "../users/get_user";
 import { KatsuState } from "../db/katsu_db/katsu_state";
-const { getResultObjectsBuffer, ResultObject, setResultObjectByUser } = require("../prompts/result_object");
+const { getResultObjectsBuffer, ResultObject, setResultObjectByUser } = require("../result/result_object");
 const { promptHandler } = require("../prompts/prompt_handler");
 
 const size = process.env.RESULT_OBJECTS_BUFFER_SIZE;
@@ -11,6 +11,7 @@ var results: ResultObject[] = getResultObjectsBuffer(size);
 const executeTest = async (state: KatsuState) => {
   console.log("Executing test...");
   const user = await getUser("luis.paradela@accelone.com", state);
+  state.user = user;
   const isValid = user != null;
   if (!isValid) {
     console.log(
@@ -22,15 +23,10 @@ const executeTest = async (state: KatsuState) => {
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
-      let result = await promptHandler(
-        prompt,
-        user,
-        false,
-        results
-      );
+      state.prompt = prompt;
+      state = await promptHandler(state);
 
-      console.log(result);
-      results = setResultObjectByUser(user.userId, result, results);
+      console.log(state.results);
     }
   }
 };

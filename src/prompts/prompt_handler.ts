@@ -23,14 +23,11 @@ import { KatsuState, User } from "../db/katsu_db/katsu_state";
  * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
  */
 const promptHandler = async (
-  prompt: string,
-  user: User | null,
   state: KatsuState,
-  isDebug: boolean,
-): Promise<ResultObject | null> => {
+): Promise<KatsuState> => {
   return new Promise(async (resolve, reject) => {
     try {
-      resolve(null);
+      resolve(state);
     } catch (error) {
       reject(error);
     }

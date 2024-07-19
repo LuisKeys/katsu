@@ -14,7 +14,6 @@ import * as savePrompt from "./save_prompt";
  * @returns {Promise<[string, any]>} - A promise that resolves to an array containing the file URL and the result object.
  */
 const llmHandlerCall = async (result: ResultObject): Promise<ResultObject> => {
-  result.dispFields = [];
   result.rows = [];
   const fileURL = await handlers.llmHandler(result.prompt);
   await savePrompt.savePrompt(

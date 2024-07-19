@@ -16,22 +16,9 @@ const getTableData = function (result: ResultObject, allRows: boolean) {
 
   // Get the header
   let header: string[] = [];
-  let useDispFields = false;
 
-  if (result.dispFields.length > 0 && result.rows.length >= 1) {
-    if (result.fields.length > 1) {
-      useDispFields = true;
-    }
-  }
-
-  if (useDispFields) {
-    for (let i = 0; i < result.dispFields.length && i < maxColumns; i++) {
-      header.push(result.dispFields[i]);
-    }
-  } else {
-    for (let i = 0; i < result.fields.length && i < maxColumns; i++) {
-      header.push(result.fields[i]);
-    }
+  for (let i = 0; i < result.fields.length && i < maxColumns; i++) {
+    header.push(result.fields[i]);
   }
 
   tableData.push(header);
