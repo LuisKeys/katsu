@@ -1,6 +1,5 @@
 import { ask } from "../openai/openai_api";
 import { Entity } from "../nl/entity_finder";
-import openAI from "openai";
 import { QueryResult } from "pg";
 import { ClientOptions, OpenAI } from "openai";
 

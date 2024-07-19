@@ -1,4 +1,5 @@
 import * as constants from "./constants";
+import { ResultObject } from "./result_object";
 
 /**
  * Module for determining the type of prompt.
@@ -10,7 +11,7 @@ import * as constants from "./constants";
  * @param {string} prompt - The prompt to be analyzed.
  * @returns {string} The type of prompt.
  */
-const getPromptType = (prompt: string): string => {
+const getPromptType = (prompt: string, result: ResultObject): string => {
   const lcPrompt = prompt.toLowerCase();
 
   let type: string = constants.QUESTION;

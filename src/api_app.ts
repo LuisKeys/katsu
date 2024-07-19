@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 import { promptHandler } from "./prompts/prompt_handler";
 import { authUser } from "./authentication/auth_user";
-import { generateToken } from "./authentication/token";
-import { validateToken } from "./authentication/token";
+import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
 import { transfResAPI } from "./prompts/api_transf";
 import openai from "openai";

@@ -19,7 +19,7 @@ interface DataSource {
   password: string;
   port: number;
   db: string;
-  tables: string[];
+  tables: string;
 }
 
 interface KatsuState {

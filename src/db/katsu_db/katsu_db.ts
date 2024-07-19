@@ -5,8 +5,8 @@ import { User, DataSource, KatsuState } from './katsu_state';
  * Opens a connection to the Katsu database.
  * @returns {sqlite.Database} The opened database connection.
  */
-const open = () => {
-  const db = new sqlite.Database('../../../db/katsu.db', (err) => {
+const open = async () => {
+  const db = new sqlite.Database('./db/katsu.db', (err) => {
     if (err) {
       console.error(err.message);
     }
@@ -45,47 +45,53 @@ const close = (db: sqlite.Database) => {
   });
 }
 
-async function loadKatsuState(dbPath: string): Promise<KatsuState> {
-  const db = open()
+async function loadKatsuState(): Promise<KatsuState> {
+  const db = await open();
 
   const users: User[] = await new Promise<User[]>((resolve, reject) => {
     db.all<User[]>(`
-      SELECT userId, email, firstName, lastName, role, title, department, avatar
+      SELECT user_id as userId, email, first_name as firstName, last_name as lastName, role, title, department, avatar
       FROM users
     `, (err, rows) => {
       if (err) {
         reject(err);
       } else {
-        resolve(rows);
+        resolve(rows[0]);
       }
     });
   });
 
-  const dataSources: DataSource[] = await new Promise<User[]>((resolve, reject) => {
-    db.all<User[]>(
-      `SELECT sourceId, name, description, type, host, user, password, port, db, tables
+  const dataSources: DataSource[] = await new Promise<DataSource[]>((resolve, reject) => {
+    db.all<DataSource[]>(
+      `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables
       FROM data_sources`, (err, rows) => {
       if (err) {
         reject(err);
       } else {
-        resolve(rows);
+        resolve(rows[0]);
       }
     });
   });
 
   close(db);
 
-  // Convert tables from comma-separated string to array of strings
-  for (const dataSource of dataSources) {
-    dataSource.tables = dataSource.tables ? dataSource.tables.split(',') : [];
-  }
-
   return { users, dataSources };
+}
+
+/**
+ * Converts a string of comma-separated table names into an array of table names.
+ * @param tablesString - The string of comma-separated table names.
+ * @returns {string[]} An array of table names.
+ */
+const getTablesList = (dataSource: DataSource): string[] => {
+  const tablesString = dataSource.tables;
+  return tablesString.split(',').map(table => table.trim());
 }
 
 export {
   close,
   execute,
+  getTablesList,
   loadKatsuState,
   open
 };
