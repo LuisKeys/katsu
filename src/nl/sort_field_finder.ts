@@ -3,7 +3,7 @@
  * @module sort_field_finder
  */
 
-import { ResultObject } from "../prompts/result_object";
+import { ResultObject } from "../result/result_object";
 
 /**
  * Finds the sort field based on a prompt and a result object.

@@ -1,6 +1,6 @@
 import { getEntities, Entity } from "./entity_finder";
 import * as dbFields from "../db/db_get_fields";
-import { ResultObject } from "../prompts/result_object";
+import { ResultObject } from "../result/result_object";
 import OpenAI from "openai";
 import * as openAIAPI from "../openai/openai_api";
 import { QueryResultRow } from "pg";

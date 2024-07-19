@@ -117,7 +117,7 @@ const loadKatsuState = async (): Promise<KatsuState> => {
   close(db);
 
   console.log('Loaded Katsu state.');
-  return { users, dataSources };
+  return { users, dataSources, openai: null };
 }
 
 /**

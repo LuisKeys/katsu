@@ -1,6 +1,6 @@
 import { formatAPIResult } from '../formatter/format_api_result';
 import { getAPIOutput, transfResultObj } from './api_transf_utils';
-import { ResultObject } from './result_object';
+import { ResultObject } from '../result/result_object';
 
 /**
  * Transforms the result object into a desired output format suitable for the API.

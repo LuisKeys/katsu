@@ -1,13 +1,13 @@
+import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { promptHandler } from "./prompts/prompt_handler";
+import { KatsuState, User } from "./db/katsu_db/katsu_state";
+import { ResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
+import { getUser } from "./users/get_user";
+import { promptHandler } from "./prompts/prompt_handler";
 import { transfResAPI } from "./prompts/api_transf";
-import openai from "openai";
-import dotenv from "dotenv";
-import { ResultObject } from "./prompts/result_object";
-import { KatsuState } from "./db/katsu_db/katsu_state";
 
 /**
  * Module for initializing the API application.
@@ -68,10 +68,10 @@ const apiApp = function (state: KatsuState): void {
         throw new Error("Invalid token");
       }
 
-      let result: ResultObject | undefined = await new Promise((resolve, reject) => {
-        const user: string = String(getPayloadFromToken(token));
-        const userId: number = Number(process.env.AUTH_MEMBER_ID);
-        askPrompt(prompt, user, userId, openai)
+      let result: ResultObject | null = await new Promise((resolve, reject) => {
+        const userName: string = String(getPayloadFromToken(token));
+        const user: User | null = getUser(userName, state);
+        askPrompt(prompt, user, state)
           .then((result) => resolve(result))
           .catch((error) => reject(error));
       });
@@ -98,27 +98,25 @@ const apiApp = function (state: KatsuState): void {
 
 const askPrompt = async (
   prompt: string,
-  user: string,
-  userId: number,
-  openai: any
-): Promise<ResultObject | undefined> => {
-  if (user != process.env.AUTH_USER) {
+  user: User | null,
+  state: KatsuState
+): Promise<ResultObject | null> => {
+  if (user?.email != process.env.AUTH_USER_EMAIL) {
     console.log(
       "You are not a registered user. Please contact the administrator to register."
     );
   } else {
-    const userName: string = process.env.AUTH_USER || "";
-    let result: ResultObject = await promptHandler(
+    let result: ResultObject | null = await promptHandler(
       prompt,
-      userId,
+      user,
+      state,
       false,
-      openai
     );
 
-    return result;
+    return null;
   }
 
-  return undefined;
+  return null;
 };
 
 export { apiApp };

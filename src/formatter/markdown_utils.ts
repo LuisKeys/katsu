@@ -1,6 +1,6 @@
 import { formatPhoneNumber } from "./phone_formatter";
 import { formatNumber } from "./number_formatter";
-import { ResultObject } from "../prompts/result_object";
+import { ResultObject } from "../result/result_object";
 
 /**
  * Retrieves table data from the given result object.

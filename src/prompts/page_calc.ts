@@ -1,5 +1,5 @@
 import { PageSize } from "docx";
-import { ResultObject } from "./result_object";
+import { ResultObject } from "../result/result_object";
 
 /**
  * Calculates the last page number based on the total number of rows and the page size.

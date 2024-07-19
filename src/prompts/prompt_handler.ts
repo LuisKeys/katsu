@@ -7,8 +7,8 @@ import * as nlPromptType from "./prompt_type";
 import * as promptsHistory from "./check_history";
 import * as savePrompt from "./save_prompt";
 import { llmHandlerCall, excelHandlerCall } from "./prompt_handler_utils";
-import { getResultObjectByUser, ResultObject } from "./result_object";
-
+import { getResultObjectByUser, ResultObject } from "../result/result_object";
+import { KatsuState, User } from "../db/katsu_db/katsu_state";
 /**
  * @fileoverview This module exports the `promptHandler` function which handles different types of prompts and performs corresponding actions.
  * @module promptHandler
@@ -24,13 +24,13 @@ import { getResultObjectByUser, ResultObject } from "./result_object";
  */
 const promptHandler = async (
   prompt: string,
-  userId: number,
+  user: User | null,
+  state: KatsuState,
   isDebug: boolean,
-  results: ResultObject[]
-): Promise<ResultObject> => {
+): Promise<ResultObject | null> => {
   return new Promise(async (resolve, reject) => {
     try {
-      resolve(results[0]);
+      resolve(null);
     } catch (error) {
       reject(error);
     }

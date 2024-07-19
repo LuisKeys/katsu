@@ -1,4 +1,19 @@
-import { OpenAI } from 'openai';
+import { ClientOptions, OpenAI } from 'openai';
+
+/**
+ * Retrieves an instance of the OpenAI client.
+ * @returns {OpenAI} The OpenAI client instance.
+ */
+const getOpenAI = (): OpenAI => {
+  const clientOptions: ClientOptions = {
+    apiKey: process.env.OPENAI_API_KEY,
+    organization: process.env.OPENAI_ORG_ID,
+  };
+
+  const openai = new OpenAI(clientOptions);
+
+  return openai;
+};
 
 /**
  * @fileoverview This module provides functions for interacting with the OpenAI API.
@@ -41,4 +56,4 @@ const ask = async (openai: OpenAI, prompt: string): Promise<string> => {
   return response || '';
 };
 
-export { ask };
+export { ask, getOpenAI };

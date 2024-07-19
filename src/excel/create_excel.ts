@@ -2,7 +2,7 @@ import * as clean from '../files/clean';
 import * as excel from 'excel4node';
 import * as mdUtils from '../formatter/markdown_utils';
 import * as filesName from '../files/file_name';
-import { ResultObject } from '../prompts/result_object';
+import { ResultObject } from '../result/result_object';
 
 /**
  * @file Creates an Excel file with the provided data.

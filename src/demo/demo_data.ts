@@ -1,6 +1,6 @@
 import { getLastName, getFirstName, getPhone } from "./people_data";
 import { getCompanyName, getEmail, getAmount } from "./company_data";
-import { ResultObject } from "../prompts/result_object";
+import { ResultObject } from "../result/result_object";
 
 /**
  * Replaces demo values in the table data.

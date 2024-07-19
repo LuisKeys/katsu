@@ -1,5 +1,5 @@
 import * as constants from "./constants";
-import { ResultObject } from "./result_object";
+import { ResultObject } from "../result/result_object";
 
 /**
  * Module for determining the type of prompt.

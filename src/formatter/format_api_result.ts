@@ -1,6 +1,6 @@
 import { formatPhoneNumberFieldUS, formatPhoneNumberFieldLA } from "./phone_formatter";
 import { formatNumber } from "./number_formatter";
-import { ResultObject } from "../prompts/result_object";
+import { ResultObject } from "../result/result_object";
 
 /**
  * Formats the API result by applying formatting rules to numeric and phone columns.

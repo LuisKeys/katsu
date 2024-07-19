@@ -1,5 +1,5 @@
 import { connect, close, execute } from "../db/db_commands";
-import { getResultObjectByUser, ResultObject } from "./result_object";
+import { getResultObjectByUser, ResultObject } from "../result/result_object";
 
 /**
  * Saves a prompt to the prompts_history table.

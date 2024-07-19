@@ -2,7 +2,7 @@ import * as constants from "./constants";
 import * as excel from "../excel/create_excel";
 import * as handlers from "./handlers";
 import * as pageCalc from "./page_calc";
-import { ResultObject } from "./result_object";
+import { ResultObject } from "../result/result_object";
 import * as savePrompt from "./save_prompt";
 
 /**

@@ -13,7 +13,7 @@ import { QueryResult, QueryResultRow } from "pg";
 import * as sortFieldFinder from "../nl/sort_field_finder";
 import * as word from "../word/create_word";
 import openAI from "openai";
-import { convSqlResToResultObject, ResultObject } from "./result_object";
+import { convSqlResToResultObject, ResultObject } from "../result/result_object";
 
 /**
  * This module contains the handlers for different prompts types.

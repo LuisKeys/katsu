@@ -1,7 +1,7 @@
 import { QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
 import { cleanPrompt } from "./save_prompt";
-import { convSqlResToResultObject, ResultObject } from "./result_object";
+import { convSqlResToResultObject, ResultObject } from "../result/result_object";
 
 const checkPrompt = async (prompt: string): Promise<string | null> => {
   const promptSafe = cleanPrompt(prompt);

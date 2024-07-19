@@ -1,7 +1,7 @@
 import { ask } from "../openai/openai_api";
-import { Entity } from "../nl/entity_finder";
-import { QueryResult } from "pg";
+import { QueryResult, QueryResultRow } from "pg";
 import { ClientOptions, OpenAI } from "openai";
+import { User } from "../db/katsu_db/katsu_state";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -10,16 +10,7 @@ import { ClientOptions, OpenAI } from "openai";
  * @module result_object
  */
 
-const clientOptions: ClientOptions = {
-  apiKey: process.env.OPENAI_API_KEY,
-  organization: process.env.OPENAI_ORG_ID,
-};
-
-const openai = new OpenAI(clientOptions);
-
 type ResultObject = {
-  dispFields: string[];
-  entity: Entity
   fields: string[];
   fileURL: string;
   lastPage: number;
@@ -27,12 +18,20 @@ type ResultObject = {
   prompt: string;
   promptType: string;
   requiresAnswer: boolean;
-  rows: any[];
+  rows: QueryResultRow[];
   sql: string;
-  table: string;
   text: string;
-  userId: number;
+  user: User | null;
 };
+
+
+const clientOptions: ClientOptions = {
+  apiKey: process.env.OPENAI_API_KEY,
+  organization: process.env.OPENAI_ORG_ID,
+};
+
+const openai = new OpenAI(clientOptions);
+
 
 /**
  * Creates a new result object.
@@ -45,17 +44,14 @@ type ResultObject = {
  */
 const getNewResultObject = function () {
   const resultObject: ResultObject = {
-    dispFields: [],
-    entity: { name: "", view: "", dispFields: [] },
     fields: [],
     pageNum: 0,
     promptType: "",
     requiresAnswer: false,
     rows: [],
     sql: "",
-    table: "",
     text: "",
-    userId: 0,
+    user: null,
     fileURL: "",
     prompt: "",
     lastPage: 0
@@ -76,14 +72,14 @@ const getResultObjectsBuffer = function (size: number) {
 
 const getResultObjectByUser = function (userId: number, results: ResultObject[]): ResultObject {
   for (let i = 0; i < results.length; i++) {
-    if (results[i].userId === userId) {
+    if (results[i].user?.userId === userId) {
       return results[i];
     }
   }
 
   for (let i = 0; i < results.length; i++) {
-    if (results[i].userId === 0) {
-      results[i].userId = userId;
+    if (results[i].user !== null) {
+      results[i].user!.userId = userId;
       return results[i];
     }
   }
@@ -93,7 +89,7 @@ const getResultObjectByUser = function (userId: number, results: ResultObject[])
 
 const setResultObjectByUser = function (userId: number, result: ResultObject, results: ResultObject[]): ResultObject[] {
   for (let i = 0; i < results.length; i++) {
-    if (results[i].userId === userId) {
+    if (results[i].user?.userId === userId) {
       results[i] = result;
     }
   }
@@ -125,4 +121,4 @@ const convSqlResToResultObject = function (sqlRes: QueryResult | null, result: R
 
   return result;
 }
-export { convSqlResToResultObject, getNewResultObject, getResultObjectsBuffer, getResultObjectByUser, ResultObject, setResultObjectByUser };
+export { convSqlResToResultObject, getNewResultObject, getResultObjectsBuffer, getResultObjectByUser, setResultObjectByUser, ResultObject };

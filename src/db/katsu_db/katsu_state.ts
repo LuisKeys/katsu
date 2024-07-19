@@ -1,3 +1,6 @@
+import { OpenAI } from 'openai';
+import { ResultObject } from '../../result/result_object';
+
 interface User {
   userId: number;
   email: string;
@@ -26,6 +29,8 @@ interface DataSource {
 interface KatsuState {
   users: User[];
   dataSources: DataSource[];
+  openai: OpenAI | null;
+  results: ResultObject[];
 }
 
 export { User, DataSource, KatsuState };
