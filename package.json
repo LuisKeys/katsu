@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Katsu api",
   "main": "src/app.js",
-  "typings": "src/**/*.d.ts",  
+  "typings": "src/**/*.d.ts",
   "scripts": {
     "build": "npx tsc",
     "start": "node build/app.js",
     "dev": "npx tsx src/app.ts",
-    "watch":"tsc -w"
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/a1repo/askme#readme",
   "dependencies": {
-    "@slack/bolt": "^3.17.1",
     "docx": "^8.5.0",
     "dotenv": "^16.4.1",
     "excel4node": "^1.8.2",
     "jsonwebtoken": "^9.0.2",
     "openai": "^4.26.0",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
