@@ -1,48 +1,29 @@
 import { getPromptType } from "./prompt_type";
-import { KatsuState, User } from "../db/katsu_db/katsu_state";
+import { KatsuState } from "../db/katsu_db/katsu_state";
+import { getDataSource } from "./data_source";
 /**
  * @fileoverview This module exports the `promptHandler` function which handles different types of prompts and performs corresponding actions.
  * @module promptHandler
  */
 
 /**
- * Handles different types of prompts and performs corresponding actions.
- * @async
- * @param {string} prompt - The prompt to be handled.
- * @param {number} userIndex - The index of the user.
- * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
+ * Handles the prompt based on the given state and user ID.
+ * @param state - The current state of the application.
+ * @param userId - The ID of the user.
+ * @returns A promise that resolves to the updated state after handling the prompt.
  */
 const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuState> => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      resolve(state);
-      {
-        // Get the type of the prompt
-        const promptType = await getPromptType(state, userId);
-        // Select the data source
-        // Call the corresponding handler
-        console.log("Prompt Handler", promptType);
-        return state;
-      };
-    } catch (error) {
-      reject(error);
-    }
-  });
+  // Get the prompt type and data source 
+  state = await getPromptType(state, userId);
+  state = await getDataSource(state, userId);
+
+  // Call the corresponding handler
+  console.log("Prompt type:", state.users[userId].promptType);
+  console.log("Data Source:", state.dataSources[state.users[userId].dataSourceIndex]);
+  return state;
 };
 
 /*
-// Get the result object for the user
-let result: ResultObject | null = getResultObjectByUser(userId, results);
-if (result === null) {
-  result = results[0];
-}
-
-const promptType = await nlPromptType.getPromptType(prompt, result);
-result.sql = '';
-result.promptType = promptType;
-const promptTr = cleanPrompt(prompt);
-result.prompt = promptTr;
-
 if (promptType === constants.QUESTION) {
   // Question prompt
   result.pageNum = 1;

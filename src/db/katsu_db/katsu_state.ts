@@ -4,12 +4,14 @@ import { ResultObject } from '../../result/result_object';
 interface User {
   avatar: string;
   context: string;
+  dataSourceIndex: number;
   department: string;
   email: string;
   firstName: string;
   lastName: string;
   password: string;
   prompt: string;
+  promptType: string;
   result: ResultObject;
   role: string;
   title: string;

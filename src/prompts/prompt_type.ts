@@ -12,15 +12,16 @@ import { ask } from "../openai/openai_api";
  * @param state The KatsuState object.
  * @returns The prompt type as a string.
  */
-const getPromptType = async (state: KatsuState, userIndex: number): Promise<string> => {
-  let context = createPromptType(state, userIndex);
+const getPromptType = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+  let context = createTypePrompt(state, userIndex);
   state.users[userIndex].context = context;
   const response = await ask(state, userIndex);
   console.log("Prompt Type: ", response);
-  return response;
+  state.users[userIndex].promptType = response;
+  return state;
 };
 
-const createPromptType = (state: KatsuState, userId: number): string => {
+const createTypePrompt = (state: KatsuState, userId: number): string => {
   const constList = getConstDescription();
   const csvList = convertToCSV(constList);
 
