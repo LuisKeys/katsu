@@ -38,7 +38,7 @@ const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
 
   let answer: string = "";
   if (completion && completion.choices) {
-    if (completion.choices.length > 1) {
+    if (completion.choices.length > 0) {
       if (completion.choices[0].message.content) {
         answer = completion.choices[0].message.content;
       }
