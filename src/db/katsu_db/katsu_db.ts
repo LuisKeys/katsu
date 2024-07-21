@@ -1,6 +1,7 @@
 import sqlite from 'sqlite3';
 import { User, DataSource, KatsuState } from './katsu_state';
 import { ResultObject } from '../../result/result_object';
+import OpenAI from 'openai';
 
 /**
  * Opens a connection to the Katsu database.
@@ -64,17 +65,35 @@ const getUsers = async (db: sqlite.Database): Promise<User[]> => {
 };
 
 const convertDBRowToUser = (row: any): User => {
-  return {
-    userId: row.user_id,
+  const result: ResultObject = {
+    fields: [],
+    fileURL: '',
+    lastPage: 0,
+    pageNum: 0,
+    prompt: '',
+    promptType: '',
+    rows: [],
+    sql: '',
+    text: '',
+    user: null
+  };
+
+  const user: User = {
+    avatar: row.avatar,
+    context: '',
+    department: row.department,
     email: row.email,
     firstName: row.first_name,
     lastName: row.last_name,
+    password: row.password,
+    prompt: '',
+    result: result,
     role: row.role,
     title: row.title,
-    department: row.department,
-    avatar: row.avatar,
-    password: row.password
+    userId: row.user_id,
   };
+
+  return user;
 }
 
 const getDataSources = async (db: sqlite.Database): Promise<DataSource[]> => {
@@ -109,7 +128,7 @@ const convertDBRowTODataSource = (row: any): DataSource => {
 }
 
 
-const loadKatsuState = async (): Promise<KatsuState> => {
+const loadKatsuState = async (openai: OpenAI): Promise<KatsuState> => {
   const db = await open();
 
   const users: User[] = await getUsers(db);
@@ -118,8 +137,7 @@ const loadKatsuState = async (): Promise<KatsuState> => {
   close(db);
 
   console.log('Loaded Katsu state.');
-  const results: ResultObject[] = new Array(users.length);
-  return { users, dataSources, openai: null, results: results, prompt: "", user: null, isDebug: false };
+  return { users, dataSources, openai: openai, isDebug: false };
 }
 
 /**

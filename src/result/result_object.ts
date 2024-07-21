@@ -2,6 +2,7 @@ import { ask } from "../openai/openai_api";
 import { QueryResult, QueryResultRow } from "pg";
 import { ClientOptions, OpenAI } from "openai";
 import { KatsuState, User } from "../db/katsu_db/katsu_state";
+import { getUserIndex } from "../users/get_user";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -17,7 +18,6 @@ type ResultObject = {
   pageNum: number;
   prompt: string;
   promptType: string;
-  requiresAnswer: boolean;
   rows: QueryResultRow[];
   sql: string;
   text: string;
@@ -47,7 +47,6 @@ const getNewResultObject = function () {
     fields: [],
     pageNum: 0,
     promptType: "",
-    requiresAnswer: false,
     rows: [],
     sql: "",
     text: "",
@@ -87,22 +86,11 @@ const getResultObjectByUser = function (userId: number, results: ResultObject[])
   return results[0];
 }
 
-const setResultObjectByUser = function (state: KatsuState, result: ResultObject): KatsuState {
-  for (let i = 0; i < state.results.length; i++) {
-    if (state.results[i].user?.userId === state.user?.userId) {
-      state.results[i] = result;
-    }
-  }
-  return state;
-}
-
-const getAnswer = async function (table: string) {
-  let prompt = "convert the following tabular result into a friendly text in one short paragraph:";
-  prompt += table;
+const getAnswer = async function (state: KatsuState, userIndex: number): Promise<string> {
 
   let answer = await ask(
-    openai,
-    prompt
+    state,
+    userIndex
   );
 
   return answer;
@@ -121,4 +109,4 @@ const convSqlResToResultObject = function (sqlRes: QueryResult | null, result: R
 
   return result;
 }
-export { convSqlResToResultObject, getNewResultObject, getResultObjectsBuffer, getResultObjectByUser, setResultObjectByUser, ResultObject };
+export { convSqlResToResultObject, getAnswer, getNewResultObject, getResultObjectsBuffer, getResultObjectByUser, ResultObject };

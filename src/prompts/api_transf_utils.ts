@@ -20,7 +20,6 @@ const transfResultObj = function (resultObject: any, output: any): any {
   output.docUrl = resultObject.docUrl;
 
   output.prompt = resultObject.prompt;
-  output.requiresAnswer = resultObject.requiresAnswer;
 
   delete output.dispFields;
   return output;

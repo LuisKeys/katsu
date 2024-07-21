@@ -15,4 +15,21 @@ const getUser = (email: string, state: KatsuState): User | null => {
   return null;
 }
 
-export { getUser };
+/**
+ * Returns the index of the user with the specified email in the given KatsuState.
+ * @param email - The email of the user to find.
+ * @param state - The KatsuState object containing the list of users.
+ * @returns The index of the user if found, otherwise null.
+ */
+const getUserIndex = (email: string, state: KatsuState): number => {
+  for (let i = 0; i < state.users.length; i++) {
+    const user = state.users[i];
+    if (user.email === email) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+export { getUser, getUserIndex };

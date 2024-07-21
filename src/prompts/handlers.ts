@@ -4,8 +4,6 @@ import * as db from "../db/db_commands";
 import * as dbSortResult from "../db/sort_result";
 import * as filesClean from "../files/clean";
 import { exploreFolder, FileObject, searchFiles, copyFilesToReports } from "../files/files_index";
-import * as finder from "../nl/entity_finder";
-import * as nl2sql from "../nl/translate";
 import * as openAIAPI from "../openai/openai_api";
 import * as pageCalc from "./page_calc";
 import * as pageNL from "../nl/page";
@@ -14,6 +12,8 @@ import * as sortFieldFinder from "../nl/sort_field_finder";
 import * as word from "../word/create_word";
 import openAI from "openai";
 import { convSqlResToResultObject, ResultObject } from "../result/result_object";
+import { KatsuState } from "../db/katsu_db/katsu_state";
+import { getUserIndex } from "../users/get_user";
 
 /**
  * This module contains the handlers for different prompts types.
@@ -33,29 +33,10 @@ const openai = new OpenAI(clientOptions);
  * @param {string} prompt - The question prompt.
  * @returns {Promise} - A promise that resolves to the result of the database query.
  */
-const questionHandler = async (result: ResultObject): Promise<ResultObject> => {
-  result.sql = "";
-  result.requiresAnswer = true;
-  // Get the entities from the prompt
-  const entities = await finder.getEntities(result.prompt);
-  // const entities = ["leads", "contacts"];
-  // If it is only one entity, get the SQL
-  if (entities.length === 1) {
-    result = await getSQL(result);
-  }
+const questionHandler = async (state: KatsuState, userIndex: number): Promise<ResultObject> => {
 
-  return result;
+  return state.users[userIndex].result;
 };
-
-const getSQL = async (result: ResultObject): Promise<ResultObject> => {
-  result = await nl2sql.generateSQL(
-    openai,
-    result
-  );
-  console.log(result.sql);
-
-  return result;
-}
 
 /**
  * Handles the LLM prompt.
@@ -63,12 +44,12 @@ const getSQL = async (result: ResultObject): Promise<ResultObject> => {
  * @param {string} prompt - The prompt to be sent to the OpenAI API.
  * @returns {Promise<any>} - A promise that resolves to the result of the OpenAI API call.
  */
-const llmHandler = async (prompt: string): Promise<any> => {
-  let finalPrompt = prompt;
+const llmHandler = async (state: KatsuState, userIndex: number): Promise<any> => {
+  let finalPrompt = state.users[userIndex].prompt;
   finalPrompt +=
     "Format the output for a word document,  including '\n' char for new lines. Provide only the answer without any additional introduction or conclusion.";
   // LLM prompt
-  let result = await openAIAPI.ask(openai, finalPrompt);
+  let result = await openAIAPI.ask(state, userIndex);
 
   let url = "";
 
@@ -81,33 +62,6 @@ const llmHandler = async (prompt: string): Promise<any> => {
   return url;
 };
 
-/**
- * Handles the link prompt.
- * @async
- * @param {string} prompt - The link prompt.
- * @returns {Promise} - A promise that resolves to the result of the database query.
- */
-const linkHandler = async (result: ResultObject | null): Promise<ResultObject | null> => {
-  // Link prompt
-  let sqlRes: QueryResult | null;
-  await db.connect();
-  if (result !== null && result.prompt.includes(constants.ALL)) {
-    sqlRes = await db.execute("SELECT name, URL FROM links order by name");
-  } else {
-    sqlRes = await db.execute("SELECT words FROM links");
-    if (result !== null && sqlRes !== null) {
-      const sql = nl2sql.getLinkSQL(result.prompt, sqlRes.rows);
-      sqlRes = await db.execute(sql);
-    }
-  }
-  await db.close();
-
-  if (sqlRes !== null && result !== null) {
-    result = convSqlResToResultObject(sqlRes, result);
-  }
-
-  return result;
-};
 
 /**
  * Handles the sort prompt.
@@ -129,51 +83,9 @@ const sortHandler = async (result: ResultObject | null): Promise<ResultObject | 
   return result;
 };
 
-const filesHandler = async (result: ResultObject): Promise<any> => {
-  const prompt = result.prompt;
-  let fullPrompt = "get the subject words for the prompt: '";
-  fullPrompt += prompt;
-  fullPrompt +=
-    "'.Only answer with a list of single words separated with comma.";
-  fullPrompt += "Ignore the words file, files, doc, documents or similar";
+const filesHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
 
-  const words = await openAIAPI.ask(openai, fullPrompt);
-
-  const wordsList = words.split(",").map((word) => word.trim());
-
-  const filesDir = process.env.FILES_FOLDER;
-  // clean up not indexable files and folders
-  // filesClean.cleanFiles(filesDir);
-  // filesClean.cleanEmptyDirs(filesDir);
-  // get file list
-  let files: FileObject[] = exploreFolder(filesDir as string);
-
-  let searchedFiles: FileObject[] = searchFiles(files, wordsList);
-
-  filesClean.cleanReports();
-
-  copyFilesToReports(searchedFiles);
-
-  const headerTitle = "Found_Files";
-  result.fields = [];
-  result.fields.push(headerTitle);
-
-  for (let i = 0; i < files.length; i++) {
-    // File name
-    let record: QueryResultRow = {};
-    record[headerTitle] = files[i]["fileName"];
-    result.rows.push(record);
-    // URL
-    record = {};
-    record[headerTitle] = files[i]["urlPath"];
-    result.rows.push(record);
-    // separator
-    record = {};
-    record[headerTitle] = "----------------------------------------";
-    result.rows.push(record);
-  }
-
-  return result;
+  return state;
 };
 
 
@@ -220,7 +132,6 @@ const pageHandler = (result: ResultObject | null): number => {
 
 export {
   questionHandler,
-  linkHandler,
   sortHandler,
   filesHandler,
   llmHandler,

@@ -5,7 +5,7 @@ import { ResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
-import { getUser } from "./users/get_user";
+import { getUser, getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
 import { transfResAPI } from "./prompts/api_transf";
 
@@ -70,9 +70,11 @@ const apiApp = function (state: KatsuState): void {
 
       let result: ResultObject | null = await new Promise((resolve, reject) => {
         const userName: string = String(getPayloadFromToken(token));
-        const user: User | null = getUser(userName, state);
-        askPrompt(prompt, user, state)
-          .then((result) => resolve(result))
+        const userIndex: number = getUserIndex(userName, state);
+        state.users[userIndex].prompt = prompt;
+
+        askPrompt(state, userIndex)
+          .then((state) => resolve(state.users[userIndex].result))
           .catch((error) => reject(error));
       });
 
@@ -97,21 +99,22 @@ const apiApp = function (state: KatsuState): void {
 };
 
 const askPrompt = async (
-  prompt: string,
-  user: User | null,
-  state: KatsuState
-): Promise<ResultObject | null> => {
-  if (user?.email != process.env.AUTH_USER_EMAIL) {
+  state: KatsuState,
+  userIndex: number
+): Promise<KatsuState> => {
+  const user: User = state.users[userIndex];
+  if (user.email != process.env.AUTH_USER_EMAIL) {
     console.log(
       "You are not a registered user. Please contact the administrator to register."
     );
   } else {
-    state = await promptHandler(state);
+    if (userIndex !== null) {
+      state = await promptHandler(state, userIndex);
+      return state;
+    }
+  };
 
-    return null;
-  }
-
-  return null;
-};
+  return state;
+}
 
 export { apiApp };

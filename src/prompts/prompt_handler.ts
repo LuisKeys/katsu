@@ -1,13 +1,4 @@
-import { cleanPrompt } from "./clean";
-import * as constants from "./constants";
-import * as demoData from "../demo/demo_data";
-import * as handlers from "./handlers";
-import * as help from "../nl/help";
-import * as nlPromptType from "./prompt_type";
-import * as promptsHistory from "./check_history";
-import * as savePrompt from "./save_prompt";
-import { llmHandlerCall, excelHandlerCall } from "./prompt_handler_utils";
-import { getResultObjectByUser, ResultObject } from "../result/result_object";
+import { getPromptType } from "./prompt_type";
 import { KatsuState, User } from "../db/katsu_db/katsu_state";
 /**
  * @fileoverview This module exports the `promptHandler` function which handles different types of prompts and performs corresponding actions.
@@ -18,16 +9,21 @@ import { KatsuState, User } from "../db/katsu_db/katsu_state";
  * Handles different types of prompts and performs corresponding actions.
  * @async
  * @param {string} prompt - The prompt to be handled.
- * @param {number} userId - The id of the user.
- * @param {boolean} isDebug - Indicates whether the debug mode is enabled.
+ * @param {number} userIndex - The index of the user.
  * @returns {Promise<void>} - A promise that resolves when the prompt handling is complete.
  */
-const promptHandler = async (
-  state: KatsuState,
-): Promise<KatsuState> => {
+const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuState> => {
   return new Promise(async (resolve, reject) => {
     try {
       resolve(state);
+      {
+        // Get the type of the prompt
+        const promptType = getPromptType(state, userId);
+        // Select the data source
+        // Call the corresponding handler
+        console.log("Prompt Handler", promptType);
+        return state;
+      };
     } catch (error) {
       reject(error);
     }

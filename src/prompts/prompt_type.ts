@@ -1,5 +1,6 @@
-import * as constants from "./constants";
-import { ResultObject } from "../result/result_object";
+import { getConstDescription } from "./constants";
+import { KatsuState } from "../db/katsu_db/katsu_state";
+import { ask } from "../openai/openai_api";
 
 /**
  * Module for determining the type of prompt.
@@ -7,68 +8,30 @@ import { ResultObject } from "../result/result_object";
  */
 
 /**
- * Determines the type of prompt based on the given input.
- * @param {string} prompt - The prompt to be analyzed.
- * @returns {string} The type of prompt.
+ * Retrieves the prompt type from the given state.
+ * @param state The KatsuState object.
+ * @returns The prompt type as a string.
  */
-const getPromptType = (prompt: string, result: ResultObject): string => {
-  const lcPrompt = prompt.toLowerCase();
-
-  let type: string = constants.QUESTION;
-
-  // Check help command
-  if (lcPrompt.includes("help")) {
-    type = constants.HELP;
-  }
-
-  // Check LLM command
-  if (lcPrompt.includes("gpt") || lcPrompt.includes("llm")) {
-    type = constants.LLM;
-  }
-
-  // Check prompt command
-  if (lcPrompt.includes("prompt") || lcPrompt.includes("prompts")) {
-    type = constants.PROMPT;
-  }
-
-  // Check link command
-  if (lcPrompt.includes("link") || lcPrompt.includes("links")) {
-    type = constants.LINK;
-  }
-
-  // Check file command
-  if (lcPrompt.includes("excel")) {
-    type = constants.EXCEL;
-  }
-
-  // Order or sort command
-  if (lcPrompt.includes("order by") || lcPrompt.includes("sort")) {
-    type = constants.SORT;
-  }
-
-  // Check for files command
-  if (
-    lcPrompt.includes("file") ||
-    lcPrompt.includes("files") ||
-    lcPrompt.includes("folder") ||
-    lcPrompt.includes("document") ||
-    lcPrompt.includes("doc") ||
-    lcPrompt.includes("presentation") ||
-    lcPrompt.includes("ppt") ||
-    lcPrompt.includes("pdf")
-  ) {
-    type = constants.FILE;
-  }
-
-  // Page command
-  if (lcPrompt.includes("page")) {
-    type = constants.PAGE;
-  }
-
-  console.log("Prompt Type: ", type);
-
-  // it is not a command then it could be a question
-  return type;
+const getPromptType = async (state: KatsuState, userIndex: number): Promise<string> => {
+  let context = createPromptType(state, userIndex);
+  state.users[userIndex].context = context;
+  const response = await ask(state, userIndex);
+  console.log("Prompt Type: ", response);
+  return response;
 };
+
+const createPromptType = (state: KatsuState, userId: number): string => {
+  const constList = getConstDescription();
+  const csvList = constList.join(",");
+
+  let prompt = `Define the type of prompt within the following list 
+  for the following prompt:
+  Prompt: "${state.users[userId].prompt}"
+  List: ${csvList}
+  Only provide the name of the constant.
+  `;
+
+  return prompt;
+}
 
 export { getPromptType };

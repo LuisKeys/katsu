@@ -5,9 +5,9 @@ import { executeTest } from "./test/test";
 require("dotenv").config();
 
 const init = async () => {
-  const state = await loadKatsuState()
+  const openai = getOpenAI();
+  const state = await loadKatsuState(openai)
   state.isDebug = process.env.KATSU_DEBUG === 'true';
-  state.openai = getOpenAI();
   const isTest = process.env.IS_TEST === 'true';
   if (isTest) {
     executeTest(state);

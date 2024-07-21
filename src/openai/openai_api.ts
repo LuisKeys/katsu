@@ -1,4 +1,5 @@
 import { ClientOptions, OpenAI } from 'openai';
+import { KatsuState } from '../db/katsu_db/katsu_state';
 
 /**
  * Retrieves an instance of the OpenAI client.
@@ -21,29 +22,6 @@ const getOpenAI = (): OpenAI => {
  */
 
 
-/**
- * Sends the prompt to the OpenAI API and returns the response.
- * @param {OpenAI} openai - The OpenAI instance.
- * @param {string} prompt - The prompt to send to the OpenAI API.
- * @returns {Promise<string>} - The response from the OpenAI API.
- */
-async function sendPromptToOpenAI(openai: OpenAI, prompt: string): Promise<string> {
-  const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: prompt }],
-    model: "gpt-3.5-turbo",
-  });
-
-  let answer: String = "";
-  if (completion.choices) {
-    if (completion.choices.length > 1) {
-      if (completion.choices[0].message.content) {
-        answer = completion.choices[0].message.content;
-      }
-    }
-  }
-
-  return answer as string;
-}
 
 /**
  * Asks a question to the OpenAI API and returns the response.
@@ -51,9 +29,23 @@ async function sendPromptToOpenAI(openai: OpenAI, prompt: string): Promise<strin
  * @param {string} prompt - The prompt to send to the OpenAI API.
  * @returns {Promise<string>} - The response from the OpenAI API.
  */
-const ask = async (openai: OpenAI, prompt: string): Promise<string> => {
-  const response: string | null = await sendPromptToOpenAI(openai, prompt);
-  return response || '';
+const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
+
+  const completion = await (state.openai?.chat.completions.create || (() => { }))({
+    messages: [{ role: "system", content: state.users[userIndex].prompt }],
+    model: "gpt-4o-mini",
+  });
+
+  let answer: string = "";
+  if (completion && completion.choices) {
+    if (completion.choices.length > 1) {
+      if (completion.choices[0].message.content) {
+        answer = completion.choices[0].message.content;
+      }
+    }
+  }
+
+  return answer;
 };
 
 export { ask, getOpenAI };

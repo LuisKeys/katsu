@@ -2,15 +2,18 @@ import { OpenAI } from 'openai';
 import { ResultObject } from '../../result/result_object';
 
 interface User {
-  userId: number;
+  avatar: string;
+  context: string;
+  department: string;
   email: string;
   firstName: string;
   lastName: string;
+  password: string;
+  prompt: string;
+  result: ResultObject;
   role: string;
   title: string;
-  department: string;
-  avatar: string;
-  password: string;
+  userId: number;
 }
 
 interface DataSource {
@@ -29,10 +32,7 @@ interface DataSource {
 interface KatsuState {
   users: User[];
   dataSources: DataSource[];
-  openai: OpenAI | null;
-  results: ResultObject[];
-  prompt: string;
-  user: User | null;
+  openai: OpenAI;
   isDebug: boolean;
 }
 
