@@ -31,8 +31,8 @@ const getOpenAI = (): OpenAI => {
  */
 const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
 
-  const completion = await (state.openai?.chat.completions.create || (() => { }))({
-    messages: [{ role: "system", content: state.users[userIndex].prompt }],
+  const completion = await (state.openai.chat.completions.create)({
+    messages: [{ role: "system", content: state.users[userIndex].context }],
     model: "gpt-4o-mini",
   });
 

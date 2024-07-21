@@ -18,7 +18,7 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
       resolve(state);
       {
         // Get the type of the prompt
-        const promptType = getPromptType(state, userId);
+        const promptType = await getPromptType(state, userId);
         // Select the data source
         // Call the corresponding handler
         console.log("Prompt Handler", promptType);

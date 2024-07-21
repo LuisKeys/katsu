@@ -3,42 +3,40 @@
  * @module prompts/constants
  */
 
-const ALL = 'all';
 const EXCEL = 'export excel';
 const FILE = 'search file operation';
 const HELP = 'help';
-const LINK = 'platforms link';
-const LLM = 'LLM';
 const PAGE = 'result page command';
-const PROMPT = 'my prompts';
-const QUESTION = 'question prompt';
+const QUESTION = 'business question prompt';
 const SORT = 'result sort operation';
-
-export {
-  ALL,
-  EXCEL,
-  FILE,
-  HELP,
-  LINK,
-  LLM,
-  PAGE,
-  PROMPT,
-  QUESTION,
-  SORT,
-  getConstDescription
-};
 
 const getConstDescription = (): { name: string, description: string }[] => {
   const constants = [
+    { name: QUESTION, description: `This constant represents a business question prompt.` },
     { name: EXCEL, description: `This constant represents the export excel prompt.` },
     { name: FILE, description: `This constant represents the search file operation prompt.` },
     { name: HELP, description: `This constant represents the help prompt.` },
-    { name: LINK, description: `This constant represents the platforms link prompt.` },
     { name: PAGE, description: `This constant represents the result page command prompt.` },
-    { name: PROMPT, description: `This constant represents the my prompts prompt.` },
-    { name: QUESTION, description: `This constant represents the question prompt.` },
     { name: SORT, description: `This constant represents the result sort operation prompt.` }
   ];
 
   return constants;
 }
+
+function convertToCSV(objects: { name: string, description: string }[]): string {
+  const header = "name,description";
+  const rows = objects.map(obj => `${obj.name},${obj.description.replace(/"/g, '""')}`);
+  return [header, ...rows].join("\n");
+}
+
+export {
+  EXCEL,
+  FILE,
+  HELP,
+  PAGE,
+  QUESTION,
+  SORT,
+  convertToCSV,
+  getConstDescription
+};
+

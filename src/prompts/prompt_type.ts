@@ -1,4 +1,4 @@
-import { getConstDescription } from "./constants";
+import { convertToCSV, getConstDescription } from "./constants";
 import { KatsuState } from "../db/katsu_db/katsu_state";
 import { ask } from "../openai/openai_api";
 
@@ -22,7 +22,7 @@ const getPromptType = async (state: KatsuState, userIndex: number): Promise<stri
 
 const createPromptType = (state: KatsuState, userId: number): string => {
   const constList = getConstDescription();
-  const csvList = constList.join(",");
+  const csvList = convertToCSV(constList);
 
   let prompt = `Define the type of prompt within the following list 
   for the following prompt:
