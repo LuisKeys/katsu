@@ -1,7 +1,7 @@
 import { getLastName, getFirstName, getPhone } from "./people_data";
 import { getCompanyName, getEmail, getAmount } from "./company_data";
 import { ResultObject } from "../result/result_object";
-import { KatsuState } from "../db/katsu_db/katsu_state";
+import { KatsuState } from "../state/katsu_state";
 
 /**
  * Replaces demo values in the table data.

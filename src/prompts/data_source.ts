@@ -1,4 +1,4 @@
-import { DataSource, KatsuState } from "../db/katsu_db/katsu_state";
+import { DataSource, KatsuState } from "../state/katsu_state";
 import { ask } from "../openai/openai_api";
 
 const getDataSource = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {

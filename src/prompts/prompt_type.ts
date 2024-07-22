@@ -1,5 +1,5 @@
 import { convertToCSV, getConstDescription } from "./constants";
-import { KatsuState } from "../db/katsu_db/katsu_state";
+import { KatsuState } from "../state/katsu_state";
 import { ask } from "../openai/openai_api";
 
 /**

@@ -1,4 +1,4 @@
-import { KatsuState } from '../db/katsu_db/katsu_state';
+import { KatsuState } from '../state/katsu_state';
 import bcrypt from 'bcrypt';
 
 /**

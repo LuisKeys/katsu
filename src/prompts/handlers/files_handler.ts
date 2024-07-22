@@ -1,4 +1,4 @@
-import { KatsuState } from "../../db/katsu_db/katsu_state";
+import { KatsuState } from "../../state/katsu_state";
 
 /**
  * This module contains the handler for files prompts type.

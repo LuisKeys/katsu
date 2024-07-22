@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
-import { KatsuState, User } from "./db/katsu_db/katsu_state";
+import { KatsuState, User } from "./state/katsu_state";
 import { ResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";

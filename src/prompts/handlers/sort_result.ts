@@ -3,7 +3,7 @@
  * @description Module for sorting result rows based on a specified field.
  */
 
-import { KatsuState } from "../../db/katsu_db/katsu_state";
+import { KatsuState } from "../../state/katsu_state";
 interface Result {
   rows: Array<{ [key: string]: any }>;
 }

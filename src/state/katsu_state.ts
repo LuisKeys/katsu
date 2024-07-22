@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { ResultObject } from '../../result/result_object';
+import { ResultObject } from '../result/result_object';
 import { QueryResult, QueryResultRow } from 'pg';
 
 interface User {

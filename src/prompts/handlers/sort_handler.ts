@@ -1,7 +1,7 @@
 import { ResultObject } from "../../result/result_object";
 import { getSortfield, getSortDirection } from "../../nl/sort_field_finder";
 import { sortResult } from "./sort_result";
-import { KatsuState } from "../../db/katsu_db/katsu_state";
+import { KatsuState } from "../../state/katsu_state";
 /**
  * This module contains the handler for sort prompts type.
  * @module sort handler

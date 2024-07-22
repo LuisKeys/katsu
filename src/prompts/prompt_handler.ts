@@ -1,5 +1,5 @@
 import { getPromptType } from "./prompt_type";
-import { KatsuState } from "../db/katsu_db/katsu_state";
+import { KatsuState } from "../state/katsu_state";
 import { getDataSource } from "./data_source";
 import { questionHandler } from "./handlers/question_handler";
 import { excelExportHandler } from "./handlers/excel_handler";

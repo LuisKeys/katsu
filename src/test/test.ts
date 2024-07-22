@@ -1,5 +1,5 @@
 import { getUserIndex } from "../users/get_user";
-import { KatsuState } from "../db/katsu_db/katsu_state";
+import { KatsuState } from "../state/katsu_state";
 const { promptHandler } = require("../prompts/prompt_handler");
 
 // Test the promptHandler

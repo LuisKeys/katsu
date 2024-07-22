@@ -1,4 +1,4 @@
-import { KatsuState, User } from "../db/katsu_db/katsu_state";
+import { KatsuState, User } from "../state/katsu_state";
 
 /**
  * Checks if a user with the given email exists in the members table.
