@@ -1,5 +1,6 @@
 import { OpenAI } from 'openai';
 import { ResultObject } from '../../result/result_object';
+import { QueryResult, QueryResultRow } from 'pg';
 
 interface User {
   avatar: string;
@@ -18,6 +19,11 @@ interface User {
   userId: number;
 }
 
+interface TableSampleData {
+  tableName: string;
+  result: QueryResultRow;
+}
+
 interface DataSource {
   sourceId: number;
   name: string;
@@ -29,6 +35,7 @@ interface DataSource {
   port: number;
   db: string;
   tables: string;
+  tablesSampleData: TableSampleData[];
 }
 
 interface KatsuState {
@@ -36,6 +43,7 @@ interface KatsuState {
   dataSources: DataSource[];
   openai: OpenAI;
   isDebug: boolean;
+  showWordsCount: boolean;
 }
 
-export { User, DataSource, KatsuState };
+export { User, DataSource, KatsuState, TableSampleData };

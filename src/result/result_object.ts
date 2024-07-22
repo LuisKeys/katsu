@@ -2,7 +2,6 @@ import { ask } from "../openai/openai_api";
 import { QueryResult, QueryResultRow } from "pg";
 import { ClientOptions, OpenAI } from "openai";
 import { KatsuState, User } from "../db/katsu_db/katsu_state";
-import { getUserIndex } from "../users/get_user";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.

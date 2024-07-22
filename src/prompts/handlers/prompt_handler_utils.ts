@@ -1,29 +1,7 @@
-import * as excel from "../excel/create_excel";
-import * as handlers from "./handlers";
+import * as excel from "../../excel/create_excel";
 import * as pageCalc from "./page_calc";
-import * as savePrompt from "./save_prompt";
-import { KatsuState } from "../db/katsu_db/katsu_state";
-import { ResultObject } from "../result/result_object";
-
-/**
- * Handles the llmHandler call.
- *
- * @param {string} promptTr - The prompt transaction.
- * @param {string} memberId - The member ID.
- * @param {string} memberName - The member name.
- * @returns {Promise<[string, any]>} - A promise that resolves to an array containing the file URL and the result object.
- */
-const llmHandlerCall = async (state: KatsuState, userIndex: number): Promise<ResultObject> => {
-  const result: ResultObject = state.users[userIndex].result;
-  result.rows = [];
-  const fileURL = await handlers.llmHandler(state, userIndex);
-  await savePrompt.savePrompt(
-    result
-  );
-
-  result.fileURL = fileURL;
-  return result;
-};
+import * as savePrompt from "../save_prompt";
+import { ResultObject } from "../../result/result_object";
 
 /**
  * Handles the Excel handler call.
@@ -75,6 +53,5 @@ const formatResult = function (result: ResultObject): ResultObject {
 
 export {
   excelHandlerCall,
-  formatResult,
-  llmHandlerCall,
+  formatResult
 };
