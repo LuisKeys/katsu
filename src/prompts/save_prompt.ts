@@ -1,5 +1,6 @@
 import { connect, close, execute } from "../db/db_commands";
 import { getResultObjectByUser, ResultObject } from "../result/result_object";
+import { KatsuState } from "../state/katsu_state";
 
 /**
  * Saves a prompt to the prompts_history table.
@@ -12,7 +13,8 @@ import { getResultObjectByUser, ResultObject } from "../result/result_object";
  * @param {string} promptType - The type of prompt.
  * @returns {Promise<void>} - A Promise that resolves when the prompt is saved.
  */
-const savePrompt = async (result: ResultObject): Promise<void> => {
+const savePrompt = async (state: KatsuState, userIndex: number): Promise<void> => {
+  /*
   const userId: number = result.user?.userId || 0;
   const prompt: string = result.prompt;
   let sql: string = result.sql;
@@ -29,9 +31,12 @@ const savePrompt = async (result: ResultObject): Promise<void> => {
   const promptClean = cleanPrompt(prompt);
   insertSQL += `values (${userId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${promptClean}', '${promptType}') `;
 
-  await connect();
-  await execute(insertSQL);
-  await close();
+  const client = await connect();
+  if (client !== null) {
+    await execute(insertSQL, client);
+    await close(client);
+  }
+  */
 }
 
 /**

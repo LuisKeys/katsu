@@ -14,9 +14,7 @@ import { getHelp } from "../../nl/help";
  * @returns The updated state of the application.
  */
 const helpHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  const prompt = state.users[userIndex].prompt;
-  const result = await getHelp(prompt);
-  state.users[userIndex].result = result;
+  state = await getHelp(state, userIndex);
   return state;
 };
 

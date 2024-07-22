@@ -1,10 +1,10 @@
 import OpenAI from 'openai';
 import sqlite from 'sqlite3';
-import { QueryResultRow } from 'pg';
+import { Client, QueryResultRow } from 'pg';
 import { ResultObject } from '../result/result_object';
 import { User, DataSource, KatsuState, TableSampleData } from './katsu_state';
-import { close, connect } from '../db/db_commands';
-import { db_all } from '../db/katsu_db/katsu_db';
+import { close, connect, execute } from '../db/db_commands';
+import { closeKDB, db_allKDB, openKDB } from '../db/katsu_db/katsu_db';
 
 const getUsers = async (db: sqlite.Database): Promise<User[]> => {
   const sql = `
@@ -53,7 +53,9 @@ const convertDBRowToUser = (row: any): User => {
     title: row.title,
     userId: row.user_id,
     dataSourceIndex: 0,
-    promptType: ''
+    promptType: '',
+    dbClient: undefined,
+    dbConnData: { host: '', user: '', password: '', port: 0, database: '' },
   };
 
   return user;
@@ -77,17 +79,32 @@ const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSa
 
 const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData[]> => {
   let tablesSampleData: TableSampleData[] = [];
-
-  const db = connect();
+  const dbConnData = {
+    user: row.user,
+    host: row.host,
+    database: row.db,
+    password: row.password,
+    port: row.port
+  };
+  const client: Client | null = await connect(dbConnData);
+  if (client === null) {
+    return tablesSampleData;
+  }
 
   const tables: string[] = row.tables.split(',').map((table: string) => table.trim());
-  tables.forEach((table) => {
-    let tableSampleData: TableSampleData = {
-      tableName: table,
-      result: undefined
-    };
-    tablesSampleData.push(tableSampleData);
+  tables.forEach(async (table) => {
+    const sql = `SELECT * FROM ${table} LIMIT 2`;
+    const result = await execute(sql, client);
+    if (result !== null) {
+      let tableSampleData: TableSampleData = {
+        tableName: table,
+        result: result
+      };
+      tablesSampleData.push(tableSampleData);
+    }
   });
+
+  close(client);
   return tablesSampleData;
 
 }
@@ -96,7 +113,7 @@ const getDataSourcesRows = async (db: sqlite.Database): Promise<QueryResultRow[]
   const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables
     FROM data_sources`;
 
-  const result = await db_all(db, sql);
+  const result = await db_allKDB(db, sql);
   return result;
 };
 
@@ -114,12 +131,12 @@ const getDataSources = async (db: sqlite.Database): Promise<DataSource[]> => {
 
 
 const loadKatsuState = async (openai: OpenAI): Promise<KatsuState> => {
-  const db = await open();
+  const db = await openKDB();
 
   const users: User[] = await getUsers(db);
   const dataSources: DataSource[] = await getDataSources(db);
 
-  close(db);
+  closeKDB(db);
 
   console.log('Loaded Katsu state.');
   return { users, dataSources, openai: openai, isDebug: false, showWordsCount: false };

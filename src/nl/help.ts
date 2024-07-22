@@ -1,6 +1,8 @@
-import { QueryResult } from "pg";
+import { Client, QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
 import { HELP } from "../prompts/constants";
+import { KatsuState } from "../state/katsu_state";
+import { getUserIndex } from "../users/get_user";
 
 /**
  * @fileoverview This module contains functions for retrieving help information based on a prompt.
@@ -13,13 +15,14 @@ import { HELP } from "../prompts/constants";
  * @param {string} prompt - The prompt to retrieve help information for.
  * @returns {Promise<any>} - A promise that resolves to the help information.
  */
-const getHelp = async function (prompt: string): Promise<any> {
+const getHelp = async function (state: KatsuState, userIndex: number): Promise<KatsuState> {
   let result;
+  let prompt = state.users[userIndex].prompt;
   if (prompt === HELP) {
-    result = await getHelpList(prompt);
+    result = await getHelpList(state, userIndex);
   } else {
     prompt = prompt.replace(HELP, '').trim();
-    result = await getHelpList(prompt);
+    result = await getHelpList(state, userIndex);
   }
 
   return result;
@@ -31,13 +34,20 @@ const getHelp = async function (prompt: string): Promise<any> {
  * @param {string} prompt - The prompt to search for in the help table.
  * @returns {Promise<Array>} - A promise that resolves to an array of help items.
  */
-const getHelpList = async function (prompt: string): Promise<QueryResult | null> {
+const getHelpList = async function (state: KatsuState, userIndex: number): Promise<KatsuState> {
+  /*
   const sql = `SELECT sample_prompt As "Prompts for ${prompt}" FROM help where topic = '${prompt}' ORDER BY sample_prompt`;
-  await connect();
-  const result: QueryResult | null = await execute(sql);
-  await close();
+  const 
+  const client = await connect();
+  if (client === null) {
+    return null;
+  }
 
+  const result: QueryResult | null = await execute(sql, client);
+  await close(client);
   return result;
+  */
+  return state;
 }
 
 export { getHelp };

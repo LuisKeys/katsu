@@ -1,5 +1,5 @@
 // @ts-ignore
-import { Client, QueryResult } from 'pg';
+import { Client, ClientConfig, QueryResult } from 'pg';
 
 let gerror = '';
 
@@ -11,13 +11,13 @@ const getError = function (): string {
  * Connects to the database.
  * @async
  */
-const connect = async function (): Promise<void> {
+const connect = async function (dbConnData: DbConnData): Promise<Client | null> {
   const client = new Client({
-    user: process.env.POSTGRES_USER,
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    port: Number(process.env.POSTGRES_PORT),
+    user: dbConnData.user,
+    host: dbConnData.host,
+    database: dbConnData.database,
+    password: dbConnData.password,
+    port: dbConnData.port,
     ssl: {
       rejectUnauthorized: false
     }
@@ -26,9 +26,11 @@ const connect = async function (): Promise<void> {
   try {
     // Connect to the database
     await client.connect();
+    return client;
   } catch (error) {
     await client.end();
     console.error("Error with database operation", error);
+    return null;
   }
 };
 
@@ -38,22 +40,10 @@ const connect = async function (): Promise<void> {
  * @param {string} sql - The SQL statement to execute.
  * @returns {Promise<QueryResult>} - The result of the SQL query.
  */
-const execute = async function (sql: string): Promise<QueryResult | null> {
-  const client = new Client({
-    user: process.env.POSTGRES_USER,
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    port: Number(process.env.POSTGRES_PORT),
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-
+const execute = async function (sql: string, client: Client): Promise<QueryResult | null> {
   try {
     // Perform database operations here
     gerror = '';
-    await client.connect();
     const rows = await client.query(sql);
     return rows;
   } catch (error: any) {
@@ -61,8 +51,6 @@ const execute = async function (sql: string): Promise<QueryResult | null> {
     console.error("Error with database operation", error);
     gerror = error["message"];
     return null;
-  } finally {
-    await client.end();
   }
 };
 
@@ -70,25 +58,12 @@ const execute = async function (sql: string): Promise<QueryResult | null> {
  * Closes the database connection.
  * @async
  */
-const close = async function (): Promise<void> {
-  const client = new Client({
-    user: process.env.POSTGRES_USER,
-    host: process.env.POSTGRES_HOST,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    port: Number(process.env.POSTGRES_PORT),
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
-
+const close = async function (client: Client): Promise<void> {
   try {
     // Disconnect the database
-    await client.connect();
-  } catch (error) {
-    console.error("Error with database operation", error);
-  } finally {
     await client.end();
+  } catch (error) {
+    console.error("Error with disconnect database operation", error);
   }
 };
 

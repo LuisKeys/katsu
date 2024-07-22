@@ -17,6 +17,8 @@ interface User {
   role: string;
   title: string;
   userId: number;
+  dbClient: any;
+  dbConnData: DbConnData;
 }
 
 interface TableSampleData {

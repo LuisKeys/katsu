@@ -2,8 +2,10 @@ import { QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
 import { cleanPrompt } from "./save_prompt";
 import { convSqlResToResultObject, ResultObject } from "../result/result_object";
+import { KatsuState } from "../state/katsu_state";
 
-const checkPrompt = async (prompt: string): Promise<string | null> => {
+const checkPrompt = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+  /*
   const promptSafe = cleanPrompt(prompt);
   let sql = `select sql from v_prompts_history where prompt_cmp = '${promptSafe}' `;
   sql += `and rows_count > 0 `;
@@ -11,9 +13,13 @@ const checkPrompt = async (prompt: string): Promise<string | null> => {
   sql += `order by created_date desc `;
   sql += `limit 1 `;
 
-  await connect();
-  const sqlRes: QueryResult | null = await execute(sql);
-  await close();
+  const client = await connect();
+  if (client === null) {
+    return null;
+  }
+
+  const sqlRes: QueryResult | null = await execute(sql, client);
+  await close(client);
 
   if (sqlRes && sqlRes.rows.length === 0) {
     return null;
@@ -22,9 +28,12 @@ const checkPrompt = async (prompt: string): Promise<string | null> => {
   } else {
     return null;
   }
+  */
+  return state;
 };
 
-const listHistory = async (result: ResultObject): Promise<ResultObject | null> => {
+const listHistory = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+  /*
   let sql = `SELECT prompt as "My most used prompts" FROM (`;
   sql += `SELECT prompt, COUNT(*) AS prompt_count `;
   sql += `FROM prompts_history `;
@@ -33,13 +42,17 @@ const listHistory = async (result: ResultObject): Promise<ResultObject | null> =
   sql += `ORDER BY prompt_count desc `;
   sql += `limit 20) t; `;
 
-  await connect();
-  const sqlRes: QueryResult | null = await execute(sql);
-  await close();
+  const client = await connect();
+  if (client === null) {
+    return null;
+  }
+  const sqlRes: QueryResult | null = await execute(sql, client);
+  await close(client);
 
   result = convSqlResToResultObject(sqlRes, result);
+  */
 
-  return result;
+  return state;
 };
 
 export {

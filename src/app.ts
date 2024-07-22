@@ -1,5 +1,5 @@
 import { apiApp } from "./api_app";
-import { loadKatsuState } from "./db/katsu_db/katsu_db";
+import { loadKatsuState } from "./state/load_state";
 import { getOpenAI } from "./openai/openai_api";
 import { executeTest } from "./test/test";
 require("dotenv").config();

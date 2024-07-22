@@ -2,6 +2,7 @@ import * as excel from "../../excel/create_excel";
 import * as pageCalc from "./page_calc";
 import * as savePrompt from "../save_prompt";
 import { ResultObject } from "../../result/result_object";
+import { KatsuState } from "../../state/katsu_state";
 
 /**
  * Handles the Excel handler call.
@@ -11,15 +12,15 @@ import { ResultObject } from "../../result/result_object";
  * @param {string} memberName - The member name.
  * @returns {string} - The file URL.
  */
-const excelHandlerCall = async (result: ResultObject): Promise<string> => {
+const excelHandlerCall = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
   let fileURL = "";
+  const result = state.users[userIndex].result;
   if (result.rows.length > 0) {
     fileURL = excel.createExcel(result);
-    await savePrompt.savePrompt(
-      result
-    );
+    await savePrompt.savePrompt(state, userIndex);
   }
-  return fileURL;
+  state.users[userIndex].result.fileURL = fileURL;
+  return state;
 };
 
 /**
