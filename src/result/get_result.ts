@@ -33,6 +33,8 @@ const getResult = async (state: KatsuState, userIndex: number): Promise<KatsuSta
   } else {
     userResult.rows = [];
     userResult.fields = [];
+    userResult.pageNum = 0;
+    userResult.lastPage = 0;
     userResult.text = "No results found.";
   }
 
