@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import { KatsuState, User } from "./state/katsu_state";
-import { ResultObject } from "./result/result_object";
+import { APIResultObject, ResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
@@ -68,8 +68,8 @@ const apiApp = function (state: KatsuState): void {
         throw new Error("Invalid token");
       }
 
-      let result: ResultObject | null = await new Promise((resolve, reject) => {
-        const userName: string = String(getPayloadFromToken(token));
+      let result: ResultObject = await new Promise((resolve, reject) => {
+        const userName: string = getPayloadFromToken(token);
         const userIndex: number = getUserIndex(userName, state);
         state.users[userIndex].prompt = prompt;
 
@@ -78,11 +78,9 @@ const apiApp = function (state: KatsuState): void {
           .catch((error) => reject(error));
       });
 
-      if (result) {
-        result = transfResAPI(result);
-      }
+      let apiResult: APIResultObject = transfResAPI(result);
 
-      res.status(200).json({ answer: result });
+      res.status(200).json(apiResult);
     } catch (error: any) {
       res.status(401).json({ message: error["message"] });
     }
@@ -102,17 +100,10 @@ const askPrompt = async (
   state: KatsuState,
   userIndex: number
 ): Promise<KatsuState> => {
-  const user: User = state.users[userIndex];
-  if (user.email != process.env.AUTH_USER_EMAIL) {
-    console.log(
-      "You are not a registered user. Please contact the administrator to register."
-    );
-  } else {
-    if (userIndex !== null) {
-      state = await promptHandler(state, userIndex);
-      return state;
-    }
-  };
+  if (userIndex !== null) {
+    state = await promptHandler(state, userIndex);
+    return state;
+  }
 
   return state;
 }

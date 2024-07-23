@@ -1,5 +1,3 @@
-import { connect, close, execute } from "../../db/db_commands";
-import { getResultObjectByUser, ResultObject } from "../../result/result_object";
 import { KatsuState } from "../../state/katsu_state";
 
 /**

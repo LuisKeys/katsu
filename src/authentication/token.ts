@@ -1,4 +1,4 @@
-import { sign, Secret, verify } from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 
 /**
  * Generates a token using the provided payload.
@@ -9,7 +9,7 @@ import { sign, Secret, verify } from 'jsonwebtoken';
 function generateToken(user: string): string {
   const secretKey: string = String(process.env.AUTH_SECRET_KEY);
   const expiresIn = '1h';
-  return sign({ user }, secretKey, { expiresIn });
+  return jwt.sign({ user }, secretKey, { expiresIn });
 }
 
 /**
@@ -20,10 +20,16 @@ function generateToken(user: string): string {
 function validateToken(token: string): boolean {
   try {
     const secretKey: string = String(process.env.AUTH_SECRET_KEY);
-    verify(token, secretKey);
+    jwt.verify(token, secretKey);
     return true;
   } catch (error) {
     return false;
+  }
+}
+
+declare module 'jsonwebtoken' {
+  export interface UserIDJwtPayload extends JwtPayload {
+    user: string
   }
 }
 
@@ -32,15 +38,13 @@ function validateToken(token: string): boolean {
  * @param {string} token - The token from which to retrieve the payload.
  * @returns {object|null} - The payload object if the token is valid, null otherwise.
  */
-function getPayloadFromToken(token: string): object | null {
+function getPayloadFromToken(token: string): string {
   try {
-
-
-    const secretKey: String = String(process.env.AUTH_SECRET_KEY);
-    const decoded: Object = verify(token, secretKey as Secret);
-    return decoded;
+    const secretKey = process.env.AUTH_SECRET_KEY;
+    const decoded = <jwt.UserIDJwtPayload>jwt.verify(token, secretKey as jwt.Secret);
+    return decoded.user;
   } catch (error) {
-    return null;
+    return "";
   }
 }
 

@@ -1,16 +1,33 @@
-import { resolveObjectURL } from 'buffer';
-import { formatAPIResult } from '../formatter/format_api_result';
-import { ResultObject } from './result_object';
+import { APIResultObject, ResultObject } from './result_object';
 
 /**
- * Transforms the result object into a desired output format suitable for the API.
- * @param {Object} resultObject - The result object to be transformed.
- * @returns {Object} - The transformed output object.
+ * Transforms a `ResultObject` into an `APIResultObject`.
+ * @param resultObject - The input `ResultObject` to be transformed.
+ * @returns The transformed `APIResultObject`.
  */
-const transfResAPI = function (resultObject: ResultObject): ResultObject {
-  // let output = getAPIOutput(resultObject);
+const transfResAPI = function (resultObject: ResultObject): APIResultObject {
 
-  return resultObject;
+  let rows: string[][] = [];
+  // Header row
+  rows.push(resultObject.fields);
+  // Data rows
+  if (resultObject.rows.length > 0) {
+    rows = resultObject.rows.map((row) => {
+      return Object.values(row).map((val) => {
+        return val.toString();
+      });
+    });
+  }
+
+  const apiResultObject: APIResultObject = {
+    lastPage: resultObject.lastPage,
+    pageNum: resultObject.pageNum,
+    rows: rows,
+    text: resultObject.text,
+    docURL: resultObject.fileURL
+  };
+
+  return apiResultObject;
 }
 
 export { transfResAPI };

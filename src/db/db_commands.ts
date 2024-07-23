@@ -1,5 +1,6 @@
 // @ts-ignore
-import { Client, ClientConfig, QueryResult } from 'pg';
+import { Client, QueryResult } from 'pg';
+import { DbConnData } from './db_conn_data';
 
 let gerror = '';
 

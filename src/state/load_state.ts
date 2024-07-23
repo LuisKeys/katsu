@@ -35,8 +35,7 @@ const convertDBRowToUser = (row: any): User => {
     promptType: '',
     rows: [],
     sql: '',
-    text: '',
-    user: null
+    text: ''
   };
 
   const user: User = {

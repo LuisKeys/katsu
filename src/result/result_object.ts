@@ -7,6 +7,14 @@ import { QueryResultRow } from "pg";
  * @module result_object
  */
 
+type APIResultObject = {
+  lastPage: number;
+  pageNum: number;
+  rows: String[][];
+  text: string;
+  docURL: string;
+};
+
 type ResultObject = {
   fields: string[];
   fileURL: string;
@@ -46,4 +54,4 @@ const getNewResultObject = function () {
 
 }
 
-export { getNewResultObject, ResultObject };
+export { APIResultObject, getNewResultObject, ResultObject };
