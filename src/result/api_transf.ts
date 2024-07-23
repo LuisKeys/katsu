@@ -8,15 +8,19 @@ import { APIResultObject, ResultObject } from './result_object';
 const transfResAPI = function (resultObject: ResultObject): APIResultObject {
 
   let rows: string[][] = [];
-  // Header row
-  rows.push(resultObject.fields);
+  let dataRows: string[][] = [];
   // Data rows
   if (resultObject.rows.length > 0) {
-    rows = resultObject.rows.map((row) => {
+    dataRows = resultObject.rows.map((row) => {
       return Object.values(row).map((val) => {
         return val.toString();
       });
     });
+
+    rows.push(resultObject.fields);
+    for (let i = 0; i < dataRows.length; i++) {
+      rows.push(dataRows[i]);
+    }
   }
 
   const apiResultObject: APIResultObject = {
