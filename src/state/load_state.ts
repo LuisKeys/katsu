@@ -54,8 +54,7 @@ const convertDBRowToUser = (row: any): User => {
     userId: row.user_id,
     dataSourceIndex: 0,
     promptType: '',
-    dbClient: undefined,
-    dbConnData: { host: '', user: '', password: '', port: 0, database: '' },
+    sql: ''
   };
 
   return user;
@@ -92,8 +91,8 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
   }
 
   const tables: string[] = row.tables.split(',').map((table: string) => table.trim());
-  tables.forEach(async (table) => {
-    const sql = `SELECT * FROM ${table} LIMIT 2`;
+  for (const table of tables) {
+    const sql = `SELECT * FROM ${table} LIMIT 1`;
     const result = await execute(sql, client);
     if (result !== null) {
       let tableSampleData: TableSampleData = {
@@ -102,11 +101,11 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
       };
       tablesSampleData.push(tableSampleData);
     }
-  });
+  }
 
   close(client);
-  return tablesSampleData;
 
+  return tablesSampleData;
 }
 
 const getDataSourcesRows = async (db: sqlite.Database): Promise<QueryResultRow[]> => {

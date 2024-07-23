@@ -1,6 +1,6 @@
 import { Client, QueryResult } from "pg";
 import { connect, close, execute } from "../db/db_commands";
-import { HELP } from "../prompts/constants";
+import { HELP } from "../state/constants";
 import { KatsuState } from "../state/katsu_state";
 import { getUserIndex } from "../users/get_user";
 

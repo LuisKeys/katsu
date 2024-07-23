@@ -1,18 +1,4 @@
-import { DataSource, KatsuState } from "../state/katsu_state";
-import { ask } from "../openai/openai_api";
-
-const getDataSource = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  if (state.dataSources.length === 1) {
-    state.users[userIndex].dataSourceIndex = 0;
-    return state;
-  } else {
-    let context = createDataSourcePrompt(state, userIndex);
-    state.users[userIndex].context = context;
-    const response = await ask(state, userIndex);
-    state.users[userIndex].dataSourceIndex = state.dataSources.findIndex(dataSource => dataSource.name === response);
-    return state;
-  }
-}
+import { DataSource, KatsuState } from "../../state/katsu_state";
 
 const createDataSourcePrompt = (state: KatsuState, userId: number): string => {
   const csvList = convertToCSV(state.dataSources);
@@ -40,4 +26,4 @@ const convertToCSV = (dataSources: DataSource[]): string => {
   return [header, ...rows].join("\n");
 }
 
-export { getDataSource };
+export { createDataSourcePrompt };

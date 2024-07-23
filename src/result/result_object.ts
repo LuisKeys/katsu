@@ -1,4 +1,4 @@
-import { ask } from "../openai/openai_api";
+import { ask } from "../llm/openai/openai_api";
 import { QueryResult, QueryResultRow } from "pg";
 import { ClientOptions, OpenAI } from "openai";
 import { KatsuState, User } from "../state/katsu_state";

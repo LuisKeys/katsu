@@ -1,6 +1,6 @@
-import { getPromptType } from "./prompt_type";
+import { getPromptType } from "./utils/prompt_type";
 import { KatsuState } from "../state/katsu_state";
-import { getDataSource } from "./data_source";
+import { getDataSource } from "./utils/data_source";
 import { questionHandler } from "./handlers/question_handler";
 import { excelExportHandler } from "./handlers/excel_handler";
 import { sortHandler } from "./handlers/sort_handler";
@@ -42,23 +42,23 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
  * @returns The updated KatsuState after processing the prompt.
  */
 const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuState> => {
-  switch (state.users[userId].promptType) {
-    case "question":
+  switch (state.users[userId].promptType.toUpperCase()) {
+    case "QUESTION":
       state = await questionHandler(state, userId);
       break;
-    case "excel":
+    case "EXCEL":
       state = await excelExportHandler(state, userId);
       break;
-    case "sort":
+    case "SORT":
       state = await sortHandler(state, userId);
       break;
-    case "page":
+    case "PAGE":
       state = await pageHandler(state, userId);
       break;
-    case "file":
+    case "FILE":
       state = await filesHandler(state, userId);
       break;
-    case "help":
+    case "HELP":
       state = await helpHandler(state, userId);
       break;
     default:

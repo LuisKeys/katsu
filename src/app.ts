@@ -1,6 +1,6 @@
 import { apiApp } from "./api_app";
 import { loadKatsuState } from "./state/load_state";
-import { getOpenAI } from "./openai/openai_api";
+import { getOpenAI } from "./llm/openai/openai_api";
 import { executeTest } from "./test/test";
 require("dotenv").config();
 

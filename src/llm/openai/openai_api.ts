@@ -1,5 +1,5 @@
 import { ClientOptions, OpenAI } from 'openai';
-import { KatsuState } from '../state/katsu_state';
+import { KatsuState } from '../../state/katsu_state';
 
 /**
  * Retrieves an instance of the OpenAI client.

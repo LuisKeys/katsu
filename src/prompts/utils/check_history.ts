@@ -1,8 +1,4 @@
-import { QueryResult } from "pg";
-import { connect, close, execute } from "../db/db_commands";
-import { cleanPrompt } from "./save_prompt";
-import { convSqlResToResultObject, ResultObject } from "../result/result_object";
-import { KatsuState } from "../state/katsu_state";
+import { KatsuState } from "../../state/katsu_state";
 
 const checkPrompt = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
   /*

@@ -1,6 +1,5 @@
-import { convertToCSV, getConstDescription } from "./constants";
-import { KatsuState } from "../state/katsu_state";
-import { ask } from "../openai/openai_api";
+import { KatsuState } from "../../state/katsu_state";
+import { createTypePrompt } from "../../llm/prompt_generators/prompt_type_gen";
 
 /**
  * Module for determining the type of prompt.
@@ -20,19 +19,5 @@ const getPromptType = async (state: KatsuState, userIndex: number): Promise<Kats
   state.users[userIndex].promptType = response;
   return state;
 };
-
-const createTypePrompt = (state: KatsuState, userId: number): string => {
-  const constList = getConstDescription();
-  const csvList = convertToCSV(constList);
-
-  let prompt = `Define the type of prompt within the following list 
-  for the following prompt:
-  Prompt: "${state.users[userId].prompt}"
-  List: ${csvList}
-  Only provide the name of the constant.
-  `;
-
-  return prompt;
-}
 
 export { getPromptType };

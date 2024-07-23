@@ -15,15 +15,14 @@ interface User {
   promptType: string;
   result: ResultObject;
   role: string;
+  sql: string;
   title: string;
   userId: number;
-  dbClient: any;
-  dbConnData: DbConnData;
 }
 
 interface TableSampleData {
   tableName: string;
-  result: QueryResultRow;
+  result: QueryResult;
 }
 
 interface DataSource {

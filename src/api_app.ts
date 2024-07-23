@@ -7,7 +7,7 @@ import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
 import { getUser, getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
-import { transfResAPI } from "./prompts/api_transf";
+import { transfResAPI } from "./result/api_transf";
 
 /**
  * Module for initializing the API application.

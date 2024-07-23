@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import { randomFileName } from "../files/file_name";
+import { randomFileName } from "../../files/file_name";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 
 const createWord = async function (text: string): Promise<string> {

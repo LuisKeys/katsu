@@ -5,3 +5,5 @@ interface DbConnData {
   database: string;
   port: number;
 }
+
+export { DbConnData };

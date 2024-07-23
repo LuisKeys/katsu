@@ -1,6 +1,6 @@
-import { connect, close, execute } from "../db/db_commands";
-import { getResultObjectByUser, ResultObject } from "../result/result_object";
-import { KatsuState } from "../state/katsu_state";
+import { connect, close, execute } from "../../db/db_commands";
+import { getResultObjectByUser, ResultObject } from "../../result/result_object";
+import { KatsuState } from "../../state/katsu_state";
 
 /**
  * Saves a prompt to the prompts_history table.
