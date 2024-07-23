@@ -27,31 +27,4 @@ type ResultObject = {
   text: string;
 };
 
-
-/**
- * Creates a new result object.
- *
- * @param {*} result - The result value.
- * @param {Array} messages - An array of messages.
- * @param {string} promptType - The type of prompt.
- * @param {boolean} isDebug - Indicates if debug mode is enabled.
- * @returns {Object} - The result object containing the result and messages.
- */
-const getNewResultObject = function () {
-  const resultObject: ResultObject = {
-    fields: [],
-    pageNum: 0,
-    promptType: "",
-    rows: [],
-    sql: "",
-    text: "",
-    fileURL: "",
-    prompt: "",
-    lastPage: 0
-  };
-
-  return resultObject;
-
-}
-
-export { APIResultObject, getNewResultObject, ResultObject };
+export { APIResultObject, ResultObject };

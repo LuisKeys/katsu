@@ -92,7 +92,7 @@ const apiApp = function (state: KatsuState): void {
    * @param {number} port - The port number to listen on.
    */
   app.listen(port, () => {
-    console.log(`api listening at port:${port}`);
+    console.log(`API listening at port:${port}`);
   });
 };
 
