@@ -74,11 +74,13 @@ const apiApp = function (state: KatsuState): void {
         state.users[userIndex].prompt = prompt;
 
         askPrompt(state, userIndex)
-          .then((state) => resolve(state.users[userIndex].result))
+          .then((state) => resolve(result))
           .catch((error) => reject(error));
       });
 
-      let apiResult: APIResultObject = transfResAPI(result);
+      const userName: string = getPayloadFromToken(token);
+      const userIndex: number = getUserIndex(userName, state);
+      let apiResult: APIResultObject = await transfResAPI(state, userIndex);
 
       res.status(200).json(apiResult);
     } catch (error: any) {

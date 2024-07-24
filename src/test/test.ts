@@ -15,14 +15,14 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["top 10 opportunities by revenue.", "goto next page."];
+    let prompts = ["provide the contact data for Luis Paradela."];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
       state.users[userIndex].prompt = prompt;
       state = await promptHandler(state, userIndex);
 
-      const apiResultObject: APIResultObject = transfResAPI(state.users[userIndex].result);
+      const apiResultObject: APIResultObject = await transfResAPI(state, userIndex);
 
       logAPIResultObject(apiResultObject);
     }

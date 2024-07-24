@@ -28,6 +28,27 @@ type ResultObject = {
   text: string;
 };
 
+const convResultObjToCSV = function (state: KatsuState, userIndex: number): string {
+  const result = state.users[userIndex].result;
+  const fields = result.fields;
+
+  let csv = fields.join(", ");
+  csv += "\n";
+  for (const row of result.rows) {
+    let line = "";
+    for (let i = 0; i < row.length; i++) {
+      csv += row[i];
+      if (i !== row.length - 1) {
+        csv += ", ";
+      }
+    }
+    csv += "\n";
+  }
+
+  return csv;
+};
+
+
 /**
  * Logs the result of a user in the Katsu state.
  * @param state - The Katsu state object.
@@ -51,4 +72,4 @@ const logResult = function (state: KatsuState, userIndex: number): void {
   }
 };
 
-export { logResult, APIResultObject, ResultObject };
+export { convResultObjToCSV, logResult, APIResultObject, ResultObject };
