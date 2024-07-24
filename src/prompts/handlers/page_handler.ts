@@ -15,20 +15,22 @@ import * as pageCalc from "./page_calc";
  * @param userIndex - The index of the current user.
  * @returns The updated state of the application.
  */
-const pageHandler = (state: KatsuState, userIndex: number): KatsuState => {
+const pageHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
 
-  const prompt = state.users[userIndex].prompt;
   const result = state.users[userIndex].result;
-  const cmd = pageNL.getPageCommand(prompt);
+  const cmd = await pageNL.getPageCommand(state, userIndex);
   let page = 1;
   switch (cmd) {
-    case pageNL.PAGE_LAST:
+    case pageNL.FIRST_PAGE:
+      page = 1;
+      break;
+    case pageNL.LAST_PAGE:
       page = pageCalc.getLastPage(result);
       break;
-    case pageNL.PAGE_NEXT:
+    case pageNL.NEXT_PAGE:
       page = pageCalc.getNextPage(result);
       break;
-    case pageNL.PAGE_PREV:
+    case pageNL.PREV_PAGE:
       page = pageCalc.getPrevPage(result.pageNum);
       break;
     case pageNL.PAGE_NUMBER:

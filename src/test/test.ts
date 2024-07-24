@@ -1,7 +1,8 @@
 import { getUserIndex } from "../users/get_user";
 import { KatsuState } from "../state/katsu_state";
 const { promptHandler } = require("../prompts/prompt_handler");
-import { logResult } from "../result/result_object";
+import { APIResultObject, logResult } from "../result/result_object";
+import { logAPIResultObject, transfResAPI } from "../result/api_transf";
 
 // Test the promptHandler
 const executeTest = async (state: KatsuState) => {
@@ -14,14 +15,16 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["top 10 opportunities by revenue.", "order by revenue asc."];
+    let prompts = ["top 10 opportunities by revenue.", "goto next page."];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
       state.users[userIndex].prompt = prompt;
       state = await promptHandler(state, userIndex);
 
-      logResult(state, userIndex);
+      const apiResultObject: APIResultObject = transfResAPI(state.users[userIndex].result);
+
+      logAPIResultObject(apiResultObject);
     }
   }
 };
