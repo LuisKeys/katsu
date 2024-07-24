@@ -71,7 +71,8 @@ const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSa
     port: row.port,
     db: row.db,
     tables: row.tables,
-    tablesSampleData: tablesSampleData
+    tablesSampleData: tablesSampleData,
+    custom_prompt: row.custom_prompt
   };
 }
 
@@ -108,7 +109,7 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
 }
 
 const getDataSourcesRows = async (db: sqlite.Database): Promise<QueryResultRow[]> => {
-  const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables
+  const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables, custom_prompt 
     FROM data_sources`;
 
   const result = await db_allKDB(db, sql);

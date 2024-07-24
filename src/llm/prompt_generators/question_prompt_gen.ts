@@ -6,6 +6,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
   const userPrompt = state.users[userIndex].prompt;
   const tablesList = getTablesListFormatted(state, userIndex);
   const tableSampleDataLiat = getTablesSampleDataList(state, userIndex);
+  const custom_prompt = state.dataSources[state.users[userIndex].dataSourceIndex].custom_prompt;
   const llmPrompt = `
     given the following tables list: \n
     ${tablesList} \n
@@ -21,7 +22,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
     - Use lower case comparisson for every text field in the where clause.\n
     - IN the answer only provide the SQL statement for a postgresql db, and no other explanation or additional detail.\n
     - Avoid displaying the main entity id field in the select clause, unless the prompt explicitly asks for it.\n
-    - Avoid adding contacts to opportunities, unless the prompt explicitly asks for it\n
+    ${custom_prompt}	
   `;
   return llmPrompt;
 }
