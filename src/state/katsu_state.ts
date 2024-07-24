@@ -38,6 +38,7 @@ interface DataSource {
   tables: string;
   tablesSampleData: TableSampleData[];
   custom_prompt: string;
+  helpList: string[];
 }
 
 interface KatsuState {

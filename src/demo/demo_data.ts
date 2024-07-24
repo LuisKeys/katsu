@@ -10,6 +10,7 @@ import { KatsuState } from "../state/katsu_state";
  * @returns {Array<Array<string>>} - The modified table data.
  */
 const replaceDemoValues = (state: KatsuState, userIndex: number, entityName: string): KatsuState => {
+  /*
   const result = state.users[userIndex].result;
   const fieldNames = result.fields;
 
@@ -113,6 +114,7 @@ const replaceDemoValues = (state: KatsuState, userIndex: number, entityName: str
   }
 
   state.users[userIndex].result = result;
+  */
   return state;
 };
 

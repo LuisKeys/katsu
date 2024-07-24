@@ -1,6 +1,5 @@
 import * as clean from '../../files/clean';
 import * as excel from 'excel4node';
-import * as mdUtils from '../../formatter/markdown_utils';
 import * as filesName from '../../files/file_name';
 import { ResultObject } from '../../result/result_object';
 
@@ -16,12 +15,12 @@ import { ResultObject } from '../../result/result_object';
  * @returns {string} The filename of the created Excel file.
  */
 const createExcel = function (result: ResultObject): string {
+  /*
   const wb = new excel.Workbook();
   const ws = wb.addWorksheet('KATSU Report');
   let fileName = excelFileName();
   const folder = process.env.REPORTS_FOLDER;
   const fullPath = `${folder}/` + fileName;
-
   let tableData = mdUtils.getTableData(result, true);
   let columnWidths = mdUtils.getColumnWidths(tableData);
 
@@ -77,7 +76,8 @@ const createExcel = function (result: ResultObject): string {
   clean.cleanReports();
 
   const url = process.env.REPORTS_URL + fileName;
-
+  */
+  const url = '';
   return url;
 };
 

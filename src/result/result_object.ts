@@ -23,7 +23,7 @@ type ResultObject = {
   pageNum: number;
   prompt: string;
   promptType: string;
-  rows: QueryResultRow[];
+  rows: string[][];
   sql: string;
   text: string;
 };
@@ -40,7 +40,7 @@ const logResult = function (state: KatsuState, userIndex: number): void {
   console.log("Result:");
   console.log(fields.join(", "));
   const rows = result.rows.map(row => {
-    return fields.map(field => row[field]).join(',');
+    return row.join(',');
   });
 
   console.log(rows.join('\n'));

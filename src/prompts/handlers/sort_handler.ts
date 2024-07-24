@@ -20,8 +20,9 @@ const sortHandler = async (state: KatsuState, userIndex: number): Promise<KatsuS
   if (result != null) {
     const sortFields = getSortfield(result);
     if (sortFields.length > 0) {
+      const sortField = sortFields[0];
       const sortDir = getSortDirection(result.prompt);
-      state = sortResult(state, userIndex, sortFields, sortDir);
+      state = sortResult(state, userIndex, sortField, sortDir);
     }
   }
 

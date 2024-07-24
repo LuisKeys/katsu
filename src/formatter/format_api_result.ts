@@ -32,6 +32,7 @@ const formatCurrency = function (result: ResultObject, numColumns: number[]): Re
 };
 
 const formatNumericColumns = function (result: ResultObject, numColumns: number[]): ResultObject {
+  /*
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = formatNumber(
@@ -39,12 +40,13 @@ const formatNumericColumns = function (result: ResultObject, numColumns: number[
       );
     }
   }
-
+  */
   return result;
 };
 
 const getNumericColumns = function (result: ResultObject): number[] {
   let numericColumns: number[] = [];
+  /*
 
   const header = result.rows[0];
 
@@ -62,11 +64,12 @@ const getNumericColumns = function (result: ResultObject): number[] {
       numericColumns.push(i);
     }
   }
-
+  */
   return numericColumns;
 };
 
 const formatPhoneNumber = function (result: ResultObject, numColumns: number[]): ResultObject {
+  /*
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       const number = result.rows[i][numColumns[j]];
@@ -86,7 +89,7 @@ const formatPhoneNumber = function (result: ResultObject, numColumns: number[]):
       }
     }
   }
-
+  */
   return result;
 };
 

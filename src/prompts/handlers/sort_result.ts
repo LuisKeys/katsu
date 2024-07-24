@@ -16,46 +16,50 @@ interface Result {
  * @param sortDir - The sort direction ("asc" for ascending, "desc" for descending).
  * @returns The updated KatsuState object with the sorted result.
  */
-const sortResult = function (state: KatsuState, userIndex: number, sortFields: string[], sortDir: string): KatsuState {
+const sortResult = function (state: KatsuState, userIndex: number, sortBy: string, sortDirection: string): KatsuState {
+  let direction = sortDirection.toLowerCase();
   const result = state.users[userIndex].result;
-  for (let i = 0; i < result.rows.length; i++) {
-    for (let j = i + 1; j < result.rows.length; j++) {
-      let a = "";
-      let b = "";
-
-      for (let k = 0; k < sortFields.length; k++) {
-        let field = sortFields[k];
-
-        let at = result.rows[i][field];
-        let bt = result.rows[j][field];
-
-        // check if the values are numbers
-        if (!isNaN(result.rows[i][field]) && !isNaN(result.rows[j][field])) {
-          at = parseFloat(result.rows[i][field]);
-          bt = parseFloat(result.rows[j][field]);
-        }
-
-        a += at;
-        b += bt;
-      }
-
-      if (sortDir === "asc") {
-        if (a > b) {
-          let temp = result.rows[i];
-          result.rows[i] = result.rows[j];
-          result.rows[j] = temp;
-        }
-      } else {
-        if (a < b) {
-          let temp = result.rows[i];
-          result.rows[i] = result.rows[j];
-          result.rows[j] = temp;
-        }
-      }
-    }
+  const fields = result.fields;
+  let rows = result.rows;
+  // Check if the list of rows is empty
+  if (rows.length === 0) {
+    return state;
   }
 
-  state.users[userIndex].result = result;
+  // Check if the list of fields is empty
+  if (fields.length === 0) {
+    return state;
+  }
+
+  // Find the index of the field to sort by
+  const sortByIndex = fields.indexOf(sortBy);
+
+  // Check if the field to sort by is not in the list of fields
+  if (sortByIndex === -1) {
+    return state;
+  }
+
+  // Check if the sort direction is valid
+  if (direction !== "asc" && direction !== "desc") {
+    direction = "asc";
+  }
+
+  // Create a copy of the rows to avoid mutating the original array
+  const sortedRows = [...rows];
+
+  // Sort the rows
+  sortedRows.sort((a, b) => {
+    const valueA = a[sortByIndex];
+    const valueB = b[sortByIndex];
+
+    if (direction === "asc") {
+      return valueA.localeCompare(valueB, undefined, { numeric: true });
+    } else {
+      return valueB.localeCompare(valueA, undefined, { numeric: true });
+    }
+  });
+
+  state.users[userIndex].result.rows = sortedRows;
   return state;
 };
 

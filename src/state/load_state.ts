@@ -5,6 +5,7 @@ import { ResultObject } from '../result/result_object';
 import { User, DataSource, KatsuState, TableSampleData } from './katsu_state';
 import { close, connect, execute } from '../db/db_commands';
 import { closeKDB, db_allKDB, openKDB } from '../db/katsu_db/katsu_db';
+import { getHelp } from '../nl/help';
 
 const getUsers = async (db: sqlite.Database): Promise<User[]> => {
   const sql = `
@@ -72,7 +73,8 @@ const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSa
     db: row.db,
     tables: row.tables,
     tablesSampleData: tablesSampleData,
-    custom_prompt: row.custom_prompt
+    custom_prompt: row.custom_prompt,
+    helpList: []
   };
 }
 
@@ -123,6 +125,8 @@ const getDataSources = async (db: sqlite.Database): Promise<DataSource[]> => {
     const row = rows[i];
     const tablesSampleData = await getTablesSampleData(row);
     const dataSource = convertDBRowTODataSource(row, tablesSampleData);
+    const helpList = await getHelp(dataSource);
+    dataSource.helpList = helpList;
     dataSources.push(dataSource);
   }
   return dataSources;
