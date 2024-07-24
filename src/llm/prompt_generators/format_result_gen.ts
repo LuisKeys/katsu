@@ -8,4 +8,14 @@ const createFormatResultPrompt = (state: KatsuState, userIndex: number): string 
   return llmPrompt;
 }
 
-export { createFormatResultPrompt };
+const createFormatFieldsNamesPrompt = (state: KatsuState, userIndex: number): string => {
+  const fields: string[] = state.users[userIndex].result.fields;
+  const csv = fields.join(",");
+  const llmPrompt = `Provide more human readable names for the following list of fields: 
+  ${csv}
+  Return the new names as a comma separated list. 
+  `;
+  return llmPrompt;
+}
+
+export { createFormatFieldsNamesPrompt, createFormatResultPrompt };

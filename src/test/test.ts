@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["provide the contact data for Luis Paradela."];
+    let prompts = ["top 10 opportunities by revenue."];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];

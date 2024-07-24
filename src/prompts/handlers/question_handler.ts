@@ -1,9 +1,9 @@
-import { get } from "http";
-import { ask } from "../../llm/openai/openai_api";
-import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
 import { KatsuState } from "../../state/katsu_state";
-import { getResult } from "../../result/get_result";
+import { ask } from "../../llm/openai/openai_api";
+import { createFormatFieldsNamesPrompt } from "../../llm/prompt_generators/format_result_gen";
+import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
 import { getNonResultMsg } from "../../result/result_messages";
+import { getResult } from "../../result/get_result";
 
 /**
  * This module contains the handler for question prompts type.
@@ -29,6 +29,13 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
   }
   state.users[userIndex].sql = sql;
   state = await getResult(state, userIndex);
+
+  if (state.users[userIndex].result.rows.length > 0) {
+    const llmPrompt = createFormatFieldsNamesPrompt(state, userIndex);
+    state.users[userIndex].context = llmPrompt;
+    const fieldList = await ask(state, userIndex);
+    state.users[userIndex].result.fields = fieldList.split('\n');
+  }
 
   if (state.users[userIndex].result.rows.length === 0) {
     const userPrompt = state.users[userIndex].prompt;
