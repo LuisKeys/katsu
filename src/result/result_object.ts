@@ -39,11 +39,16 @@ const logResult = function (state: KatsuState, userIndex: number): void {
 
   console.log("Result:");
   console.log(fields.join(", "));
-  const rows = result.rows.map(row => {
-    return row.join(',');
-  });
-
-  console.log(rows.join('\n'));
+  for (const row of result.rows) {
+    let line = "";
+    for (let i = 0; i < row.length; i++) {
+      line += row[i];
+      if (i !== row.length - 1) {
+        line += ", ";
+      }
+    }
+    console.log(line);
+  }
 };
 
 export { logResult, APIResultObject, ResultObject };

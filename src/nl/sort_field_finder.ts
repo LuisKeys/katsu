@@ -3,65 +3,30 @@
  * @module sort_field_finder
  */
 
-import { ResultObject } from "../result/result_object";
+import { KatsuState } from "../state/katsu_state";
+import { createSortDirectionPrompt, createSortFieldPrompt } from "../llm/prompt_generators/sort_gen";
+import { ask } from "../llm/openai/openai_api";
 
 /**
- * Finds the sort field based on a prompt and a result object.
- * @param {string} prompt - The prompt to search for in the field names.
- * @param {object} result - The result object containing the fields.
- * @returns {string[]} - An array of sort field names if found, or an empty array if not found.
+ * Retrieves the sort field for a given user from the Katsu state.
+ * 
+ * @param state - The Katsu state object.
+ * @param userIndex - The index of the user.
+ * @returns A promise that resolves to the sort field string.
  */
-const getSortfield = (result: ResultObject): string[] => {
-  let sortFields: string[] = [];
-  let sanitizedPrompt = result.prompt.replace(/[^a-zA-Z0-9\s'"_]/g, "");
-  let promptWords = sanitizedPrompt.split(" ").map((word) => word.trim());
-  for (let i = 0; i < promptWords.length; i++) {
-    let word = promptWords[i].toLowerCase();
-    for (let field of result.fields) {
-      if (word.toLowerCase() === field.toLowerCase()) {
-        sortFields.push(field);
-      }
-    }
-  }
+const getSortfield = async (state: KatsuState, userIndex: number): Promise<string> => {
 
-  if (sortFields.length === 0) {
-    // Try by field index
-    for (let i = 0; i < promptWords.length; i++) {
-      let word = promptWords[i].toLowerCase();
-      if (!isNaN(Number(word))) {
-        let index = parseInt(word);
-        index--;
-        if (index < 0) {
-          index = 0;
-        }
-        if (index >= result.fields.length) {
-          index = result.fields.length - 1;
-        }
-        sortFields.push(result.fields[index]);
-      }
-    }
-  }
-
-  return sortFields;
+  state.users[userIndex].context = createSortFieldPrompt(state, userIndex);
+  const sortField = await ask(state, userIndex);
+  return sortField;
 };
 
-/**
- * Determines the sort direction based on the given prompt.
- *
- * @param {string} prompt - The prompt to analyze.
- * @returns {string} The sort direction ("asc" for ascending, "desc" for descending).
- */
-const getSortDirection = (prompt: string): string => {
-  let sanitizedPrompt = prompt.replace(/[^a-zA-Z0-9\s'"_]/g, "");
-  if (sanitizedPrompt.includes("asc") || sanitizedPrompt.includes("ascendent")) {
-    return "asc";
-  }
+const getSortDirection = async (state: KatsuState, userIndex: number): Promise<string> => {
 
-  if (sanitizedPrompt.includes("desc") || sanitizedPrompt.includes("descendent")) {
-    return "desc";
-  }
-
-  return "asc";
+  state.users[userIndex].context = createSortDirectionPrompt(state, userIndex);
+  const sortField = await ask(state, userIndex);
+  return sortField;
 };
+
 
 export { getSortfield, getSortDirection };

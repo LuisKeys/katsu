@@ -24,8 +24,24 @@ const getResult = async (state: KatsuState, userIndex: number): Promise<KatsuSta
   const result = await execute(sql, client);
 
   let userResult = state.users[userIndex].result;
+  userResult.rows = [];
   if (result !== null) {
-    userResult.rows = result.rows;
+    for (let i = 0; i < result.rows.length; i++) {
+      const row = result.rows[i];
+      let resultRow = [];
+      for (let j = 0; j < result.fields.length; j++) {
+        const field = result.fields[j];
+        if (row[field.name] instanceof Date) {
+          row[field.name] = row[field.name].toISOString();
+        }
+        if (typeof row[field.name] === 'number' && Number.isFinite(row[field.name])) {
+          row[field.name] = row[field.name].toFixed(2);
+        }
+        resultRow.push(row[field.name]);
+      }
+      userResult.rows.push(resultRow);
+    }
+
     const fieldNamesList = result.fields.map(field => field.name);
     userResult.fields = fieldNamesList;
     userResult.pageNum = 1;

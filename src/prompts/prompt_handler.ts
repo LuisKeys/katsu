@@ -23,7 +23,7 @@ import { helpHandler } from "./handlers/help_handler";
  */
 const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuState> => {
   // Get the prompt type and data source 
-  state.showWordsCount = true;
+  // state.showWordsCount = true;
   state = await getPromptType(state, userId);
   state = await getDataSource(state, userId);
   state = await processPrompt(state, userId);

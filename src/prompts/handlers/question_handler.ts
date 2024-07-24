@@ -3,7 +3,7 @@ import { ask } from "../../llm/openai/openai_api";
 import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
 import { KatsuState } from "../../state/katsu_state";
 import { getResult } from "../../result/get_result";
-import { getNoresultsMessage } from "../../result/result_messages";
+import { getNonResultMsg } from "../../result/result_messages";
 
 /**
  * This module contains the handler for question prompts type.
@@ -32,7 +32,7 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
 
   if (state.users[userIndex].result.rows.length === 0) {
     const userPrompt = state.users[userIndex].prompt;
-    state.users[userIndex].result.text = getNoresultsMessage(userPrompt);
+    state.users[userIndex].result.text = getNonResultMsg(userPrompt);
   }
 
   return state;
