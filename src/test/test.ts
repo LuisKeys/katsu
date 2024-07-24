@@ -1,6 +1,7 @@
 import { getUserIndex } from "../users/get_user";
 import { KatsuState } from "../state/katsu_state";
 const { promptHandler } = require("../prompts/prompt_handler");
+import { logResult } from "../result/result_object";
 
 // Test the promptHandler
 const executeTest = async (state: KatsuState) => {
@@ -13,14 +14,14 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["The top 10 engagements by revenue."];
+    let prompts = ["The top 10 opportunities by revenue."];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
       state.users[userIndex].prompt = prompt;
       state = await promptHandler(state, userIndex);
 
-      console.log("Results", state.users[userIndex].result);
+      logResult(state, userIndex);
     }
   }
 };

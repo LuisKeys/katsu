@@ -1,4 +1,5 @@
 import { QueryResultRow } from "pg";
+import { KatsuState } from "../state/katsu_state";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -27,4 +28,22 @@ type ResultObject = {
   text: string;
 };
 
-export { APIResultObject, ResultObject };
+/**
+ * Logs the result of a user in the Katsu state.
+ * @param state - The Katsu state object.
+ * @param userIndex - The index of the user whose result should be logged.
+ */
+const logResult = function (state: KatsuState, userIndex: number): void {
+  const result = state.users[userIndex].result;
+  const fields = result.fields;
+
+  console.log("Result:");
+  console.log(fields.join(", "));
+  const rows = result.rows.map(row => {
+    return fields.map(field => row[field]).join(',');
+  });
+
+  console.log(rows.join('\n'));
+};
+
+export { logResult, APIResultObject, ResultObject };

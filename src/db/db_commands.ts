@@ -68,20 +68,9 @@ const close = async function (client: Client): Promise<void> {
   }
 };
 
-/**
- * Logs the result of a database query.
- * @param {QueryResult} result - The result of a database query.
- */
-const logResult = function (result: QueryResult): void {
-  for (let row of result.rows) {
-    console.log(row);
-  }
-};
-
 export {
   close,
   connect,
   execute,
-  getError,
-  logResult
+  getError
 };

@@ -24,6 +24,9 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
   state.users[userIndex].context = llmPrompt;
   let sql = await ask(state, userIndex);
   sql = cleanSQL(sql);
+  if (process.env.KATSU_DEBUG === "true") {
+    console.log("SQL: ", sql);
+  }
   state.users[userIndex].sql = sql;
   state = await getResult(state, userIndex);
 
