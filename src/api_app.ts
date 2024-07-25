@@ -70,6 +70,7 @@ const apiApp = function (state: KatsuState): void {
 
       const userName: string = getPayloadFromToken(token);
       const userIndex: number = getUserIndex(userName, state);
+      state.users[userIndex].prompt = prompt;
       state = await askPrompt(state, userIndex);
 
       let apiResult: APIResultObject = await transfResAPI(state, userIndex);
