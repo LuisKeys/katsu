@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["help"];
+    let prompts = ["help", "help"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];

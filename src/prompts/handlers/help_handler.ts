@@ -1,6 +1,4 @@
 import { KatsuState } from "../../state/katsu_state";
-import { getHelp } from "../../nl/help";
-import { QueryResultRow } from "pg";
 import { getLastPage } from "./page_calc";
 
 /**
@@ -17,6 +15,9 @@ import { getLastPage } from "./page_calc";
  */
 const helpHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
   const helpList = state.dataSources[state.users[userIndex].dataSourceIndex].helpList;
+
+  state.users[userIndex].result.rows = [];
+  state.users[userIndex].result.fields = [];
 
   state.users[userIndex].result.pageNum = 0;
   state.users[userIndex].result.lastPage = 0;
