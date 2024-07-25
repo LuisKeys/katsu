@@ -24,6 +24,8 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
     - Avoid displaying the main entity id field in the select clause, unless the prompt explicitly asks for it.\n
     - Do not use any table not provided in the tables list.\n
     - For names use a 'like' operator with a wildcard at the end.\n
+    - Unless more detail is specified, use no more than 5 columns.\n
+    - Limit the description fields to 40 characters.\n
     ${custom_prompt}	
   `;
   return llmPrompt;

@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["provide all the information of blacknotch account"];
+    let prompts = ["list the last 10 leads"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
