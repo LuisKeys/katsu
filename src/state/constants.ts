@@ -12,12 +12,12 @@ const SORT = 'result sort operation';
 
 const getConstDescription = (): { name: string, description: string }[] => {
   const constants = [
-    { name: `QUESTION`, description: `This constant represents a business question prompt.` },
-    { name: `EXCEL`, description: `This constant represents the export excel prompt.` },
-    { name: `FILE`, description: `This constant represents the search file operation prompt.` },
+    { name: `QUESTION`, description: `Represents a business question prompt.` },
+    { name: `EXCEL`, description: `Represents the export excel operation.` },
+    { name: `FILE`, description: `Represents the search file operation.` },
     { name: `HELP`, description: `This constant represents the help prompt.` },
-    { name: `PAGE`, description: `This constant represents the result page command prompt.` },
-    { name: `SORT`, description: `This constant represents the result sort operation prompt.` }
+    { name: `PAGE`, description: `Represents a page operation such as next page, previous page, first or last page.` },
+    { name: `SORT`, description: `Represents an order by or sort operation.` }
   ];
 
   return constants;

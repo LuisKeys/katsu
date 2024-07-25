@@ -25,11 +25,10 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
   // Get the prompt type and data source 
   // state.showWordsCount = true;
   state = await getPromptType(state, userId);
+  console.log("Prompt type:", state.users[userId].promptType);
   state = await getDataSource(state, userId);
   state = await processPrompt(state, userId);
 
-  // console.log("Prompt type:", state.users[userId].promptType);
-  // console.log("Data Source:", state.dataSources[state.users[userId].dataSourceIndex]);
   return state;
 };
 

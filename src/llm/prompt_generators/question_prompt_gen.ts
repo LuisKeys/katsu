@@ -23,9 +23,12 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
     - IN the answer only provide the SQL statement for a postgresql db, and no other explanation or additional detail.\n
     - Avoid displaying the main entity id field in the select clause, unless the prompt explicitly asks for it.\n
     - Do not use any table not provided in the tables list.\n
+    - Do not use any field not provided in the tables list.\n
     - For names use a 'like' operator with a wildcard at the end.\n
-    - Unless more detail is specified, use no more than 5 columns.\n
-    - Limit the description fields to 40 characters.\n
+    - Unless more detail is specified, use no more than 6 columns.\n
+    - Limit the description field to 30 characters.\n
+    - Limit the company field to 30 characters.\n
+    - Limit the title to 30 characters.\n
     ${custom_prompt}	
   `;
   return llmPrompt;
