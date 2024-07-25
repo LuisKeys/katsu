@@ -34,7 +34,7 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
     const llmPrompt = createFormatFieldsNamesPrompt(state, userIndex);
     state.users[userIndex].context = llmPrompt;
     const fieldList = await ask(state, userIndex);
-    state.users[userIndex].result.fields = fieldList.split('\n');
+    state.users[userIndex].result.fields = fieldList.split(',').map(field => field.trim());
   }
 
   if (state.users[userIndex].result.rows.length === 0) {

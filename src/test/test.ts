@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["top 10 opportunities by revenue."];
+    let prompts = ["top 10 opportunities by revenue.", "export to excel"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];

@@ -1,4 +1,5 @@
 import { KatsuState } from "../../state/katsu_state";
+import { createExcel } from "../../exports/excel/create_excel";
 
 /**
  * This module contains the handler for excel export prompts type.
@@ -13,7 +14,7 @@ import { KatsuState } from "../../state/katsu_state";
  * @returns The updated state of the application.
  */
 const excelExportHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-
+  state = createExcel(state, userIndex);
   return state;
 };
 

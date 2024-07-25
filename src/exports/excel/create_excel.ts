@@ -1,7 +1,8 @@
 import * as clean from '../../files/clean';
 import * as excel from 'excel4node';
 import * as filesName from '../../files/file_name';
-import { ResultObject } from '../../result/result_object';
+import { KatsuState } from '../../state/katsu_state';
+import { getColumnWidths } from '../../formatter/column_width';
 
 /**
  * @file Creates an Excel file with the provided data.
@@ -10,19 +11,19 @@ import { ResultObject } from '../../result/result_object';
 
 
 /**
- * Creates an Excel file with the provided data.
- * @param {Object} result - The data to be included in the Excel file.
- * @returns {string} The filename of the created Excel file.
+ * Creates an Excel file with KATSU report data.
+ *
+ * @param state - The KatsuState object containing the report data.
+ * @param userIndex - The index of the user for whom the report is being generated.
+ * @returns The updated KatsuState object.
  */
-const createExcel = function (result: ResultObject): string {
-  /*
+const createExcel = function (state: KatsuState, userIndex: number): KatsuState {
   const wb = new excel.Workbook();
   const ws = wb.addWorksheet('KATSU Report');
   let fileName = excelFileName();
   const folder = process.env.REPORTS_FOLDER;
   const fullPath = `${folder}/` + fileName;
-  let tableData = mdUtils.getTableData(result, true);
-  let columnWidths = mdUtils.getColumnWidths(tableData);
+  let columnWidths = getColumnWidths(state, userIndex);
 
   const headerStyle = wb.createStyle({
     font: {
@@ -52,7 +53,8 @@ const createExcel = function (result: ResultObject): string {
     numberFormat: '#,##0; (#,##0); -',
   });
 
-  const header = result.fields.map((field: any) => field.name);
+  const result = state.users[userIndex].result;
+  const header = result.fields;
 
   // Add the header row
   for (let i = 0; i < header.length; i++) {
@@ -60,12 +62,11 @@ const createExcel = function (result: ResultObject): string {
     ws.column(i + 1).setWidth(columnWidths[i] + 2);
   }
 
-  for (let i = 0; i < result.rows.length; i++) {
-    let row = result.rows[i];
+  const rows = result.rows;
+  for (let i = 0; i < rows.length; i++) {
     for (let j = 0; j < header.length; j++) {
-      const field = header[j];
       let value = '';
-      if (row[field] !== null) value = row[field].toString();
+      if (rows[i][j] !== null) value = rows[i][j].toString();
 
       ws.cell(i + 2, j + 1).string(value).style(rowStyle);
     }
@@ -76,9 +77,8 @@ const createExcel = function (result: ResultObject): string {
   clean.cleanReports();
 
   const url = process.env.REPORTS_URL + fileName;
-  */
-  const url = '';
-  return url;
+  state.users[userIndex].result.fileURL = url;
+  return state;
 };
 
 /**
