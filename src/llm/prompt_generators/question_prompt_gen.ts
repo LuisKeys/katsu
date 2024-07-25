@@ -22,6 +22,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
     - Use lower case comparisson for every text field in the where clause.\n
     - IN the answer only provide the SQL statement for a postgresql db, and no other explanation or additional detail.\n
     - Avoid displaying the main entity id field in the select clause, unless the prompt explicitly asks for it.\n
+    - Do not use any table not provided in the tables list.\n
     ${custom_prompt}	
   `;
   return llmPrompt;

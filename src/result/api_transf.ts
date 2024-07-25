@@ -32,7 +32,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     docURL: result.fileURL
   };
 
-  if (apiResultObject.rows.length === 1) {
+  if (apiResultObject.rows.length === 2) {
     state = await formatOneLineResult(state, userIndex);
     apiResultObject.text = state.users[userIndex].result.text;
     state.users[userIndex].result.rows = [];
