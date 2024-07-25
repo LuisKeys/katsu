@@ -68,18 +68,10 @@ const apiApp = function (state: KatsuState): void {
         throw new Error("Invalid token");
       }
 
-      let result: ResultObject = await new Promise((resolve, reject) => {
-        const userName: string = getPayloadFromToken(token);
-        const userIndex: number = getUserIndex(userName, state);
-        state.users[userIndex].prompt = prompt;
-
-        askPrompt(state, userIndex)
-          .then((state) => resolve(result))
-          .catch((error) => reject(error));
-      });
-
       const userName: string = getPayloadFromToken(token);
       const userIndex: number = getUserIndex(userName, state);
+      state = await askPrompt(state, userIndex);
+
       let apiResult: APIResultObject = await transfResAPI(state, userIndex);
 
       res.status(200).json(apiResult);
