@@ -16,9 +16,10 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
 
   // Data rows
   const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, result.rows.length);
+  let endIndex = Math.min(startIndex + pageSize, result.rows.length);
 
   dataRows.push(result.fields);
+  endIndex = Math.min(endIndex, result.rows.length + startIndex);
   for (let i = startIndex; i < endIndex; i++) {
     dataRows.push(result.rows[i]);
   }
