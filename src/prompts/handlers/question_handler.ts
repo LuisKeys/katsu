@@ -4,6 +4,8 @@ import { createFormatFieldsNamesPrompt } from "../../llm/prompt_generators/forma
 import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
 import { getNonResultMsg } from "../../result/result_messages";
 import { getResult } from "../../result/get_result";
+import { getLastPage } from "./page_calc";
+import { resetResult } from "../../result/result_object";
 
 /**
  * This module contains the handler for question prompts type.
@@ -18,8 +20,8 @@ import { getResult } from "../../result/get_result";
  * @returns The updated state of the application.
  */
 const questionHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  state.users[userIndex].result.pageNum = 1;
-  state.users[userIndex].result.lastPage = 1;
+  state = resetResult(state, userIndex);
+
   const llmPrompt = createQuestionPrompt(state, userIndex);
   state.users[userIndex].context = llmPrompt;
   let sql = await ask(state, userIndex);
@@ -31,6 +33,9 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
   state = await getResult(state, userIndex);
 
   if (state.users[userIndex].result.rows.length > 0) {
+    state.users[userIndex].result.pageNum = 1;
+    state.users[userIndex].result.lastPage = getLastPage(state.users[userIndex].result);
+
     const llmPrompt = createFormatFieldsNamesPrompt(state, userIndex);
     state.users[userIndex].context = llmPrompt;
     const fieldList = await ask(state, userIndex);

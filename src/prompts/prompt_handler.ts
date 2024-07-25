@@ -42,7 +42,8 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
  * @returns The updated KatsuState after processing the prompt.
  */
 const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuState> => {
-  switch (state.users[userId].promptType.toUpperCase()) {
+  const promptType = state.users[userId].promptType.toUpperCase()
+  switch (promptType) {
     case "QUESTION":
       state = await questionHandler(state, userId);
       break;

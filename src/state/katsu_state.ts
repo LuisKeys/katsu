@@ -1,6 +1,6 @@
 import { OpenAI } from 'openai';
 import { ResultObject } from '../result/result_object';
-import { QueryResult, QueryResultRow } from 'pg';
+import { QueryResult } from 'pg';
 
 interface User {
   avatar: string;
@@ -17,7 +17,6 @@ interface User {
   role: string;
   sql: string;
   title: string;
-  userId: number;
 }
 
 interface TableSampleData {

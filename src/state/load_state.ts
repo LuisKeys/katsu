@@ -51,7 +51,6 @@ const convertDBRowToUser = (row: any): User => {
     result: result,
     role: row.role,
     title: row.title,
-    userId: row.user_id,
     dataSourceIndex: 0,
     promptType: '',
     sql: ''

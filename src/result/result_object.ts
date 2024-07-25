@@ -72,4 +72,21 @@ const logResult = function (state: KatsuState, userIndex: number): void {
   }
 };
 
-export { convResultObjToCSV, logResult, APIResultObject, ResultObject };
+const resetResult = (state: KatsuState, userIndex: number): KatsuState => {
+  state.users[userIndex].result.pageNum = 0;
+  state.users[userIndex].result.lastPage = 0;
+  state.users[userIndex].result.rows = [];
+  state.users[userIndex].result.fields = [];
+  state.users[userIndex].result.text = "";
+  state.users[userIndex].result.fileURL = "";
+
+  return state;
+}
+
+export {
+  APIResultObject,
+  ResultObject,
+  convResultObjToCSV,
+  logResult,
+  resetResult
+};
