@@ -2,11 +2,16 @@ import { KatsuState } from "../../state/katsu_state";
 import { getTablesList } from "../../state/load_state";
 import { convertResultToCSV } from "../../result/result_to_csv";
 
-const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
+const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondIntent: boolean): string => {
   const userPrompt = state.users[userIndex].prompt;
   const tablesList = getTablesListFormatted(state, userIndex);
   const tableSampleDataLiat = getTablesSampleDataList(state, userIndex);
   const custom_prompt = state.dataSources[state.users[userIndex].dataSourceIndex].custom_prompt;
+  let secondIntentContext = "";
+  if (isSecondIntent) {
+    secondIntentContext = `since previous intenet returned no records avoid joins with the table that returned no records.`;
+  }
+
   const llmPrompt = `
     given the following tables list: \n
     ${tablesList} \n
@@ -30,6 +35,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number): string => {
     - Limit the company field to 30 characters.\n
     - Limit the title to 30 characters.\n
     ${custom_prompt}	
+    ${secondIntentContext}	
   `;
   return llmPrompt;
 }

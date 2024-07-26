@@ -20,17 +20,12 @@ import { resetResult } from "../../result/result_object";
  * @returns The updated state of the application.
  */
 const questionHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  state = resetResult(state, userIndex);
 
-  const llmPrompt = createQuestionPrompt(state, userIndex);
-  state.users[userIndex].context = llmPrompt;
-  let sql = await ask(state, userIndex);
-  sql = cleanSQL(sql);
-  if (process.env.KATSU_DEBUG === "true") {
-    console.log("SQL: ", sql);
+  state = await questionIntent(state, userIndex, false);
+
+  if (state.users[userIndex].result.rows.length === 0) {
+    state = await questionIntent(state, userIndex, true);
   }
-  state.users[userIndex].sql = sql;
-  state = await getResult(state, userIndex);
 
   if (state.users[userIndex].result.rows.length > 0) {
     state.users[userIndex].result.pageNum = 1;
@@ -49,6 +44,22 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
 
   return state;
 };
+
+const questionIntent = async (state: KatsuState, userIndex: number, isSecondIntent: boolean): Promise<KatsuState> => {
+  state = resetResult(state, userIndex);
+
+  const llmPrompt = createQuestionPrompt(state, userIndex, isSecondIntent);
+  state.users[userIndex].context = llmPrompt;
+
+  let sql = await ask(state, userIndex);
+  sql = cleanSQL(sql);
+  if (process.env.KATSU_DEBUG === "true") {
+    console.log("SQL: ", sql);
+  }
+  state.users[userIndex].sql = sql;
+  state = await getResult(state, userIndex);
+  return state;
+}
 
 const cleanSQL = (sql: string): string => {
   sql = sql.replace(/"/g, "'");
