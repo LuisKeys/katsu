@@ -7,7 +7,7 @@ import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
 import { getUser, getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
-import { transfResAPI } from "./result/api_transf";
+import { logAPIResultObject, transfResAPI } from "./result/api_transf";
 
 /**
  * Module for initializing the API application.
@@ -68,12 +68,24 @@ const apiApp = function (state: KatsuState): void {
         throw new Error("Invalid token");
       }
 
+      if (state.isDebug) {
+        console.log("Post call prompt: ", prompt);
+      }
+
       const userName: string = getPayloadFromToken(token);
       const userIndex: number = getUserIndex(userName, state);
       state.users[userIndex].prompt = prompt;
       state = await askPrompt(state, userIndex);
 
+      if (state.isDebug) {
+        console.log("Post call finished ask intenet");
+      }
+
       let apiResult: APIResultObject = await transfResAPI(state, userIndex);
+
+      if (state.isDebug) {
+        logAPIResultObject(apiResult);
+      }
 
       res.status(200).json(apiResult);
     } catch (error: any) {
