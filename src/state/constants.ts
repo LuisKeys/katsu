@@ -12,7 +12,7 @@ const SORT = 'result sort operation';
 
 const getConstDescription = (): { name: string, description: string }[] => {
   const constants = [
-    { name: `QUESTION`, description: `Represents a business question prompt.` },
+    { name: `QUESTION`, description: `Represents any business question prompt for any repartment such as sales, HR, engineering, finance or operations.` },
     { name: `EXCEL`, description: `Represents the export excel operation.` },
     { name: `FILE`, description: `Represents the search file operation.` },
     { name: `HELP`, description: `This constant represents the help prompt.` },
