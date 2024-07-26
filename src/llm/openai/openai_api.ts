@@ -71,8 +71,8 @@ const showCost = (state: KatsuState, userIndex: number): void => {
  * @returns {number} - The cost in dollars.
  */
 const calculateOpenAICost = (numWords: number): number => {
-  const numTokens = numWords / 2;
-  const costPerMillionTokens = 0.15;
+  const numTokens = numWords / .75;
+  const costPerMillionTokens = 5.00;
   const cost = (numTokens / 1000000) * costPerMillionTokens;
   return cost;
 };

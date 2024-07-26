@@ -8,6 +8,7 @@ const init = async () => {
   const openai = getOpenAI();
   const state = await loadKatsuState(openai)
   state.isDebug = process.env.KATSU_DEBUG === 'true';
+  state.showWordsCount = true
   const isTest = process.env.IS_TEST === 'true';
   if (isTest) {
     executeTest(state);
