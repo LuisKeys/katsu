@@ -34,6 +34,10 @@ const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
     showCost(state, userIndex);
   }
 
+  if (state.isDebug) {
+    console.log("Ask started");
+  }
+
   const completion = await (state.openai.chat.completions.create)({
     messages: [{ role: "system", content: state.users[userIndex].context }],
     model: "gpt-4o-mini",
@@ -46,6 +50,10 @@ const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
         answer = completion.choices[0].message.content;
       }
     }
+  }
+
+  if (state.isDebug) {
+    console.log("Ask ended");
   }
 
   return answer;
