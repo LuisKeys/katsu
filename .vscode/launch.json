@@ -12,7 +12,8 @@
               "<node_internals>/**"
           ],
           "program": "${workspaceFolder}/build/app.js",
-          "preLaunchTask": "tsc: watch - tsconfig.json"
+          "preLaunchTask": "tsc: watch - tsconfig.json",
+          "runtimeExecutable": "/Users/luc/.nvm/versions/node/v20.16.0/bin/node"
       }
   ]
 }
