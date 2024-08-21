@@ -13,16 +13,27 @@ const getError = function (): string {
  * @async
  */
 const connect = async function (dbConnData: DbConnData): Promise<Client | null> {
-  const client = new Client({
-    user: dbConnData.user,
-    host: dbConnData.host,
-    database: dbConnData.database,
-    password: dbConnData.password,
-    port: dbConnData.port,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  });
+  let client;
+  if (dbConnData.isSSL) {
+    client = new Client({
+      user: dbConnData.user,
+      host: dbConnData.host,
+      database: dbConnData.database,
+      password: dbConnData.password,
+      port: dbConnData.port,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
+  } else {
+    client = new Client({
+      user: dbConnData.user,
+      host: dbConnData.host,
+      database: dbConnData.database,
+      password: dbConnData.password,
+      port: dbConnData.port
+    });
+  }
 
   try {
     // Connect to the database

@@ -4,6 +4,7 @@ interface DbConnData {
   password: string;
   database: string;
   port: number;
+  isSSL: boolean;
 }
 
 export { DbConnData };

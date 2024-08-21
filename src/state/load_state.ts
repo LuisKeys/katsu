@@ -60,6 +60,10 @@ const convertDBRowToUser = (row: any): User => {
 }
 
 const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSampleData[]): DataSource => {
+  let isSSL = false;
+  if (row.type === 'postgres' && row.is_ssl === 1) {
+    isSSL = true;
+  }
   return {
     sourceId: row.source_id,
     name: row.name,
@@ -73,18 +77,27 @@ const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSa
     tables: row.tables,
     tablesSampleData: tablesSampleData,
     custom_prompt: row.custom_prompt,
-    helpList: []
+    helpList: [],
+    isSSL: isSSL
   };
 }
 
 const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData[]> => {
   let tablesSampleData: TableSampleData[] = [];
+
+  let isSSL = false;
+
+  if (row.type === 'postgres' && row.is_ssl === 1) {
+    isSSL = true;
+  }
+
   const dbConnData = {
     user: row.user,
     host: row.host,
     database: row.db,
     password: row.password,
-    port: row.port
+    port: row.port,
+    isSSL: isSSL
   };
   const client: Client | null = await connect(dbConnData);
   if (client === null) {

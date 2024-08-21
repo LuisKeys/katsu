@@ -12,7 +12,8 @@ const getResult = async (state: KatsuState, userIndex: number): Promise<KatsuSta
     host: dataSource.host,
     database: dataSource.db,
     password: dataSource.password,
-    port: dataSource.port
+    port: dataSource.port,
+    isSSL: dataSource.isSSL
   };
   const client: Client | null = await connect(dbConnData);
   if (client === null) {
