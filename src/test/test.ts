@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["provide the account info for accelone",];
+    let prompts = ["contact info of mario",];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
