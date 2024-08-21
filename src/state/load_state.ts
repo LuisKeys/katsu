@@ -61,7 +61,7 @@ const convertDBRowToUser = (row: any): User => {
 
 const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSampleData[]): DataSource => {
   let isSSL = false;
-  if (row.type === 'postgres' && row.is_ssl === 1) {
+  if (row.type === 'postgresql' && row.is_ssl === 1) {
     isSSL = true;
   }
   return {
@@ -87,7 +87,7 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
 
   let isSSL = false;
 
-  if (row.type === 'postgres' && row.is_ssl === 1) {
+  if (row.type === 'postgresql' && row.is_ssl === 1) {
     isSSL = true;
   }
 
@@ -123,7 +123,7 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
 }
 
 const getDataSourcesRows = async (db: sqlite.Database): Promise<QueryResultRow[]> => {
-  const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables, custom_prompt 
+  const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables, custom_prompt, is_ssl  
     FROM data_sources`;
 
   const result = await db_allKDB(db, sql);
