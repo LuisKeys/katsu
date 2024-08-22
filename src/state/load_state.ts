@@ -124,7 +124,7 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
 
 const getDataSourcesRows = async (db: sqlite.Database): Promise<QueryResultRow[]> => {
   const sql = `SELECT source_id as sourceId, name, description, type, host, user, password, port, db, tables, custom_prompt, is_ssl  
-    FROM data_sources`;
+    FROM data_sources WHERE is_enabled = 1`;
 
   const result = await db_allKDB(db, sql);
   return result;
