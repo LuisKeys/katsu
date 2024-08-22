@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["Which employees are out of office?"];
+    let prompts = ["show me the top 5 open opportunities by expected revenues"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];

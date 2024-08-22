@@ -17,7 +17,7 @@ const getConstDescription = (): { name: string, description: string }[] => {
     // { name: `FILE`, description: `Represents the search file operation. File word is a must.` },
     { name: `HELP`, description: `Represents a help prompt, the word help must be present.` },
     { name: `PAGE`, description: `Represents a page operation such as next page, previous page, first or last page.` },
-    { name: `SORT`, description: `Represents an order by or sort operation. The word sort or order by must be present.` }
+    { name: `SORT`, description: `Represents an order by or sort operation. The word sort or order by must be present and the prompot should have no more than 4 words.` }
   ];
 
   return constants;

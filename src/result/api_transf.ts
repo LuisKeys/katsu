@@ -1,5 +1,7 @@
+import { APIResultObject } from './result_object';
 import { KatsuState } from '../state/katsu_state';
-import { APIResultObject, ResultObject } from './result_object';
+import { ask } from '../llm/openai/openai_api';
+import { createFormatjSONPrompt } from '../llm/prompt_generators/format_api_json';
 import { formatOneLineResult } from '../nl/format_nl_result';
 
 /**
@@ -18,7 +20,6 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   const startIndex = (currentPage - 1) * pageSize;
   let endIndex = Math.min(startIndex + pageSize, result.rows.length);
 
-  dataRows.push(result.fields);
   endIndex = Math.min(endIndex, result.rows.length + startIndex);
   for (let i = startIndex; i < endIndex; i++) {
     dataRows.push(result.rows[i]);
@@ -37,6 +38,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   if (dataRows.length > 0) {
     result.text = "";
     result.fileURL = "";
+
   }
 
   const apiResultObject: APIResultObject = {
@@ -55,7 +57,10 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     apiResultObject.rows = [];
   }
 
-  return apiResultObject;
+  const formattedJSON = await aiFormatjSon(state, userIndex, apiResultObject);
+  const formattedAPIResultObject = JSON.parse(formattedJSON);
+
+  return formattedAPIResultObject;
 }
 
 const logAPIResultObject = function (apiResultObject: APIResultObject) {
@@ -68,6 +73,16 @@ const logAPIResultObject = function (apiResultObject: APIResultObject) {
   for (let i = 0; i < apiResultObject.rows.length; i++) {
     console.log("Row " + i + ": " + apiResultObject.rows[i]);
   }
+}
+
+const aiFormatjSon = async (state: KatsuState, userIndex: number, apiResultObject: APIResultObject) => {
+  const jSON = JSON.stringify(apiResultObject);
+  const llmPrompt = createFormatjSONPrompt(jSON);
+  state.users[userIndex].context = llmPrompt;
+  let formattedJSON = await ask(state, userIndex);
+  formattedJSON = formattedJSON.replace("```json\n", "");
+  formattedJSON = formattedJSON.replace("```", "");
+  return formattedJSON;
 }
 
 export { logAPIResultObject, transfResAPI };
