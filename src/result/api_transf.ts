@@ -50,7 +50,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     docURL: result.fileURL
   };
 
-  if (apiResultObject.rows.length === 2 && state.users[userIndex].promptType === "QUESTION") {
+  if (result.text != "" && state.users[userIndex].promptType === "QUESTION") {
     state = await formatOneLineResult(state, userIndex);
     apiResultObject.text = state.users[userIndex].result.text;
     state.users[userIndex].result.rows = [];
@@ -59,6 +59,11 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
 
   const formattedJSON = await aiFormatjSon(state, userIndex, apiResultObject);
   const formattedAPIResultObject = JSON.parse(formattedJSON);
+  formattedAPIResultObject.fields = apiResultObject.fields;
+  formattedAPIResultObject.text = apiResultObject.text;
+  formattedAPIResultObject.docURL = apiResultObject.docURL;
+  formattedAPIResultObject.pageNum = apiResultObject.pageNum;
+  formattedAPIResultObject.lastPage = apiResultObject.lastPage;
 
   return formattedAPIResultObject;
 }
