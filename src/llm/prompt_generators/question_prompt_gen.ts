@@ -34,6 +34,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondInte
     - Limit the description field to 30 characters.\n
     - Limit the company field to 30 characters.\n
     - Limit the title to 30 characters.\n
+    - Do not use lower function for boolean fields.\n
     ${custom_prompt}	
     ${secondIntentContext}	
   `;

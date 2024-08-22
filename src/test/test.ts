@@ -15,11 +15,16 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["give me the address of account accelone",];
+    let prompts = ["list all open opportunities"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
       state.users[userIndex].prompt = prompt;
+      if (state.isDebug) {
+        console.log("*********************");
+        console.log("Prompt: ", prompt);
+      }
+
       state = await promptHandler(state, userIndex);
 
       const apiResultObject: APIResultObject = await transfResAPI(state, userIndex);

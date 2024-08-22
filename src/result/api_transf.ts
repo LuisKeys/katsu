@@ -24,6 +24,21 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     dataRows.push(result.rows[i]);
   }
 
+  if (result.fileURL != "") {
+    dataRows = [];
+    result.text = "";
+  }
+
+  if (result.text != "") {
+    dataRows = [];
+    result.fileURL = "";
+  }
+
+  if (dataRows.length > 0) {
+    result.text = "";
+    result.fileURL = "";
+  }
+
   const apiResultObject: APIResultObject = {
     lastPage: result.lastPage,
     pageNum: result.pageNum,
