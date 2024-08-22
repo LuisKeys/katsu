@@ -42,6 +42,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   const apiResultObject: APIResultObject = {
     lastPage: result.lastPage,
     pageNum: result.pageNum,
+    fields: result.fields,
     rows: dataRows,
     text: result.text,
     docURL: result.fileURL
@@ -63,6 +64,7 @@ const logAPIResultObject = function (apiResultObject: APIResultObject) {
   console.log("Page Num: " + apiResultObject.pageNum);
   console.log("Text: " + apiResultObject.text);
   console.log("Doc URL: " + apiResultObject.docURL);
+  console.log("Fields: " + apiResultObject.fields);
   for (let i = 0; i < apiResultObject.rows.length; i++) {
     console.log("Row " + i + ": " + apiResultObject.rows[i]);
   }

@@ -9,6 +9,7 @@ import { KatsuState } from "../state/katsu_state";
  */
 
 type APIResultObject = {
+  fields: string[];
   lastPage: number;
   pageNum: number;
   rows: String[][];
