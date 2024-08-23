@@ -1,4 +1,5 @@
 import { KatsuState } from "../../state/katsu_state";
+import { closeKDB, executeKDB, openKDB } from '../../db/katsu_db/katsu_db';
 
 /**
  * Saves a prompt to the prompts_history table.
@@ -12,29 +13,38 @@ import { KatsuState } from "../../state/katsu_state";
  * @returns {Promise<void>} - A Promise that resolves when the prompt is saved.
  */
 const savePrompt = async (state: KatsuState, userIndex: number): Promise<void> => {
-  /*
-  const userId: number = result.user?.userId || 0;
-  const prompt: string = result.prompt;
-  let sql: string = result.sql;
-  const rowsCount: number = result.rows.length;
-  const promptType: string = result.promptType;
+  const prompt = state.users[userIndex].prompt;
+  const userId = state.users[userIndex].userId;
+  const dataSourceIndex = state.users[userIndex].dataSourceIndex;
+  const dataSourceId = state.dataSources[dataSourceIndex].dataSourceId;
+  const sql = state.users[userIndex].sql;
+  const promptType = state.users[userIndex].promptType;
+  const rowsCount = state.users[userIndex].result.rows.length;
 
-  const promptSafe = prompt.replace(/'/g, "''");
-  if (!sql) {
-    sql = "";
+  if (rowsCount === 0) {
+    return;
   }
-  const sqlSafe = sql.replace(/'/g, "''");
-  let insertSQL = "insert into prompts_history ";
-  insertSQL += "(userId, prompt, SQL, rows_count, prompt_cmp, prompt_type) ";
-  const promptClean = cleanPrompt(prompt);
-  insertSQL += `values (${userId}, '${promptSafe}', '${sqlSafe}', ${rowsCount}, '${promptClean}', '${promptType}') `;
 
-  const client = await connect();
-  if (client !== null) {
-    await execute(insertSQL, client);
-    await close(client);
-  }
-  */
+  const encodedSql = Buffer.from(sql).toString('base64');
+
+  const insertStatement = `
+    INSERT INTO prompts_history
+    (prompt, "sql", rows_count, date, "type", "user_id", data_source_id)
+    VALUES(
+    '${cleanPrompt(prompt)}', 
+    '${encodedSql}', 
+    ${rowsCount}, 
+    ${Date.now()}, 
+    '${promptType}', 
+    '${userId}',
+    '${dataSourceId}'
+    );
+  `;
+
+  const db = await openKDB();
+  await executeKDB(db, insertStatement);
+  await closeKDB(db);
+
 }
 
 /**

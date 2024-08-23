@@ -64,6 +64,9 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   formattedAPIResultObject.docURL = apiResultObject.docURL;
   formattedAPIResultObject.pageNum = apiResultObject.pageNum;
   formattedAPIResultObject.lastPage = apiResultObject.lastPage;
+  if (formattedAPIResultObject.rows.length === 0) {
+    formattedAPIResultObject.rows = apiResultObject.rows;
+  }
 
   return formattedAPIResultObject;
 }

@@ -31,7 +31,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondInte
     - Do not use any field not provided in the tables list.\n
     - For names use a 'like' operator with a wildcard at the end.\n
     - Unless more detail is specified, use no more than 6 columns.\n
-    - Limit the description field to 30 characters.\n
+    - Avoid the description field as much as possible.\n
     - Limit the company field to 30 characters.\n
     - Limit the title to 30 characters.\n
     - Do not use lower function for boolean fields.\n

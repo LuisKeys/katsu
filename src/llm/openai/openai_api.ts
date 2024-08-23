@@ -34,7 +34,7 @@ const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
     showCost(state, userIndex);
   }
 
-  const model = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   const completion = await (state.openai.chat.completions.create)({
     messages: [{ role: "system", content: state.users[userIndex].context }],
     model: model,

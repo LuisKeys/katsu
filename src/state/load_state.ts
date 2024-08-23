@@ -53,7 +53,8 @@ const convertDBRowToUser = (row: any): User => {
     title: row.title,
     dataSourceIndex: 0,
     promptType: '',
-    sql: ''
+    sql: '',
+    userId: row.userId
   };
 
   return user;
@@ -78,7 +79,8 @@ const convertDBRowTODataSource = (row: QueryResultRow, tablesSampleData: TableSa
     tablesSampleData: tablesSampleData,
     custom_prompt: row.custom_prompt,
     helpList: [],
-    isSSL: isSSL
+    isSSL: isSSL,
+    dataSourceId: row.sourceId
   };
 }
 
@@ -106,7 +108,7 @@ const getTablesSampleData = async (row: QueryResultRow): Promise<TableSampleData
 
   const tables: string[] = row.tables.split(',').map((table: string) => table.trim());
   for (const table of tables) {
-    const sql = `SELECT * FROM ${table} LIMIT 1`;
+    const sql = `SELECT * FROM ${table} LIMIT 3`;
     const result = await execute(sql, client);
     if (result !== null) {
       let tableSampleData: TableSampleData = {
@@ -165,7 +167,7 @@ const loadKatsuState = async (openai: OpenAI): Promise<KatsuState> => {
 const getTablesList = (dataSource: DataSource): string[] => {
   const tablesString = dataSource.tables;
   return tablesString.split(',').map(table => table.trim());
-}
+};
 
 export {
   loadKatsuState,

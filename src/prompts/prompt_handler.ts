@@ -7,6 +7,8 @@ import { sortHandler } from "./handlers/sort_handler";
 import { pageHandler } from "./handlers/page_handler";
 import { filesHandler } from "./handlers/files_handler";
 import { helpHandler } from "./handlers/help_handler";
+import { savePrompt } from "./utils/save_prompt";
+import { checkPrompt } from "./utils/check_history";
 
 
 
@@ -24,10 +26,20 @@ import { helpHandler } from "./handlers/help_handler";
 const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuState> => {
   // Get the prompt type and data source 
   // state.showWordsCount = true;
-  state = await getPromptType(state, userId);
-  console.log("Prompt type:", state.users[userId].promptType);
-  state = await getDataSource(state, userId);
+  state.users[userId].promptType = "";
+  state.users[userId].sql = "";
+
+  state = await checkPrompt(state, userId);
+  let isCached = true;
+  if (state.users[userId].promptType === "") {
+    isCached = false;
+    state = await getPromptType(state, userId);
+    console.log("Prompt type:", state.users[userId].promptType);
+    state = await getDataSource(state, userId);
+  }
   state = await processPrompt(state, userId);
+  if (!isCached)
+    await savePrompt(state, userId);
 
   return state;
 };

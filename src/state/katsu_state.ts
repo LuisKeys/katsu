@@ -17,6 +17,7 @@ interface User {
   role: string;
   sql: string;
   title: string;
+  userId: number;
 }
 
 interface TableSampleData {
@@ -39,6 +40,7 @@ interface DataSource {
   custom_prompt: string;
   helpList: string[];
   isSSL: boolean;
+  dataSourceId: number;
 }
 
 interface KatsuState {

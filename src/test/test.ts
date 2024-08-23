@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["Which are all the open opportunities with revenue greater than 1000?"];
+    let prompts = ["Which are all the opportunities with revenue greater than 1000 for next quarter?"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];

@@ -1,30 +1,38 @@
 import { KatsuState } from "../../state/katsu_state";
+import { cleanPrompt } from "./save_prompt";
+import { closeKDB, db_allKDB, openKDB } from '../../db/katsu_db/katsu_db';
 
 const checkPrompt = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  /*
+  const prompt = state.users[userIndex].prompt;
+  const userId = state.users[userIndex].userId;
   const promptSafe = cleanPrompt(prompt);
-  let sql = `select sql from v_prompts_history where prompt_cmp = '${promptSafe}' `;
-  sql += `and rows_count > 0 `;
-  sql += `and created_date >= current_date - interval '20' day `;
-  sql += `order by created_date desc `;
-  sql += `limit 1 `;
 
-  const client = await connect();
-  if (client === null) {
-    return null;
+  const sql = `SELECT prompt_id, prompt, "sql", 
+  rows_count, date, "type", user_id, data_source_id  
+  FROM prompts_history 
+  WHERE prompt = '${promptSafe}' 
+  AND user_id = ${userId}
+  LIMIT 1`
+
+  const db = await openKDB();
+  const rows = await db_allKDB(db, sql);
+  await closeKDB(db);
+
+  if (rows.length > 0) {
+    const dataSourceId = rows[0].data_source_id;
+    for (let i = 0; i < state.dataSources.length; i++) {
+      if (state.dataSources[i].dataSourceId === dataSourceId) {
+        state.users[userIndex].dataSourceIndex = i;
+        break;
+      }
+    }
+
+    const encodedSql = rows[0].sql;
+    const decodedSql = Buffer.from(encodedSql, 'base64').toString('utf-8');
+    state.users[userIndex].sql = decodedSql;
+    state.users[userIndex].promptType = rows[0].type;
   }
 
-  const sqlRes: QueryResult | null = await execute(sql, client);
-  await close(client);
-
-  if (sqlRes && sqlRes.rows.length === 0) {
-    return null;
-  } else if (sqlRes) {
-    return sqlRes.rows[0].sql;
-  } else {
-    return null;
-  }
-  */
   return state;
 };
 
