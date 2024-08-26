@@ -37,8 +37,10 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
     state.users[userIndex].result.fields = fieldList.split(',').map(field => field.trim());
   }
 
+  state.users[userIndex].result.noDataFound = false;
   if (state.users[userIndex].result.rows.length === 0) {
     const userPrompt = state.users[userIndex].prompt;
+    state.users[userIndex].result.noDataFound = true;
     state.users[userIndex].result.text = getNonResultMsg(userPrompt);
   }
 

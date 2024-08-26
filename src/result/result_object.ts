@@ -27,6 +27,7 @@ type ResultObject = {
   rows: string[][];
   sql: string;
   text: string;
+  noDataFound: boolean;
 };
 
 const convResultObjToCSV = function (state: KatsuState, userIndex: number): string {
@@ -80,6 +81,7 @@ const resetResult = (state: KatsuState, userIndex: number): KatsuState => {
   state.users[userIndex].result.fields = [];
   state.users[userIndex].result.text = "";
   state.users[userIndex].result.fileURL = "";
+  state.users[userIndex].result.noDataFound = false;
 
   return state;
 }

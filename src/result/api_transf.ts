@@ -50,22 +50,27 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     docURL: result.fileURL
   };
 
-  if (result.text != "" && state.users[userIndex].promptType === "QUESTION") {
-    state = await formatOneLineResult(state, userIndex);
-    apiResultObject.text = state.users[userIndex].result.text;
-    state.users[userIndex].result.rows = [];
-    apiResultObject.rows = [];
+  if (!result.noDataFound) {
+    if (apiResultObject.rows.length == 1 && state.users[userIndex].promptType === "QUESTION") {
+      state = await formatOneLineResult(state, userIndex);
+      apiResultObject.text = state.users[userIndex].result.text;
+      state.users[userIndex].result.rows = [];
+      apiResultObject.rows = [];
+      apiResultObject.fields = [];
+    }
   }
 
-  const formattedJSON = await aiFormatjSon(state, userIndex, apiResultObject);
-  const formattedAPIResultObject = JSON.parse(formattedJSON);
-  formattedAPIResultObject.fields = apiResultObject.fields;
-  formattedAPIResultObject.text = apiResultObject.text;
-  formattedAPIResultObject.docURL = apiResultObject.docURL;
-  formattedAPIResultObject.pageNum = apiResultObject.pageNum;
-  formattedAPIResultObject.lastPage = apiResultObject.lastPage;
-  if (formattedAPIResultObject.rows.length === 0) {
-    formattedAPIResultObject.rows = apiResultObject.rows;
+  let formattedAPIResultObject = apiResultObject;
+  if (state.users[userIndex].result.rows.length > 0) {
+    const formattedJSON = await aiFormatjSon(state, userIndex, apiResultObject);
+    formattedAPIResultObject = JSON.parse(formattedJSON);
+    formattedAPIResultObject.fields = apiResultObject.fields;
+    formattedAPIResultObject.text = apiResultObject.text;
+    formattedAPIResultObject.docURL = apiResultObject.docURL;
+    formattedAPIResultObject.pageNum = apiResultObject.pageNum;
+    if (formattedAPIResultObject.rows.length === 0) {
+      formattedAPIResultObject.rows = apiResultObject.rows;
+    }
   }
 
   return formattedAPIResultObject;
@@ -79,6 +84,7 @@ const logAPIResultObject = function (apiResultObject: APIResultObject) {
   console.log("Doc URL: " + apiResultObject.docURL);
   console.log("Fields: " + apiResultObject.fields);
   for (let i = 0; i < apiResultObject.rows.length; i++) {
+    apiResultObject.lastPage = apiResultObject.lastPage;
     console.log("Row " + i + ": " + apiResultObject.rows[i]);
   }
 }
