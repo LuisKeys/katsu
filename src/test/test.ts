@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["Which are the top 3 opportunities by revenue"];
+    let prompts = ["provide the latest 10 leads"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];
