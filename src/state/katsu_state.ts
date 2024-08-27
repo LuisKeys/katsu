@@ -18,6 +18,7 @@ interface User {
   sql: string;
   title: string;
   userId: number;
+  isCached: boolean;
 }
 
 interface TableSampleData {

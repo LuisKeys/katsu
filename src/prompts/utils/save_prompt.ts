@@ -44,7 +44,6 @@ const savePrompt = async (state: KatsuState, userIndex: number): Promise<void> =
   const db = await openKDB();
   await executeKDB(db, insertStatement);
   await closeKDB(db);
-
 }
 
 /**

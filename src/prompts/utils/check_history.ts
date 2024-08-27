@@ -1,11 +1,21 @@
 import { KatsuState } from "../../state/katsu_state";
 import { cleanPrompt } from "./save_prompt";
-import { closeKDB, db_allKDB, openKDB } from '../../db/katsu_db/katsu_db';
+import { closeKDB, db_allKDB, executeKDB, openKDB } from '../../db/katsu_db/katsu_db';
+import { exec } from "child_process";
 
 const checkPrompt = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
   const prompt = state.users[userIndex].prompt;
   const userId = state.users[userIndex].userId;
   const promptSafe = cleanPrompt(prompt);
+
+  const isCleanCache = process.env.CLEAN_PROMPTS_CACHE === 'true';
+
+  const db = await openKDB();
+
+  if (isCleanCache) {
+    const delSQL = `DELETE FROM prompts_history`;
+    await executeKDB(db, delSQL);
+  }
 
   const sql = `SELECT prompt_id, prompt, "sql", 
   rows_count, date, "type", user_id, data_source_id  
@@ -14,10 +24,9 @@ const checkPrompt = async (state: KatsuState, userIndex: number): Promise<KatsuS
   AND user_id = ${userId}
   LIMIT 1`
 
-  const db = await openKDB();
   const rows = await db_allKDB(db, sql);
   await closeKDB(db);
-
+  state.users[userIndex].isCached = false;
   if (rows.length > 0) {
     const dataSourceId = rows[0].data_source_id;
     for (let i = 0; i < state.dataSources.length; i++) {
@@ -31,6 +40,7 @@ const checkPrompt = async (state: KatsuState, userIndex: number): Promise<KatsuS
     const decodedSql = Buffer.from(encodedSql, 'base64').toString('utf-8');
     state.users[userIndex].sql = decodedSql;
     state.users[userIndex].promptType = rows[0].type;
+    state.users[userIndex].isCached = true;
   }
 
   return state;

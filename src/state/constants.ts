@@ -3,12 +3,12 @@
  * @module prompts/constants
  */
 
-const EXCEL = 'export excel';
-const FILE = 'search file operation';
-const HELP = 'help';
-const PAGE = 'result page command';
-const QUESTION = 'business question prompt';
-const SORT = 'result sort operation';
+const EXCEL = 'EXCEL';
+const FILE = 'FILE';
+const HELP = 'HELP';
+const PAGE = 'PAGE';
+const QUESTION = 'QUESTION';
+const SORT = 'SORT';
 
 const getConstDescription = (): { name: string, description: string }[] => {
   const constants = [

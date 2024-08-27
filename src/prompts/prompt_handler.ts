@@ -9,8 +9,7 @@ import { filesHandler } from "./handlers/files_handler";
 import { helpHandler } from "./handlers/help_handler";
 import { savePrompt } from "./utils/save_prompt";
 import { checkPrompt } from "./utils/check_history";
-
-
+import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
 
 /**
  * @fileoverview This module exports the `promptHandler` function which handles different types of prompts and performs corresponding actions.
@@ -30,16 +29,23 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
   state.users[userId].sql = "";
 
   state = await checkPrompt(state, userId);
-  let isCached = true;
-  if (state.users[userId].promptType === "") {
-    isCached = false;
+  const promptType = state.users[userId].promptType
+  const isCached = state.users[userId].isCached
+  if (!isCached) {
     state = await getPromptType(state, userId);
     console.log("Prompt type:", state.users[userId].promptType);
-    state = await getDataSource(state, userId);
+    if (promptType === QUESTION) {
+      state = await getDataSource(state, userId);
+    }
   }
+
   state = await processPrompt(state, userId);
-  if (!isCached)
+
+  if (!isCached) {
     await savePrompt(state, userId);
+  }
+
+  state.users[userId].isCached = false;
 
   return state;
 };
@@ -55,22 +61,22 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
 const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuState> => {
   const promptType = state.users[userId].promptType.toUpperCase()
   switch (promptType) {
-    case "QUESTION":
+    case QUESTION:
       state = await questionHandler(state, userId);
       break;
-    case "EXCEL":
+    case EXCEL:
       state = await excelExportHandler(state, userId);
       break;
-    case "SORT":
+    case SORT:
       state = await sortHandler(state, userId);
       break;
-    case "PAGE":
+    case PAGE:
       state = await pageHandler(state, userId);
       break;
-    case "FILE":
+    case FILE:
       state = await filesHandler(state, userId);
       break;
-    case "HELP":
+    case HELP:
       state = await helpHandler(state, userId);
       break;
     default:
