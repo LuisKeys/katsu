@@ -22,7 +22,7 @@ const formatAPIResult = function (result: ResultObject): ResultObject {
 };
 
 const formatCurrency = function (result: ResultObject, numColumns: number[]): ResultObject {
-  for (let i = 1; i < result.rows.length; i++) {
+  for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = '$' + result.rows[i][numColumns[j]];
     }
@@ -32,7 +32,7 @@ const formatCurrency = function (result: ResultObject, numColumns: number[]): Re
 };
 
 const formatNumericColumns = function (result: ResultObject, numColumns: number[]): ResultObject {
-  for (let i = 1; i < result.rows.length; i++) {
+  for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = formatNumber(
         result.rows[i][numColumns[j]]
@@ -70,7 +70,7 @@ const getNumericColumns = function (result: ResultObject): number[] {
 
 const formatPhoneNumber = function (result: ResultObject, numColumns: number[]): ResultObject {
 
-  for (let i = 1; i < result.rows.length; i++) {
+  for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       const number = result.rows[i][numColumns[j]];
       if (number) {

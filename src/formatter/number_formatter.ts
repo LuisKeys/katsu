@@ -3,7 +3,7 @@
  * @param {string} number - The non-formatted number as a string.
  * @returns {string} - The formatted number with separators.
  */
-const formatNumber = function(number: string): string {
+const formatNumber = function (number: string): string {
   // Convert the number to a float
   const parsedNumber = parseFloat(number);
 
@@ -12,7 +12,9 @@ const formatNumber = function(number: string): string {
     return "";
   }
 
-  return parsedNumber.toLocaleString();
+  const formattedNumber = parsedNumber.toLocaleString();
+
+  return formattedNumber;
 }
 
 export { formatNumber };
