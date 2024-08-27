@@ -29,11 +29,12 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
   state.users[userId].sql = "";
 
   state = await checkPrompt(state, userId);
-  const promptType = state.users[userId].promptType
+  let promptType = state.users[userId].promptType
   const isCached = state.users[userId].isCached
   if (!isCached) {
     state = await getPromptType(state, userId);
-    console.log("Prompt type:", state.users[userId].promptType);
+    promptType = state.users[userId].promptType
+    console.log("Prompt type:", promptType);
     if (promptType === QUESTION) {
       state = await getDataSource(state, userId);
     }
