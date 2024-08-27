@@ -20,6 +20,7 @@ const sortHandler = async (state: KatsuState, userIndex: number): Promise<KatsuS
   const sortDir = await getSortDirection(state, userIndex);
   state = sortResult(state, userIndex, sortField, sortDir);
 
+  result.pageNum = 1;
   state.users[userIndex].result = result;
   return state;
 };

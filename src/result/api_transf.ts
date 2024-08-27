@@ -83,6 +83,7 @@ const logAPIResultObject = function (apiResultObject: APIResultObject) {
   console.log("Text: " + apiResultObject.text);
   console.log("Doc URL: " + apiResultObject.docURL);
   console.log("Fields: " + apiResultObject.fields);
+  console.log("Rows: " + apiResultObject.rows.length);
   for (let i = 0; i < apiResultObject.rows.length; i++) {
     apiResultObject.lastPage = apiResultObject.lastPage;
     console.log("Row " + i + ": " + apiResultObject.rows[i]);
