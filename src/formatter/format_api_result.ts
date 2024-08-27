@@ -32,7 +32,6 @@ const formatCurrency = function (result: ResultObject, numColumns: number[]): Re
 };
 
 const formatNumericColumns = function (result: ResultObject, numColumns: number[]): ResultObject {
-  /*
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = formatNumber(
@@ -40,21 +39,22 @@ const formatNumericColumns = function (result: ResultObject, numColumns: number[
       );
     }
   }
-  */
+
   return result;
 };
 
 const getNumericColumns = function (result: ResultObject): number[] {
   let numericColumns: number[] = [];
-  /*
 
-  const header = result.rows[0];
+  const header = result.fields;
 
   for (let i = 0; i < header.length; i++) {
     let isNumeric = true;
 
-    for (let j = 1; j < result.rows.length; j++) {
-      if (isNaN(result.rows[j][i])) {
+    for (let j = 0; j < result.rows.length; j++) {
+      if (isNaN(Number(result.rows[j][i])) ||
+        result.rows[j][i] === "" ||
+        result.rows[j][i] === null) {
         isNumeric = false;
         break;
       }
@@ -64,12 +64,12 @@ const getNumericColumns = function (result: ResultObject): number[] {
       numericColumns.push(i);
     }
   }
-  */
+
   return numericColumns;
 };
 
 const formatPhoneNumber = function (result: ResultObject, numColumns: number[]): ResultObject {
-  /*
+
   for (let i = 1; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       const number = result.rows[i][numColumns[j]];
@@ -89,14 +89,14 @@ const formatPhoneNumber = function (result: ResultObject, numColumns: number[]):
       }
     }
   }
-  */
+
   return result;
 };
 
 const getPhoneColumns = function (result: ResultObject): number[] {
   let phoneColumns: number[] = [];
 
-  const header = result.rows[0];
+  const header = result.fields;
 
   for (let i = 0; i < header.length; i++) {
     const fieldName = header[i].toLowerCase().trim();
@@ -112,12 +112,16 @@ const getPhoneColumns = function (result: ResultObject): number[] {
 const getCurrencyColumns = function (result: ResultObject): number[] {
   let currencyColumns: number[] = [];
 
-  const header = result.rows[0];
+  const header = result.fields;
 
   for (let i = 0; i < header.length; i++) {
     const fieldName = header[i].toLowerCase().trim();
 
-    if (fieldName.includes("amount")) {
+    if (fieldName.includes("amount") ||
+      fieldName.includes("rate") ||
+      fieldName.includes("revenue") ||
+      fieldName.includes("profit") ||
+      fieldName.includes("cost")) {
       currencyColumns.push(i);
     }
   }

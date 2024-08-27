@@ -7,7 +7,7 @@ import { logAPIResultObject, transfResAPI } from "../result/api_transf";
 // Test the promptHandler
 const executeTest = async (state: KatsuState) => {
   console.log("Executing test...");
-  const userIndex = await getUserIndex("diego.tassi@accelone.com", state);
+  const userIndex = await getUserIndex("luis.paradela@accelone.com", state);
   const isValid = userIndex != -1;
   if (!isValid) {
     console.log(
@@ -15,7 +15,7 @@ const executeTest = async (state: KatsuState) => {
     );
     return;
   } else {
-    let prompts = ["Which are the newest 10 leads", "sort by first name"];
+    let prompts = ["Which are the top 3 opportunities by revenue"];
 
     for (let i = 0; i < prompts.length; i++) {
       let prompt = prompts[i];

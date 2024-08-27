@@ -1,8 +1,7 @@
 import { APIResultObject } from './result_object';
 import { KatsuState } from '../state/katsu_state';
-import { ask } from '../llm/openai/openai_api';
-import { createFormatjSONPrompt } from '../llm/prompt_generators/format_api_json';
 import { formatOneLineResult } from '../nl/format_nl_result';
+import { formatAPIResult } from '../formatter/format_api_result';
 
 /**
  * Transforms a `ResultObject` into an `APIResultObject`.
@@ -12,45 +11,48 @@ import { formatOneLineResult } from '../nl/format_nl_result';
 const transfResAPI = async function (state: KatsuState, userIndex: number): Promise<APIResultObject> {
 
   let result = state.users[userIndex].result;
+
+  const formattedResult = formatAPIResult(result);
+
   let dataRows: string[][] = [];
   const pageSize = process.env.PAGE_SIZE ? parseInt(process.env.PAGE_SIZE) : 10;
-  const currentPage = result.pageNum;
+  const currentPage = formattedResult.pageNum;
 
   // Data rows
   const startIndex = (currentPage - 1) * pageSize;
-  let endIndex = Math.min(startIndex + pageSize, result.rows.length);
+  let endIndex = Math.min(startIndex + pageSize, formattedResult.rows.length);
 
-  endIndex = Math.min(endIndex, result.rows.length + startIndex);
+  endIndex = Math.min(endIndex, formattedResult.rows.length + startIndex);
   for (let i = startIndex; i < endIndex; i++) {
-    dataRows.push(result.rows[i]);
+    dataRows.push(formattedResult.rows[i]);
   }
 
-  if (result.fileURL != "") {
+  if (formattedResult.fileURL != "") {
     dataRows = [];
-    result.text = "";
+    formattedResult.text = "";
   }
 
-  if (result.text != "") {
+  if (formattedResult.text != "") {
     dataRows = [];
-    result.fileURL = "";
+    formattedResult.fileURL = "";
   }
 
   if (dataRows.length > 0) {
-    result.text = "";
-    result.fileURL = "";
+    formattedResult.text = "";
+    formattedResult.fileURL = "";
 
   }
 
   const apiResultObject: APIResultObject = {
-    lastPage: result.lastPage,
-    pageNum: result.pageNum,
-    fields: result.fields,
+    lastPage: formattedResult.lastPage,
+    pageNum: formattedResult.pageNum,
+    fields: formattedResult.fields,
     rows: dataRows,
-    text: result.text,
-    docURL: result.fileURL
+    text: formattedResult.text,
+    docURL: formattedResult.fileURL
   };
 
-  if (!result.noDataFound) {
+  if (!formattedResult.noDataFound) {
     if (apiResultObject.rows.length == 1 && state.users[userIndex].promptType === "QUESTION") {
       state = await formatOneLineResult(state, userIndex);
       apiResultObject.text = state.users[userIndex].result.text;
@@ -60,20 +62,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     }
   }
 
-  let formattedAPIResultObject = apiResultObject;
-  if (state.users[userIndex].result.rows.length > 0) {
-    const formattedJSON = await aiFormatjSon(state, userIndex, apiResultObject);
-    formattedAPIResultObject = JSON.parse(formattedJSON);
-    formattedAPIResultObject.fields = apiResultObject.fields;
-    formattedAPIResultObject.text = apiResultObject.text;
-    formattedAPIResultObject.docURL = apiResultObject.docURL;
-    formattedAPIResultObject.pageNum = apiResultObject.pageNum;
-    if (formattedAPIResultObject.rows.length === 0) {
-      formattedAPIResultObject.rows = apiResultObject.rows;
-    }
-  }
-
-  return formattedAPIResultObject;
+  return apiResultObject;
 }
 
 const logAPIResultObject = function (apiResultObject: APIResultObject) {
@@ -88,16 +77,6 @@ const logAPIResultObject = function (apiResultObject: APIResultObject) {
     apiResultObject.lastPage = apiResultObject.lastPage;
     console.log("Row " + i + ": " + apiResultObject.rows[i]);
   }
-}
-
-const aiFormatjSon = async (state: KatsuState, userIndex: number, apiResultObject: APIResultObject) => {
-  const jSON = JSON.stringify(apiResultObject);
-  const llmPrompt = createFormatjSONPrompt(jSON);
-  state.users[userIndex].context = llmPrompt;
-  let formattedJSON = await ask(state, userIndex);
-  formattedJSON = formattedJSON.replace("```json\n", "");
-  formattedJSON = formattedJSON.replace("```", "");
-  return formattedJSON;
 }
 
 export { logAPIResultObject, transfResAPI };
