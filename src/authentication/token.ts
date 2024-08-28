@@ -8,7 +8,7 @@ import * as jwt from 'jsonwebtoken';
  */
 function generateToken(user: string): string {
   const secretKey: string = String(process.env.AUTH_SECRET_KEY);
-  const expiresIn = '1h';
+  const expiresIn = '100h';
   return jwt.sign({ user }, secretKey, { expiresIn });
 }
 
