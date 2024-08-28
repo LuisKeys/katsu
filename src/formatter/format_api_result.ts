@@ -18,6 +18,21 @@ const formatAPIResult = function (result: ResultObject): ResultObject {
   const currencyColumns = getCurrencyColumns(result);
   result = formatCurrency(result, currencyColumns);
 
+  const dateColumns = getDateColumns(result);
+  result = formatDate(result, dateColumns);
+
+  return result;
+};
+
+const formatDate = function (result: ResultObject, dateColumns: number[]): ResultObject {
+  for (let j = 0; j < dateColumns.length; j++) {
+    for (let i = 0; i < result.rows.length; i++) {
+      const date = new Date(result.rows[i][dateColumns[j]]);
+      const formattedDate = date.toLocaleDateString();
+      result.rows[i][dateColumns[j]] = formattedDate;
+    }
+  }
+
   return result;
 };
 
@@ -127,6 +142,22 @@ const getCurrencyColumns = function (result: ResultObject): number[] {
   }
 
   return currencyColumns;
+};
+
+const getDateColumns = function (result: ResultObject): number[] {
+  let dateColumns: number[] = [];
+
+  const header = result.fields;
+
+  for (let i = 0; i < header.length; i++) {
+    const fieldName = header[i].toLowerCase().trim();
+
+    if (fieldName.includes("date")) {
+      dateColumns.push(i);
+    }
+  }
+
+  return dateColumns;
 };
 
 export { formatAPIResult };
