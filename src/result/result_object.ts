@@ -82,6 +82,7 @@ const resetResult = (state: KatsuState, userIndex: number): KatsuState => {
   state.users[userIndex].result.text = "";
   state.users[userIndex].result.fileURL = "";
   state.users[userIndex].result.noDataFound = false;
+  state.users[userIndex].sqlError = "";
 
   return state;
 }

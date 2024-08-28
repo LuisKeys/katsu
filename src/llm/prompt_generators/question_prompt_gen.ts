@@ -10,6 +10,9 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondInte
   let secondIntentContext = "";
   if (isSecondIntent) {
     secondIntentContext = `since previous intenet returned no records avoid joins with the table that returned no records.`;
+    if (state.users[userIndex].sqlError !== "") {
+      secondIntentContext += `The previous SQL statement returned an error: ${state.users[userIndex].sqlError}`;
+    }
   }
 
   const llmPrompt = `
@@ -38,7 +41,7 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondInte
     - Do not use lower function for boolean fields.\n
     - If a sum is required, group by the rest of the fields.\n
     ${custom_prompt}	
-    ${secondIntentContext}	
+    ${secondIntentContext}    
   `;
   return llmPrompt;
 }

@@ -1,6 +1,6 @@
 import { Client, ClientConfig } from "pg";
 import { KatsuState } from "../state/katsu_state";
-import { close, connect, execute } from "../db/db_commands";
+import { close, connect, execute, getError } from "../db/db_commands";
 import { DbConnData } from "../db/db_conn_data";
 import { getLastPage } from "../prompts/handlers/page_calc";
 
@@ -23,6 +23,7 @@ const getResult = async (state: KatsuState, userIndex: number): Promise<KatsuSta
   const sql = state.users[userIndex].sql;
 
   const result = await execute(sql, client);
+  state.users[userIndex].sqlError = getError();
 
   let userResult = state.users[userIndex].result;
   userResult.rows = [];

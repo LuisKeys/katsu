@@ -56,7 +56,8 @@ const convertDBRowToUser = (row: any): User => {
     promptType: '',
     sql: '',
     userId: row.userId,
-    isCached: false
+    isCached: false,
+    sqlError: ''
   };
 
   return user;
