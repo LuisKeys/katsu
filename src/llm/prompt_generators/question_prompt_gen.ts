@@ -22,9 +22,8 @@ const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondInte
     ${userPrompt} \n
     Follow the next rules: \n 
     - Try first to get the information from the main entity table.\n
-    - If a user name is mentioned, use the first_name and last_name fields to get the user_id.\n
+    - If a full name is mentioned, use the first_name and last_name fields.\n
     - If no other order by is indicated then order by the result by name in ascending order.\n
-    - Add all the required joins to get all the names of related tables.\n
     - Use lower case comparisson for every text field in the where clause.\n
     - IN the answer only provide the SQL statement for a postgresql db, and no other explanation or additional detail.\n
     - Avoid displaying the main entity id field in the select clause, unless the prompt explicitly asks for it.\n
