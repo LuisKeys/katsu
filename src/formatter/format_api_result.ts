@@ -39,7 +39,9 @@ const formatDate = function (result: ResultObject, dateColumns: number[]): Resul
 const formatCurrency = function (result: ResultObject, numColumns: number[]): ResultObject {
   for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
-      result.rows[i][numColumns[j]] = '$' + result.rows[i][numColumns[j]];
+      if (!result.rows[i][numColumns[j]].startsWith("$")) {
+        result.rows[i][numColumns[j]] = '$' + result.rows[i][numColumns[j]];
+      }
     }
   }
 
