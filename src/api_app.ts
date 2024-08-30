@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
+const cors = require('cors');
 import { KatsuState, User } from "./state/katsu_state";
 import { APIResultObject, ResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
@@ -30,6 +31,22 @@ const apiApp = function (state: KatsuState): void {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  const corsOptions = {
+    origin: 'http://localhost:3020',
+    credentials: true, // Allow cookies or authentication headers
+  };
+
+  app.use(cors(corsOptions));
+
+  app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
+
+
   /**
    * Handles the auth route.
    * @name POST /auth
@@ -43,6 +60,7 @@ const apiApp = function (state: KatsuState): void {
     try {
       if (authUser(user, password, state)) {
         const token: string = generateToken(user);
+        console.log("Token generated for user: ", user);
         res.status(200).json({ token });
         return;
       } else {

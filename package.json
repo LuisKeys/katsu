@@ -27,6 +27,7 @@
   "homepage": "https://github.com/a1repo/askme#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "docx": "^8.5.0",
     "dotenv": "^16.4.1",
     "excel4node": "^1.8.2",
