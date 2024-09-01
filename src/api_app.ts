@@ -32,7 +32,7 @@ const apiApp = function (state: KatsuState): void {
   app.use(express.urlencoded({ extended: true }));
 
   const corsOptions = {
-    origin: 'http://localhost:3020',
+    origin: 'http://localhost:5040',
     credentials: true, // Allow cookies or authentication headers
   };
 
