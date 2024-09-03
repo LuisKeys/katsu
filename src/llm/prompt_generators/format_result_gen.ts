@@ -4,7 +4,9 @@ import { KatsuState } from "../../state/katsu_state";
 const createFormatResultPrompt = (state: KatsuState, userIndex: number): string => {
   const csv = convResultObjToCSV(state, userIndex);
   const llmPrompt = `format the result in the following CSV format to a nice human readable short paragraph: 
-  ${csv}`;
+  ${csv}
+  Avoid the references to your model training data, date, etc.
+  `;
   return llmPrompt;
 }
 
