@@ -6,7 +6,7 @@ import { APIResultObject, ResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
-import { getUser, getUserIndex } from "./users/get_user";
+import { getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
 import { logAPIResultObject, transfResAPI } from "./result/api_transf";
 
@@ -96,13 +96,18 @@ const apiApp = function (state: KatsuState): void {
       state = await askPrompt(state, userIndex);
 
       if (state.isDebug) {
-        console.log("Post call finished ask intenet");
+        console.log("Post call finished ask intent");
       }
 
       let apiResult: APIResultObject = await transfResAPI(state, userIndex);
 
       if (state.isDebug) {
-        logAPIResultObject(apiResult);
+        try {
+          logAPIResultObject(apiResult);
+        }
+        catch (error: any) {
+          console.log("Error logging API result object: ", error["message"]);
+        }
       }
 
       res.status(200).json(apiResult);
