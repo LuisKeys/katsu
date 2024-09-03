@@ -1,6 +1,7 @@
 import { formatPhoneNumberFieldUS, formatPhoneNumberFieldLA } from "./phone_formatter";
 import { formatNumber } from "./number_formatter";
 import { ResultObject } from "../result/result_object";
+import { getColumnWidths2 } from "./column_width";
 
 /**
  * Formats the API result by applying formatting rules to numeric and phone columns.
@@ -37,10 +38,16 @@ const formatDate = function (result: ResultObject, dateColumns: number[]): Resul
 };
 
 const formatCurrency = function (result: ResultObject, numColumns: number[]): ResultObject {
+  const columnWidths = getColumnWidths2(result);
   for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       if (!result.rows[i][numColumns[j]].startsWith("$")) {
-        result.rows[i][numColumns[j]] = '$' + result.rows[i][numColumns[j]];
+        let width = columnWidths[numColumns[j]];
+        width = width + 1 // Add 1 for the dollar sign
+        let formattedValue = ('$' + result.rows[i][numColumns[j]]);
+        formattedValue = formattedValue.padStart(width, ' ');
+        // formattedValue = '"' + formattedValue + '"';
+        result.rows[i][numColumns[j]] = formattedValue;
       }
     }
   }
