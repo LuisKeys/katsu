@@ -1,6 +1,5 @@
 import { resetResult } from "../../result/result_object";
 import { KatsuState } from "../../state/katsu_state";
-import { getLastPage } from "./page_calc";
 
 /**
  * This module contains the handler for help prompts type.
@@ -15,18 +14,14 @@ import { getLastPage } from "./page_calc";
  * @returns The updated state of the application.
  */
 const helpHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+  state = resetResult(state, userIndex);
+  const result = state.users[userIndex].result;
   const helpList = state.dataSources[state.users[userIndex].dataSourceIndex].helpList;
 
-  state = resetResult(state, userIndex);
-  state.users[userIndex].result.fields = ["Sample prompts"];
-  for (let i = 0; i < helpList.length; i++) {
-    const row: string[] = [helpList[i]];
-    state.users[userIndex].result.rows.push(row);
+  result.text = "Sample prompts:";
+  for (const helpItem of helpList) {
+    result.text += `\n- ${helpItem}\n`;
   }
-
-  state.users[userIndex].result.pageNum = 1;
-  const result = state.users[userIndex].result
-  state.users[userIndex].result.lastPage = getLastPage(result);
   return state;
 };
 
