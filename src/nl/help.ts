@@ -1,30 +1,15 @@
-import { closeKDB, openKDB, db_allKDB } from "../db/katsu_db/katsu_db";
-import { DataSource, KatsuState } from "../state/katsu_state";
+import { DataSource } from "../state/katsu_state";
+import { Client } from 'pg';
+import { connectMetadataDB, execute, close } from "../db/db_commands";
 
-/**
- * @fileoverview This module contains functions for retrieving help information based on a prompt.
- * @module nl/help
- */
+const getHelp = async (dataSource: DataSource): Promise<string[]> => {
+  const client: Client | null = await connectMetadataDB();
+  if (client === null) return [];
 
-
-/**
- * Retrieves help information based on the provided prompt.
- * @param {string} prompt - The prompt to retrieve help information for.
- * @returns {Promise<any>} - A promise that resolves to the help information.
- */
-const getHelp = async function (dataSource: DataSource): Promise<string[]> {
-  const name = dataSource.name;
-  const sql = `SELECT sample_prompt FROM help WHERE data_source = '${name}' ORDER BY sample_prompt asc`;
-
-  const db = await openKDB();
-  const result = await db_allKDB(db, sql);
-  await closeKDB(db);
-  let helpList = [];
-  for (let i = 0; i < result.length; i++) {
-    helpList.push(result[i].sample_prompt);
-  }
-
-  return helpList;
+  const sql = `SELECT sample_prompt FROM help WHERE data_source = '${dataSource.datasourceId}' ORDER BY sample_prompt asc`;
+  const result = await execute(sql, client);
+  await close(client);
+  return result === null ? [] : result.rows.map(prompt => prompt.sample_prompt);
 }
 
 export { getHelp };

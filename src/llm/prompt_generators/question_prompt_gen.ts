@@ -1,5 +1,4 @@
 import { KatsuState } from "../../state/katsu_state";
-import { getTablesList } from "../../state/load_state";
 import { convertResultToCSV } from "../../result/result_to_csv";
 
 const createQuestionPrompt = (state: KatsuState, userIndex: number, isSecondIntent: boolean): string => {
@@ -63,8 +62,7 @@ const getTablesSampleDataList = (state: KatsuState, userIndex: number): string =
 
 const getTablesListFormatted = (state: KatsuState, userIndex: number): string => {
   const dataSourceIndex = state.users[userIndex].dataSourceIndex;
-  const tablesList = getTablesList(state.dataSources[dataSourceIndex]);
-
+  const tablesList = state.dataSources[dataSourceIndex].tables;
   return tablesList.map(table => `|${table}|`).join("\n");
 }
 

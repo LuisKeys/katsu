@@ -37,7 +37,7 @@ interface DataSource {
   password: string;
   port: number;
   db: string;
-  tables: string;
+  tables: string[];
   tablesSampleData: TableSampleData[];
   custom_prompt: string;
   helpList: string[];

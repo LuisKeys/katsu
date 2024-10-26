@@ -8,35 +8,17 @@ const getError = function (): string {
   return gerror;
 };
 
-/**
- * Connects to the database.
- * @async
- */
 const connect = async function (dbConnData: DbConnData): Promise<Client | null> {
-  let client;
-  if (dbConnData.isSSL) {
-    client = new Client({
-      user: dbConnData.user,
-      host: dbConnData.host,
-      database: dbConnData.database,
-      password: dbConnData.password,
-      port: dbConnData.port,
-      ssl: {
-        rejectUnauthorized: false
-      }
-    });
-  } else {
-    client = new Client({
-      user: dbConnData.user,
-      host: dbConnData.host,
-      database: dbConnData.database,
-      password: dbConnData.password,
-      port: dbConnData.port
-    });
-  }
+  let client = new Client({
+    user: dbConnData.user,
+    host: dbConnData.host,
+    database: dbConnData.database,
+    password: dbConnData.password,
+    port: dbConnData.port,
+    ssl: dbConnData.isSSL ? { rejectUnauthorized: false } : undefined
+  });
 
   try {
-    // Connect to the database
     await client.connect();
     return client;
   } catch (error) {
@@ -66,22 +48,32 @@ const execute = async function (sql: string, client: Client): Promise<QueryResul
   }
 };
 
-/**
- * Closes the database connection.
- * @async
- */
 const close = async function (client: Client): Promise<void> {
   try {
-    // Disconnect the database
     await client.end();
   } catch (error) {
     console.error("Error with disconnect database operation", error);
   }
 };
 
+const connectMetadataDB = async function (): Promise<Client | null> {
+  const dbConnData = {
+    host: process.env.METADATA_DB_HOST || 'localhost',
+    port: Number(process.env.METADATA_DB_PORT) || 5432,
+    user: process.env.METADATA_DB_USER || 'postgres',
+    database: process.env.METADATA_DB_NAME || '',
+    password: process.env.METADATA_DB_PASSWORD || '',
+    isSSL: process.env.IS_ISSL === 'true'
+  };
+
+  const client: Client | null = await connect(dbConnData);
+  return client;
+}
+
 export {
   close,
   connect,
   execute,
-  getError
+  getError,
+  connectMetadataDB
 };
