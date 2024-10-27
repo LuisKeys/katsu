@@ -67,23 +67,23 @@ const getUsers = async (client: Client): Promise<User[]> => {
 
 const getDataSources = async (client: Client): Promise<DataSource[]> => {
   const sql = `SELECT source_id AS "sourceId", name, description, type, host, user, password, port, db, tables, custom_prompt, is_ssl,  
-  (SELECT array_agg("table") FROM datasources_tables WHERE datasource_id = name) AS tables
+  (SELECT array_agg("table") FROM datasources_tables WHERE datasource_name = name) AS tables
   FROM datasources WHERE is_enabled ORDER BY name`;
 
   const result = await execute(sql, client);
   if (result === null) return [];
 
-  let dataSources: DataSource[] = [];
+  const dataSources: DataSource[] = [];
   for (const row of result.rows) {
     const dataSource = convertDBRowTODataSource(row);
     dataSource.helpList = await getHelp(client, dataSource);
-    dataSource.tablesSampleData = await getTablesSampleData(client, dataSource);
+    dataSource.tablesSampleData = await getTablesSampleData(dataSource);
     dataSources.push(dataSource);
   }
   return dataSources;
 
-  async function getTablesSampleData(client: Client, datasource: DataSource): Promise<TableSampleData[]> {
-    let tablesSampleData: TableSampleData[] = [];
+  async function getTablesSampleData(datasource: DataSource): Promise<TableSampleData[]> {
+    const tablesSampleData: TableSampleData[] = [];
     const dbConnData = {
       user: datasource.user,
       host: datasource.host,
@@ -93,16 +93,20 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
       isSSL: datasource.type === 'postgresql' && datasource.isSSL
     };
 
-    for (const table of datasource.tables) {
-      const sql = `SELECT * FROM ${table} LIMIT 3`;
-      const result = await execute(sql, client);
-      if (result !== null) {
-        let tableSampleData: TableSampleData = {
-          tableName: table,
-          result: result
-        };
-        tablesSampleData.push(tableSampleData);
+    const client: Client | null = await connect(dbConnData);
+    if (client !== null) {
+      for (const table of datasource.tables) {
+        const sql = `SELECT * FROM ${table} LIMIT 3`;
+        const result = await execute(sql, client);
+        if (result !== null) {
+          let tableSampleData: TableSampleData = {
+            tableName: table,
+            result: result
+          };
+          tablesSampleData.push(tableSampleData);
+        }
       }
+      close(client);
     }
     return tablesSampleData;
   }
