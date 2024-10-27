@@ -113,7 +113,7 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
 
   function convertDBRowTODataSource(row: QueryResultRow): DataSource {
     return {
-      sourceId: row.source_id,
+      sourceId: row.sourceId,
       name: row.name,
       description: row.description,
       type: row.type,
