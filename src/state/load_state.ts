@@ -76,13 +76,13 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
   let dataSources: DataSource[] = [];
   for (const row of result.rows) {
     const dataSource = convertDBRowTODataSource(row);
-    dataSource.helpList = await getHelp(dataSource);
-    dataSource.tablesSampleData = await getTablesSampleData(dataSource);
+    dataSource.helpList = await getHelp(client, dataSource);
+    dataSource.tablesSampleData = await getTablesSampleData(client, dataSource);
     dataSources.push(dataSource);
   }
   return dataSources;
 
-  async function getTablesSampleData(datasource: DataSource): Promise<TableSampleData[]> {
+  async function getTablesSampleData(client: Client, datasource: DataSource): Promise<TableSampleData[]> {
     let tablesSampleData: TableSampleData[] = [];
     const dbConnData = {
       user: datasource.user,
@@ -92,9 +92,6 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
       port: datasource.port,
       isSSL: datasource.type === 'postgresql' && datasource.isSSL
     };
-
-    const client: Client | null = await connect(dbConnData);
-    if (client === null) throw new Error("Failed to connect to metadata DB.");
 
     for (const table of datasource.tables) {
       const sql = `SELECT * FROM ${table} LIMIT 3`;
@@ -107,13 +104,13 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
         tablesSampleData.push(tableSampleData);
       }
     }
-    await close(client);
     return tablesSampleData;
   }
 
   function convertDBRowTODataSource(row: QueryResultRow): DataSource {
     return {
-      datasourceId: row.name,
+      sourceId: row.source_id,
+      name: row.name,
       description: row.description,
       type: row.type,
       host: row.host,

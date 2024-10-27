@@ -48,11 +48,13 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
 };
 
 const questionIntent = async (state: KatsuState, userIndex: number, isSecondIntent: boolean): Promise<KatsuState> => {
-  state = resetResult(state, userIndex);
-  let sql = state.users[userIndex].sql;
+  const userState = state.users[userIndex]
+  resetResult(userState);
+
+  let sql = userState.sql;
   if (sql === "") {
     const llmPrompt = createQuestionPrompt(state, userIndex, isSecondIntent);
-    state.users[userIndex].context = llmPrompt;
+    userState.context = llmPrompt;
     sql = await ask(state, userIndex);
   }
 
@@ -60,7 +62,7 @@ const questionIntent = async (state: KatsuState, userIndex: number, isSecondInte
   if (process.env.KATSU_DEBUG === "true") {
     console.log("SQL: ", sql);
   }
-  state.users[userIndex].sql = sql;
+  userState.sql = sql;
   state = await getResult(state, userIndex);
   return state;
 }

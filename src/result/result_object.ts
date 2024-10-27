@@ -1,5 +1,5 @@
 import { QueryResultRow } from "pg";
-import { KatsuState } from "../state/katsu_state";
+import { KatsuState, User } from "../state/katsu_state";
 
 /**
  * @fileoverview This module exports two functions: getResultObject and render.
@@ -74,17 +74,17 @@ const logResult = function (state: KatsuState, userIndex: number): void {
   }
 };
 
-const resetResult = (state: KatsuState, userIndex: number): KatsuState => {
-  state.users[userIndex].result.pageNum = 0;
-  state.users[userIndex].result.lastPage = 0;
-  state.users[userIndex].result.rows = [];
-  state.users[userIndex].result.fields = [];
-  state.users[userIndex].result.text = "";
-  state.users[userIndex].result.fileURL = "";
-  state.users[userIndex].result.noDataFound = false;
-  state.users[userIndex].sqlError = "";
-
-  return state;
+const resetResult = (userState: User): void => {
+  Object.assign(userState.result), {
+    pageNum: 0,
+    lastPage: 0,
+    rows: [],
+    fields: [],
+    text: "",
+    fileURL: "",
+    noDataFound: false
+  };
+  userState.sqlError = "";
 }
 
 export {
@@ -92,5 +92,5 @@ export {
   ResultObject,
   convResultObjToCSV,
   logResult,
-  resetResult
+  resetResult,
 };
