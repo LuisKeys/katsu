@@ -1,12 +1,12 @@
 import { Client } from "pg";
 import { KatsuState } from "../state/katsu_state";
-import { close, connectDatasourceRows, execute, getError } from "../db/db_commands";
+import { close, connectDatasource, execute, getError } from "../db/db_commands";
 import { getLastPage } from "../prompts/handlers/page_calc";
 
 const getResult = async (state: KatsuState, userIndex: number): Promise<void> => {
   const userState = state.users[userIndex];
   const dataSource = state.dataSources[userState.dataSourceIndex];
-  const client: Client | null = await connectDatasourceRows(dataSource);
+  const client: Client | null = await connectDatasource(dataSource);
   if (client === null) return;
 
   const result = await execute(userState.sql, client);

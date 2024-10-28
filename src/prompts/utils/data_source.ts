@@ -10,7 +10,7 @@ const getDataSource = async (state: KatsuState, userIndex: number): Promise<Kats
     let context = createDataSourcePrompt(state, userIndex);
     state.users[userIndex].context = context;
     const response = await ask(state, userIndex);
-    state.users[userIndex].dataSourceIndex = state.dataSources.findIndex(dataSource => dataSource.datasource_name === response);
+    state.users[userIndex].dataSourceIndex = state.dataSources.findIndex(dataSource => dataSource.datasourceName === response);
     return state;
   }
 }

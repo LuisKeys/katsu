@@ -28,7 +28,7 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<void> =
     if (promptType === QUESTION) {
       state = await getDataSource(state, userId);
       const dataSourceIndex = userState.dataSourceIndex;
-      console.log("Data source:", state.dataSources[dataSourceIndex].datasource_name);
+      console.log("Data source:", state.dataSources[dataSourceIndex].datasourceName);
     }
   }
 

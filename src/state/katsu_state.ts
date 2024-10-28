@@ -29,7 +29,7 @@ interface TableSampleData {
 
 interface DataSource {
   sourceId: number;
-  datasource_name: string;
+  datasourceName: string;
   description: string;
   type: string;
   host: string;

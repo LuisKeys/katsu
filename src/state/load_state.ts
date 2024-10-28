@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { Client, QueryResultRow } from 'pg';
 import { ResultObject } from '../result/result_object';
 import { User, DataSource, KatsuState, TableSampleData } from './katsu_state';
-import { connectMetadataDB, close, execute, connect } from '../db/db_commands';
+import { connectMetadataDB, close, execute, connect, connectDatasource } from '../db/db_commands';
 import { getHelp } from '../nl/help';
 
 const loadKatsuState = async (openai: OpenAI): Promise<KatsuState> => {
@@ -68,8 +68,8 @@ const getUsers = async (client: Client): Promise<User[]> => {
 const getDataSources = async (client: Client): Promise<DataSource[]> => {
   const sql = `SELECT source_id AS "sourceId", datasource_name as "datasourceName",
   description, type, host, user, password, port, db, tables, custom_prompt, is_ssl,  
-  (SELECT array_agg("table") FROM datasources_tables WHERE datasource_name = datasource_name) AS tables
-  FROM datasources WHERE is_enabled ORDER BY datasource_name`;
+  (SELECT array_agg("table") FROM datasources_tables dt WHERE dt.datasource_name = d.datasource_name) AS tables
+  FROM datasources d WHERE is_enabled ORDER BY datasource_name`;
 
   const result = await execute(sql, client);
   if (result === null) return [];
@@ -82,55 +82,47 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
     dataSources.push(dataSource);
   }
   return dataSources;
+}
 
-  async function getTablesSampleData(datasource: DataSource): Promise<TableSampleData[]> {
-    const tablesSampleData: TableSampleData[] = [];
-    const dbConnData = {
-      user: datasource.user,
-      host: datasource.host,
-      database: datasource.db,
-      password: datasource.password,
-      port: datasource.port,
-      isSSL: datasource.type === 'postgresql' && datasource.isSSL
-    };
+async function getTablesSampleData(datasource: DataSource): Promise<TableSampleData[]> {
+  const tablesSampleData: TableSampleData[] = [];
+  const client: Client | null = await connectDatasource(datasource);
 
-    const client: Client | null = await connect(dbConnData);
-    if (client !== null) {
-      for (const table of datasource.tables) {
-        const sql = `SELECT * FROM ${table} LIMIT 3`;
-        const result = await execute(sql, client);
-        if (result !== null) {
-          let tableSampleData: TableSampleData = {
-            tableName: table,
-            result: result
-          };
-          tablesSampleData.push(tableSampleData);
-        }
+  if (client !== null) {
+    for (const table of datasource.tables) {
+      const sql = `SELECT * FROM ${table} LIMIT 3`;
+      const result = await execute(sql, client);
+      if (result !== null) {
+        let tableSampleData: TableSampleData = {
+          tableName: table,
+          result: result
+        };
+        tablesSampleData.push(tableSampleData);
       }
-      close(client);
     }
-    return tablesSampleData;
+    close(client);
   }
+  return tablesSampleData;
+}
 
-  function convertDBRowTODataSource(row: QueryResultRow): DataSource {
-    return {
-      sourceId: row.sourceId,
-      datasource_name: row.datasource_name,
-      description: row.description,
-      type: row.type,
-      host: row.host,
-      user: row.user,
-      password: row.password,
-      port: row.port,
-      db: row.db,
-      tables: (row.tables as string[]) || [],
-      tablesSampleData: [],
-      custom_prompt: row.custom_prompt,
-      helpList: [],
-      isSSL: row.type === 'postgresql' && row.is_ssl === 1,
-      dataSourceId: row.sourceId
-    };
-  }
+function convertDBRowTODataSource(row: QueryResultRow): DataSource {
+  return {
+    sourceId: row.sourceId,
+    datasourceName: row.datasourceName,
+    description: row.description,
+    type: row.type,
+    host: row.host,
+    user: row.user,
+    password: row.password,
+    port: row.port,
+    db: row.db,
+    tables: (row.tables as string[]) || [],
+    tablesSampleData: [],
+    custom_prompt: row.custom_prompt,
+    helpList: [],
+    isSSL: row.type === 'postgresql' && row.is_ssl === 1,
+    dataSourceId: row.sourceId
+  };
 }
 
 export {

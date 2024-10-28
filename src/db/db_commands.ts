@@ -9,7 +9,7 @@ const getError = function (): string {
   return gerror;
 };
 
-const connectDatasourceRows = async function (dataSource: DataSource): Promise<Client | null> {
+const connectDatasource = async function (dataSource: DataSource): Promise<Client | null> {
   let client = new Client({
     user: dataSource.user,
     host: dataSource.host,
@@ -94,7 +94,7 @@ const connectMetadataDB = async function (): Promise<Client | null> {
 export {
   close,
   connect,
-  connectDatasourceRows,
+  connectDatasource,
   execute,
   getError,
   connectMetadataDB
