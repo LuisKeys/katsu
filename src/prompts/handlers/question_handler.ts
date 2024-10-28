@@ -7,18 +7,6 @@ import { getResult } from "../../result/get_result";
 import { getLastPage } from "./page_calc";
 import { resetResult } from "../../result/result_object";
 
-/**
- * This module contains the handler for question prompts type.
- * @module question handler
- */
-
-/**
- * Handles the question prompt.
- *
- * @param state - The current state of the application.
- * @param userIndex - The index of the current user.
- * @returns The updated state of the application.
- */
 const questionHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
 
   state = await questionIntent(state, userIndex, false);
@@ -31,7 +19,7 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
     state.users[userIndex].result.pageNum = 1;
     state.users[userIndex].result.lastPage = getLastPage(state.users[userIndex].result);
 
-    const llmPrompt = createFormatFieldsNamesPrompt(state, userIndex);
+    const llmPrompt = createFormatFieldsNamesPrompt(state.users[userIndex].result.fields);
     state.users[userIndex].context = llmPrompt;
     const fieldList = await ask(state, userIndex);
     state.users[userIndex].result.fields = fieldList.split(',').map(field => field.trim());
@@ -47,8 +35,33 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
   return state;
 };
 
+//TODO test and replace
+const questionHandler2 = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+  const userState = state.users[userIndex];
+  const result = userState.result;
+
+  state = await questionIntent(state, userIndex, false);
+  if (result.rows.length === 0) {
+    state = await questionIntent(state, userIndex, true);
+  }
+
+  result.noDataFound = result.rows.length === 0;
+  if (result.noDataFound) {
+    result.text = getNonResultMsg(userState.prompt);
+  } else {
+    result.pageNum = 1;
+    result.lastPage = getLastPage(result);
+
+    userState.context = createFormatFieldsNamesPrompt(result.fields);
+    const fieldList = await ask(state, userIndex);
+    result.fields = fieldList.split(',').map(field => field.trim());
+  }
+
+  return state;
+};
+
 const questionIntent = async (state: KatsuState, userIndex: number, isSecondIntent: boolean): Promise<KatsuState> => {
-  const userState = state.users[userIndex]
+  const userState = state.users[userIndex];
   resetResult(userState);
 
   let sql = userState.sql;

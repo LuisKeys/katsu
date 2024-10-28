@@ -11,81 +11,77 @@ import { savePrompt } from "./utils/save_prompt";
 import { checkPrompt } from "./utils/check_history";
 import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
 
-/**
- * @fileoverview This module exports the `promptHandler` function which handles different types of prompts and performs corresponding actions.
- * @module promptHandler
- */
-
-/**
- * Handles the prompt based on the given state and user ID.
- * @param state - The current state of the application.
- * @param userId - The ID of the user.
- * @returns A promise that resolves to the updated state after handling the prompt.
- */
 const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuState> => {
   // Get the prompt type and data source 
   // state.showWordsCount = true;
-  state.users[userId].promptType = "";
-  state.users[userId].sql = "";
+  const userState = state.users[userId];
+  userState.promptType = "";
+  userState.sql = "";
 
   state = await checkPrompt(state, userId);
-  let promptType = state.users[userId].promptType
-  const isCached = state.users[userId].isCached
+  let promptType = userState.promptType
+  const isCached = userState.isCached
   if (!isCached) {
     state = await getPromptType(state, userId);
-    promptType = state.users[userId].promptType
+    promptType = userState.promptType
     console.log("Prompt type:", promptType);
     if (promptType === QUESTION) {
       state = await getDataSource(state, userId);
-      const dataSourceIndex = state.users[userId].dataSourceIndex
+      const dataSourceIndex = userState.dataSourceIndex
       console.log("Data source:", state.dataSources[dataSourceIndex].name);
     }
   }
 
   state = await processPrompt(state, userId);
 
-  if (!isCached) {
-    await savePrompt(state, userId);
-  }
-
-  state.users[userId].isCached = false;
-
+  // TODO so this is not history but cache
+  if (!isCached) await savePrompt(state, userId);
+  userState.isCached = false;
   return state;
 };
 
-
-/**
- * Processes the prompt for a given user and returns the updated KatsuState.
- *
- * @param state - The current state of the Katsu application.
- * @param userId - The ID of the user for whom the prompt is being processed.
- * @returns The updated KatsuState after processing the prompt.
- */
 const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuState> => {
-  const promptType = state.users[userId].promptType.toUpperCase()
+  const promptType = state.users[userId].promptType.toUpperCase();
   switch (promptType) {
-    case QUESTION:
-      state = await questionHandler(state, userId);
-      break;
-    case EXCEL:
-      state = await excelExportHandler(state, userId);
-      break;
-    case SORT:
-      state = await sortHandler(state, userId);
-      break;
-    case PAGE:
-      state = await pageHandler(state, userId);
-      break;
-    case FILE:
-      state = await filesHandler(state, userId);
-      break;
-    case HELP:
-      state = await helpHandler(state, userId);
-      break;
-    default:
-      break;
+    case QUESTION: return await questionHandler(state, userId);
+    case EXCEL: return await excelExportHandler(state, userId);
+    case SORT: return await sortHandler(state, userId);
+    case PAGE: return await pageHandler(state, userId);
+    case FILE: return await filesHandler(state, userId);
+    case HELP: return await helpHandler(state, userId);
+    default: return state;
   }
-  return state;
 }
+
+// const promptHandlerOld = async (state: KatsuState, userId: number): Promise<KatsuState> => {
+//   // Get the prompt type and data source 
+//   // state.showWordsCount = true;
+//   state.users[userId].promptType = "";
+//   state.users[userId].sql = "";
+
+//   state = await checkPrompt(state, userId);
+//   let promptType = state.users[userId].promptType
+//   const isCached = state.users[userId].isCached
+//   if (!isCached) {
+//     state = await getPromptType(state, userId);
+//     promptType = state.users[userId].promptType
+//     console.log("Prompt type:", promptType);
+//     if (promptType === QUESTION) {
+//       state = await getDataSource(state, userId);
+//       const dataSourceIndex = state.users[userId].dataSourceIndex
+//       console.log("Data source:", state.dataSources[dataSourceIndex].name);
+//     }
+//   }
+
+//   state = await processPrompt(state, userId);
+
+//   if (!isCached) { // TODO so this is not history but cache
+//     await savePrompt(state, userId);
+//   }
+
+//   state.users[userId].isCached = false;
+
+//   return state;
+// };
 
 export { promptHandler };

@@ -10,8 +10,7 @@ const createFormatResultPrompt = (state: KatsuState, userIndex: number): string 
   return llmPrompt;
 }
 
-const createFormatFieldsNamesPrompt = (state: KatsuState, userIndex: number): string => {
-  const fields: string[] = state.users[userIndex].result.fields;
+const createFormatFieldsNamesPrompt = (fields: String[]): string => {
   const csv = fields.join(",");
   const llmPrompt = `Provide more human readable names for the following list of fields:  
   ${csv}
