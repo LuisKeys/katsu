@@ -22,7 +22,7 @@ const createDataSourcePrompt = (state: KatsuState, userId: number): string => {
 
 const convertToCSV = (dataSources: DataSource[]): string => {
   const header = "name,description";
-  const rows = dataSources.map(dataSource => `${dataSource.name},${dataSource.description.replace(/"/g, '""')}`);
+  const rows = dataSources.map(dataSource => `${dataSource.datasource_name},${dataSource.description.replace(/"/g, '""')}`);
   return [header, ...rows].join("\n");
 }
 
