@@ -1,12 +1,33 @@
 // @ts-ignore
 import { Client, QueryResult } from 'pg';
 import { DbConnData } from './db_conn_data';
+import { DataSource } from "../state/katsu_state";
 
 let gerror = '';
 
 const getError = function (): string {
   return gerror;
 };
+
+const connectDatasourceRows = async function (dataSource: DataSource): Promise<Client | null> {
+  let client = new Client({
+    user: dataSource.user,
+    host: dataSource.host,
+    database: dataSource.db,
+    password: dataSource.password,
+    port: dataSource.port,
+    ssl: dataSource.isSSL ? { rejectUnauthorized: false } : undefined
+  });
+
+  try {
+    await client.connect();
+    return client;
+  } catch (error) {
+    await client.end();
+    console.error("Error with database operation", error);
+    return null;
+  }
+}
 
 const connect = async function (dbConnData: DbConnData): Promise<Client | null> {
   let client = new Client({
@@ -73,6 +94,7 @@ const connectMetadataDB = async function (): Promise<Client | null> {
 export {
   close,
   connect,
+  connectDatasourceRows,
   execute,
   getError,
   connectMetadataDB

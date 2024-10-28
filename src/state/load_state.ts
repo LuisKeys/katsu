@@ -66,9 +66,10 @@ const getUsers = async (client: Client): Promise<User[]> => {
 };
 
 const getDataSources = async (client: Client): Promise<DataSource[]> => {
-  const sql = `SELECT source_id AS "sourceId", name, description, type, host, user, password, port, db, tables, custom_prompt, is_ssl,  
-  (SELECT array_agg("table") FROM datasources_tables WHERE datasource_name = name) AS tables
-  FROM datasources WHERE is_enabled ORDER BY name`;
+  const sql = `SELECT source_id AS "sourceId", datasource_name as "datasourceName",
+  description, type, host, user, password, port, db, tables, custom_prompt, is_ssl,  
+  (SELECT array_agg("table") FROM datasources_tables WHERE datasource_name = datasource_name) AS tables
+  FROM datasources WHERE is_enabled ORDER BY datasource_name`;
 
   const result = await execute(sql, client);
   if (result === null) return [];
@@ -114,7 +115,7 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
   function convertDBRowTODataSource(row: QueryResultRow): DataSource {
     return {
       sourceId: row.sourceId,
-      name: row.name,
+      datasource_name: row.datasource_name,
       description: row.description,
       type: row.type,
       host: row.host,

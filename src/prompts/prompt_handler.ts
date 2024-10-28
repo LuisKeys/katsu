@@ -11,14 +11,14 @@ import { savePrompt } from "./utils/save_prompt";
 import { checkPrompt } from "./utils/check_history";
 import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
 
-const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuState> => {
+const promptHandler = async (state: KatsuState, userId: number): Promise<void> => {
   // Get the prompt type and data source 
   // state.showWordsCount = true;
   const userState = state.users[userId];
   userState.promptType = "";
   userState.sql = "";
 
-  state = await checkPrompt(state, userId);
+  await checkPrompt(state, userId);
   let promptType = userState.promptType
   const isCached = userState.isCached
   if (!isCached) {
@@ -34,10 +34,9 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<KatsuSt
 
   state = await processPrompt(state, userId);
 
-  // TODO so this is not history but cache
+  // TODO so this is not history but cache?
   if (!isCached) await savePrompt(state, userId);
   userState.isCached = false;
-  return state;
 };
 
 const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuState> => {

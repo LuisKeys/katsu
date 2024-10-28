@@ -3,7 +3,7 @@ import { cleanPrompt } from "./save_prompt";
 import { Client } from "pg";
 import { connectMetadataDB, execute, close } from "../../db/db_commands";
 
-const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise<void> => {
   const client: Client | null = await connectMetadataDB();
   if (!client) throw new Error("Failed to connect to metadata DB."); //TODO test if works when client is null
 
@@ -32,8 +32,6 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise
     userState.sql = Buffer.from(rows[0].sql, 'base64').toString('utf-8');
     userState.promptType = rows[0].type;
   }
-
-  return state;
 };
 
 // const checkPromptOld = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {

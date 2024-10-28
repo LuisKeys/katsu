@@ -8,41 +8,12 @@ import { getLastPage } from "./page_calc";
 import { resetResult } from "../../result/result_object";
 
 const questionHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-
-  state = await questionIntent(state, userIndex, false);
-
-  if (state.users[userIndex].result.rows.length === 0) {
-    state = await questionIntent(state, userIndex, true);
-  }
-
-  if (state.users[userIndex].result.rows.length > 0) {
-    state.users[userIndex].result.pageNum = 1;
-    state.users[userIndex].result.lastPage = getLastPage(state.users[userIndex].result);
-
-    const llmPrompt = createFormatFieldsNamesPrompt(state.users[userIndex].result.fields);
-    state.users[userIndex].context = llmPrompt;
-    const fieldList = await ask(state, userIndex);
-    state.users[userIndex].result.fields = fieldList.split(',').map(field => field.trim());
-  }
-
-  state.users[userIndex].result.noDataFound = false;
-  if (state.users[userIndex].result.rows.length === 0) {
-    const userPrompt = state.users[userIndex].prompt;
-    state.users[userIndex].result.noDataFound = true;
-    state.users[userIndex].result.text = getNonResultMsg(userPrompt);
-  }
-
-  return state;
-};
-
-//TODO test and replace
-const questionHandler2 = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
   const userState = state.users[userIndex];
   const result = userState.result;
 
-  state = await questionIntent(state, userIndex, false);
+  await questionIntent(state, userIndex, false);
   if (result.rows.length === 0) {
-    state = await questionIntent(state, userIndex, true);
+    await questionIntent(state, userIndex, true);
   }
 
   result.noDataFound = result.rows.length === 0;
@@ -52,15 +23,45 @@ const questionHandler2 = async (state: KatsuState, userIndex: number): Promise<K
     result.pageNum = 1;
     result.lastPage = getLastPage(result);
 
-    userState.context = createFormatFieldsNamesPrompt(result.fields);
-    const fieldList = await ask(state, userIndex);
-    result.fields = fieldList.split(',').map(field => field.trim());
+    if (result.rows.length > 1) { //TODO test if this is correct
+      userState.context = createFormatFieldsNamesPrompt(result.fields);
+      const fieldList = await ask(state, userIndex);
+      result.fields = fieldList.split(',').map(field => field.trim());
+    }
   }
-
   return state;
 };
 
-const questionIntent = async (state: KatsuState, userIndex: number, isSecondIntent: boolean): Promise<KatsuState> => {
+//TODO remove
+// const questionHandlerOld = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+
+//   state = await questionIntent(state, userIndex, false);
+
+//   if (state.users[userIndex].result.rows.length === 0) {
+//     state = await questionIntent(state, userIndex, true);
+//   }
+
+//   if (state.users[userIndex].result.rows.length > 0) {
+//     state.users[userIndex].result.pageNum = 1;
+//     state.users[userIndex].result.lastPage = getLastPage(state.users[userIndex].result);
+
+//     const llmPrompt = createFormatFieldsNamesPrompt(state.users[userIndex].result.fields);
+//     state.users[userIndex].context = llmPrompt;
+//     const fieldList = await ask(state, userIndex);
+//     state.users[userIndex].result.fields = fieldList.split(',').map(field => field.trim());
+//   }
+
+//   state.users[userIndex].result.noDataFound = false;
+//   if (state.users[userIndex].result.rows.length === 0) {
+//     const userPrompt = state.users[userIndex].prompt;
+//     state.users[userIndex].result.noDataFound = true;
+//     state.users[userIndex].result.text = getNonResultMsg(userPrompt);
+//   }
+
+//   return state;
+// };
+
+const questionIntent = async (state: KatsuState, userIndex: number, isSecondIntent: boolean): Promise<void> => {
   const userState = state.users[userIndex];
   resetResult(userState);
 
@@ -71,13 +72,11 @@ const questionIntent = async (state: KatsuState, userIndex: number, isSecondInte
     sql = await ask(state, userIndex);
   }
 
-  sql = cleanSQL(sql);
+  userState.sql = cleanSQL(sql);
   if (process.env.KATSU_DEBUG === "true") {
-    console.log("SQL: ", sql);
+    console.log("SQL: ", userState.sql);
   }
-  userState.sql = sql;
-  state = await getResult(state, userIndex);
-  return state;
+  await getResult(state, userIndex);
 }
 
 const cleanSQL = (sql: string): string => {

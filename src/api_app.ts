@@ -130,11 +130,7 @@ const askPrompt = async (
   state: KatsuState,
   userIndex: number
 ): Promise<KatsuState> => {
-  if (userIndex !== null) {
-    state = await promptHandler(state, userIndex);
-    return state;
-  }
-
+  if (userIndex !== null) await promptHandler(state, userIndex);
   return state;
 }
 
