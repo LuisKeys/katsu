@@ -9,6 +9,7 @@ import { KatsuState, User } from "../state/katsu_state";
  */
 
 type APIResultObject = {
+  promptType: string;
   fields: string[];
   lastPage: number;
   pageNum: number;

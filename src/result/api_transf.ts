@@ -5,8 +5,6 @@ import { formatAPIResult } from '../formatter/format_api_result';
 
 /**
  * Transforms a `ResultObject` into an `APIResultObject`.
- * @param resultObject - The input `ResultObject` to be transformed.
- * @returns The transformed `APIResultObject`.
  */
 const transfResAPI = async function (state: KatsuState, userIndex: number): Promise<APIResultObject> {
   const userState = state.users[userIndex];
@@ -35,6 +33,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   }
 
   const apiResultObject: APIResultObject = {
+    promptType: userState.promptType,
     lastPage: formattedResult.lastPage,
     pageNum: formattedResult.pageNum,
     fields: formattedResult.fields,
@@ -48,7 +47,6 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
       await formatOneLineResult(state, userIndex);
       apiResultObject.text = userResult.text;
       userResult.rows = [];
-      // state.users[userIndex].result.rows = [];
       apiResultObject.rows = [];
       apiResultObject.fields = [];
     }
