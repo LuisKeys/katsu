@@ -13,7 +13,7 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise
 
   const userState = state.users[userIndex];
   const promptSafe = cleanPrompt(userState.prompt);
-  const sql = `SELECT prompt_id, prompt, "sql", rows_count, date, "type", user_id, data_source_id
+  const sql = `SELECT prompt_id, prompt, "sql", rows_count, date, "type", user_id, datasource_id
     FROM prompts_history
     WHERE prompt = '${promptSafe}' 
     AND user_id = ${userState.userId}
@@ -25,7 +25,7 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise
   const rows = result.rows;
   userState.isCached = rows.length > 0;
   if (userState.isCached) {
-    const dataSourceId = rows[0].data_source_id;
+    const dataSourceId = rows[0].datasource_id;
     const index = state.dataSources.findIndex(ds => ds.dataSourceId === dataSourceId);
     if (index !== -1) userState.dataSourceIndex = index; //TODO test other index > 0
 
@@ -59,7 +59,7 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise
 //   await closeKDB(db);
 //   state.users[userIndex].isCached = false;
 //   if (rows.length > 0) {
-//     const dataSourceId = rows[0].data_source_id;
+//     const dataSourceId = rows[0].datasource_id;
 //     for (let i = 0; i < state.dataSources.length; i++) {
 //       if (state.dataSources[i].dataSourceId === dataSourceId) {
 //         state.users[userIndex].dataSourceIndex = i;

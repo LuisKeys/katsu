@@ -10,7 +10,7 @@ const savePrompt = async (userState: User, dataSources: DataSource[]): Promise<v
   const dataSourceId = dataSources[userState.dataSourceIndex].dataSourceId;
   const insertSql = `
     INSERT INTO prompts_history
-    (prompt, "sql", rows_count, date, "type", "user_id", data_source_id)
+    (prompt, "sql", rows_count, date, "type", "user_id", datasource_id)
     VALUES(
     '${cleanPrompt(userState.prompt)}', 
     '${encodedSql}',
@@ -47,7 +47,7 @@ const savePrompt = async (userState: User, dataSources: DataSource[]): Promise<v
 
 //   const insertStatement = `
 //   INSERT INTO prompts_history
-//   (prompt, "sql", rows_count, date, "type", "user_id", data_source_id)
+//   (prompt, "sql", rows_count, date, "type", "user_id", datasource_id)
 //   VALUES(
 //     '${cleanPrompt(prompt)}', 
 //     '${encodedSql}', 

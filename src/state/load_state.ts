@@ -66,7 +66,7 @@ const getUsers = async (client: Client): Promise<User[]> => {
 };
 
 const getDataSources = async (client: Client): Promise<DataSource[]> => {
-  const sql = `SELECT source_id AS "sourceId", datasource_name as "datasourceName",
+  const sql = `SELECT datasource_id AS "sourceId", datasource_name as "datasourceName",
   description, type, host, user, password, port, db, custom_prompt, is_ssl,  
   (SELECT array_agg("table") FROM datasources_tables dt WHERE dt.datasource_name = d.datasource_name) AS tables
   FROM datasources d WHERE is_enabled ORDER BY datasource_name`;

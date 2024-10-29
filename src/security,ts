@@ -1,0 +1,44 @@
+import { Client } from 'pg';
+import { connectMetadataDB, close, execute, connectDatasource } from './db/db_commands';
+import { User } from './state/katsu_state';
+
+const isUserAuthorized = async function (userState: User): Promise<boolean> {
+  const datasourcesTables = await getDatasourcesTables(userState.userId);
+
+  //TODO check if datasourceTables are in query
+
+  return true;
+}
+
+const getDatasourcesTables = async function (userId: number): Promise<[string, string][]> {
+  const client: Client | null = await connectMetadataDB();
+  if (!client) return [];
+
+  const sql = `SELECT datasource_name, table FROM sec_datasource_tables WHERE datasource_table_id IN (
+    SELECT datasource_table_id FROM sec_roles WHERE role_id IN (
+      SELECT role_id FROM sec_department_roles dr WHERE dr.department_id IN (
+        SELECT department_id FROM sec_user_departments ud WHERE ud.user_id = ${userId})
+        UNION
+        SELECT role_id FROM sec_user_roles WHERE user_id = ${userId}  
+      )
+    ) 
+  )`;
+
+  // const sql2 = `
+  // SELECT DISTINCT sdt.datasource_name, sdt.table FROM sec_datasource_tables sdt
+  // JOIN sec_roles sr ON sr.datasource_table_id = sdt.datasource_table_id
+  // LEFT JOIN sec_department_roles dr ON dr.role_id = sr.role_id
+  // LEFT JOIN sec_user_departments ud ON ud.department_id = dr.department_id AND ud.user_id = ${userId}
+  // LEFT JOIN sec_user_roles ur ON ur.role_id = sr.role_id AND ur.user_id = ${userId}
+  // WHERE ud.user_id IS NOT NULL OR ur.user_id IS NOT NULL;
+  // `;
+
+  const result = await execute(sql, client);
+  await close(client);
+
+  return result ? result.rows.map((row: any) => [row.datasource_name, row.table]) : [];
+}
+
+export {
+  isUserAuthorized
+}
