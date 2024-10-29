@@ -1,4 +1,4 @@
-import { ResultObject } from "../../result/result_object";
+import { UserResult } from "../../result/result_object";
 
 /**
  * Calculates the last page number based on the total number of rows and the page size.
@@ -6,7 +6,7 @@ import { ResultObject } from "../../result/result_object";
  * @param {Object} result - The result object containing the rows.
  * @returns {number} The last page number.
  */
-const getLastPage = (result: ResultObject): number => {
+const getLastPage = (result: UserResult): number => {
   const pageSize = Number(process.env.PAGE_SIZE);
   const lastPage = Math.ceil(result.rows.length / pageSize);
   return lastPage;
@@ -19,7 +19,7 @@ const getLastPage = (result: ResultObject): number => {
  * @param {any} result - The result object.
  * @returns {number} - The next page number.
  */
-const getNextPage = (result: ResultObject): number => {
+const getNextPage = (result: UserResult): number => {
   let page = result.pageNum;
   page++;
   const lastPage = getLastPage(result);

@@ -33,9 +33,9 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<void> =
   }
 
   state = await processPrompt(state, userId);
-
   // TODO so this is not history but cache?
-  if (!isCached) await savePrompt(state, userId);
+  // TODO userId used as index not right. This is assuming there will be no gaps in the user ids
+  if (!isCached) await savePrompt(userState, state.dataSources);
   userState.isCached = false;
 };
 
@@ -52,6 +52,7 @@ const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuSt
   }
 }
 
+// TODO remove
 // const promptHandlerOld = async (state: KatsuState, userId: number): Promise<KatsuState> => {
 //   // Get the prompt type and data source 
 //   // state.showWordsCount = true;

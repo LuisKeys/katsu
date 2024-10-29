@@ -1,4 +1,4 @@
-import { ResultObject } from "../result/result_object";
+import { UserResult } from "../result/result_object";
 import { KatsuState } from "../state/katsu_state";
 
 const getColumnWidths = (state: KatsuState, userIndex: number) => {
@@ -17,7 +17,7 @@ const getColumnWidths = (state: KatsuState, userIndex: number) => {
   return columnWidths;
 }
 
-const getColumnWidths2 = (result: ResultObject) => {
+const getColumnWidths2 = (result: UserResult) => {
   let columnWidths: number[] = [];
   try {
     for (let i = 0; i < result.fields.length; i++) {

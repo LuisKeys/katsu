@@ -1,6 +1,6 @@
 import { getLastName, getFirstName, getPhone } from "./people_data";
 import { getCompanyName, getEmail, getAmount } from "./company_data";
-import { ResultObject } from "../result/result_object";
+import { UserResult } from "../result/result_object";
 import { KatsuState } from "../state/katsu_state";
 
 /**

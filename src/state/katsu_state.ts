@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { ResultObject } from '../result/result_object';
+import { UserResult } from '../result/result_object';
 import { QueryResult } from 'pg';
 
 interface User {
@@ -13,7 +13,7 @@ interface User {
   password: string;
   prompt: string;
   promptType: string;
-  result: ResultObject;
+  result: UserResult;
   role: string;
   sql: string;
   title: string;

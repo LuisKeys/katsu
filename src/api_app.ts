@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 const cors = require('cors');
 import { KatsuState, User } from "./state/katsu_state";
-import { APIResultObject, ResultObject } from "./result/result_object";
+import { APIResultObject } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
@@ -44,8 +44,6 @@ const apiApp = function (state: KatsuState): void {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
-
-
 
   /**
    * Handles the auth route.

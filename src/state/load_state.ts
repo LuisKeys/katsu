@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
 import { Client, QueryResultRow } from 'pg';
-import { ResultObject } from '../result/result_object';
 import { User, DataSource, KatsuState, TableSampleData } from './katsu_state';
-import { connectMetadataDB, close, execute, connect, connectDatasource } from '../db/db_commands';
+import { connectMetadataDB, close, execute, connectDatasource } from '../db/db_commands';
 import { getHelp } from '../nl/help';
+import { UserResult } from '../result/result_object';
 
 const loadKatsuState = async (openai: OpenAI): Promise<KatsuState> => {
   const client: Client | null = await connectMetadataDB();
@@ -29,7 +29,7 @@ const getUsers = async (client: Client): Promise<User[]> => {
   return result.rows.map(convertDBRowToUser);
 
   function convertDBRowToUser(row: any): User {
-    const result: ResultObject = {
+    const result: UserResult = {
       fields: [],
       fileURL: '',
       lastPage: 0,
@@ -67,7 +67,7 @@ const getUsers = async (client: Client): Promise<User[]> => {
 
 const getDataSources = async (client: Client): Promise<DataSource[]> => {
   const sql = `SELECT source_id AS "sourceId", datasource_name as "datasourceName",
-  description, type, host, user, password, port, db, tables, custom_prompt, is_ssl,  
+  description, type, host, user, password, port, db, custom_prompt, is_ssl,  
   (SELECT array_agg("table") FROM datasources_tables dt WHERE dt.datasource_name = d.datasource_name) AS tables
   FROM datasources d WHERE is_enabled ORDER BY datasource_name`;
 

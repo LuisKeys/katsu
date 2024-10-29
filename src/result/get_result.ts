@@ -1,4 +1,4 @@
-import { Client } from "pg";
+import { Client, QueryResult } from "pg";
 import { KatsuState } from "../state/katsu_state";
 import { close, connectDatasource, execute, getError } from "../db/db_commands";
 import { getLastPage } from "../prompts/handlers/page_calc";
@@ -11,25 +11,11 @@ const getResult = async (state: KatsuState, userIndex: number): Promise<void> =>
 
   const result = await execute(userState.sql, client);
   close(client);
+
   userState.sqlError = getError();
-
   const userResult = userState.result;
-  userResult.rows = [];
   if (result !== null) {
-    for (const row of result.rows) {
-      const resultRow = [];
-      for (const field of result.fields) {
-        let fieldValue = row[field.name];
-        if (fieldValue instanceof Date) {
-          fieldValue = fieldValue.toISOString();
-        } else if (typeof fieldValue === 'number' && Number.isFinite(fieldValue)) {
-          fieldValue = fieldValue.toFixed(2);
-        }
-        resultRow.push(fieldValue);
-      }
-      userResult.rows.push(resultRow);
-    }
-
+    userResult.rows = getResultRows(result);
     userResult.fields = result.fields.map(field => field.name);
     userResult.pageNum = 1;
     userResult.lastPage = getLastPage(userResult);
@@ -40,6 +26,25 @@ const getResult = async (state: KatsuState, userIndex: number): Promise<void> =>
     userResult.lastPage = 0;
     userResult.text = "No results found.";
   }
+}
+
+const getResultRows = (queryResult: QueryResult): string[][] => {
+  const rows: string[][] = [];
+
+  for (const row of queryResult.rows) {
+    const resultRow = [];
+    for (const field of queryResult.fields) {
+      let fieldValue = row[field.name];
+      if (fieldValue instanceof Date) {
+        fieldValue = fieldValue.toISOString();
+      } else if (typeof fieldValue === 'number' && Number.isFinite(fieldValue)) {
+        fieldValue = fieldValue.toFixed(2);
+      }
+      resultRow.push(fieldValue);
+    }
+    rows.push(resultRow);
+  }
+  return rows;
 }
 
 // TODO delete

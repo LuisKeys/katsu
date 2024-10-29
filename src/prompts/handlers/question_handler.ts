@@ -23,11 +23,9 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
     result.pageNum = 1;
     result.lastPage = getLastPage(result);
 
-    if (result.rows.length > 1) { //TODO test if this is correct
-      userState.context = createFormatFieldsNamesPrompt(result.fields);
-      const fieldList = await ask(state, userIndex);
-      result.fields = fieldList.split(',').map(field => field.trim());
-    }
+    userState.context = createFormatFieldsNamesPrompt(result.fields);
+    const fieldList = await ask(state, userIndex);
+    result.fields = fieldList.split(',').map(field => field.trim());
   }
   return state;
 };

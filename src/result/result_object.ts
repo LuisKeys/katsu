@@ -17,7 +17,7 @@ type APIResultObject = {
   docURL: string;
 };
 
-type ResultObject = {
+type UserResult = {
   fields: string[];
   fileURL: string;
   lastPage: number;
@@ -89,7 +89,7 @@ const resetResult = (userState: User): void => {
 
 export {
   APIResultObject,
-  ResultObject,
+  UserResult,
   convResultObjToCSV,
   logResult,
   resetResult,

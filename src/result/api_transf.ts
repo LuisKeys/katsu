@@ -9,23 +9,15 @@ import { formatAPIResult } from '../formatter/format_api_result';
  * @returns The transformed `APIResultObject`.
  */
 const transfResAPI = async function (state: KatsuState, userIndex: number): Promise<APIResultObject> {
+  const userState = state.users[userIndex];
+  const userResult = userState.result;
+  if (userState.promptType !== "HELP") userResult.text = ''; //TODO Improve whole logic to remove this line
+  const formattedResult = formatAPIResult(userResult);
 
-  let result = state.users[userIndex].result;
-
-  const formattedResult = formatAPIResult(result);
-
-  let dataRows: string[][] = [];
   const pageSize = process.env.PAGE_SIZE ? parseInt(process.env.PAGE_SIZE) : 10;
-  const currentPage = formattedResult.pageNum;
-
-  // Data rows
-  const startIndex = (currentPage - 1) * pageSize;
-  let endIndex = Math.min(startIndex + pageSize, formattedResult.rows.length);
-
-  endIndex = Math.min(endIndex, formattedResult.rows.length + startIndex);
-  for (let i = startIndex; i < endIndex; i++) {
-    dataRows.push(formattedResult.rows[i]);
-  }
+  const startIndex = (formattedResult.pageNum - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, formattedResult.rows.length);
+  let dataRows = formattedResult.rows.slice(startIndex, endIndex);
 
   if (formattedResult.fileURL != "") {
     dataRows = [];
@@ -40,7 +32,6 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   if (dataRows.length > 0) {
     formattedResult.text = "";
     formattedResult.fileURL = "";
-
   }
 
   const apiResultObject: APIResultObject = {
@@ -53,10 +44,11 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   };
 
   if (!formattedResult.noDataFound) {
-    if (apiResultObject.rows.length == 1 && state.users[userIndex].promptType === "QUESTION") {
-      state = await formatOneLineResult(state, userIndex);
-      apiResultObject.text = state.users[userIndex].result.text;
-      state.users[userIndex].result.rows = [];
+    if (apiResultObject.rows.length == 1 && userState.promptType === "QUESTION") {
+      await formatOneLineResult(state, userIndex);
+      apiResultObject.text = userResult.text;
+      userResult.rows = [];
+      // state.users[userIndex].result.rows = [];
       apiResultObject.rows = [];
       apiResultObject.fields = [];
     }
