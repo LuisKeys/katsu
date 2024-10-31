@@ -2,19 +2,13 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 const cors = require('cors');
 import { KatsuState, User } from "./state/katsu_state";
-import { APIResultObject } from "./result/result_object";
+import { APIResult } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
 import { getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
 import { logAPIResultObject, transfResAPI } from "./result/api_transf";
-
-/**
- * Module for initializing the API application.
- * @module apiApp
- */
-
 
 dotenv.config();
 
@@ -23,10 +17,8 @@ const api_root: string = "/api/v1/";
 
 /**
  * Initializes the API application.
- * @function apiApp
  */
 const apiApp = function (state: KatsuState): void {
-
   const app = express();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -48,9 +40,6 @@ const apiApp = function (state: KatsuState): void {
   /**
    * Handles the auth route.
    * @name POST /auth
-   * @function
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
    */
   app.post(api_root + "auth", (req: Request, res: Response): void => {
     const { user, password }: { user: string; password: string } = req.body;
@@ -60,7 +49,6 @@ const apiApp = function (state: KatsuState): void {
         const token: string = generateToken(user);
         console.log("Token generated for user: ", user);
         res.status(200).json({ token });
-        return;
       } else {
         throw new Error("Invalid credentials");
       }
@@ -72,33 +60,21 @@ const apiApp = function (state: KatsuState): void {
   /**
    * Handles the prompt route.
    * @name POST /prompt
-   * @function
-   * @param {Object} req - The request object.
-   * @param {Object} res - The response object.
    */
   app.post(api_root + "prompt", async (req: Request, res: Response): Promise<void> => {
     const { token, prompt }: { token: string; prompt: string } = req.body;
 
     try {
-      if (!validateToken(token)) {
-        throw new Error("Invalid token");
-      }
+      if (!validateToken(token)) throw new Error("Invalid token");
+      if (state.isDebug) console.log("Post call prompt: ", prompt);
 
-      if (state.isDebug) {
-        console.log("Post call prompt: ", prompt);
-      }
-
-      const userName: string = getPayloadFromToken(token);
-      const userIndex: number = getUserIndex(userName, state);
+      const userName = getPayloadFromToken(token);
+      const userIndex = getUserIndex(userName, state);
       state.users[userIndex].prompt = prompt;
-      state = await askPrompt(state, userIndex);
+      if (userIndex !== null) await promptHandler(state, userIndex);
+      if (state.isDebug) console.log("Post call finished ask intent");
 
-      if (state.isDebug) {
-        console.log("Post call finished ask intent");
-      }
-
-      let apiResult: APIResultObject = await transfResAPI(state, userIndex);
-
+      const apiResult = await transfResAPI(state, userIndex);
       if (state.isDebug) {
         try {
           logAPIResultObject(apiResult);
@@ -123,13 +99,5 @@ const apiApp = function (state: KatsuState): void {
     console.log(`API listening at port:${port}`);
   });
 };
-
-const askPrompt = async (
-  state: KatsuState,
-  userIndex: number
-): Promise<KatsuState> => {
-  if (userIndex !== null) await promptHandler(state, userIndex);
-  return state;
-}
 
 export { apiApp };

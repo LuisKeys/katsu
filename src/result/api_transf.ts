@@ -1,4 +1,4 @@
-import { APIResultObject } from './result_object';
+import { APIResult as APIResult } from './result_object';
 import { KatsuState } from '../state/katsu_state';
 import { formatOneLineResult } from '../nl/format_nl_result';
 import { formatAPIResult } from '../formatter/format_api_result';
@@ -6,7 +6,7 @@ import { formatAPIResult } from '../formatter/format_api_result';
 /**
  * Transforms a `ResultObject` into an `APIResultObject`.
  */
-const transfResAPI = async function (state: KatsuState, userIndex: number): Promise<APIResultObject> {
+const transfResAPI = async function (state: KatsuState, userIndex: number): Promise<APIResult> {
   const userState = state.users[userIndex];
   const userResult = userState.result;
   if (userState.promptType !== "HELP") userResult.text = ''; //TODO Improve whole logic to remove this line
@@ -32,7 +32,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     formattedResult.fileURL = "";
   }
 
-  const apiResultObject: APIResultObject = {
+  const apiResult: APIResult = {
     promptType: userState.promptType,
     lastPage: formattedResult.lastPage,
     pageNum: formattedResult.pageNum,
@@ -43,19 +43,19 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
   };
 
   if (!formattedResult.noDataFound) {
-    if (apiResultObject.rows.length == 1 && userState.promptType === "QUESTION") {
+    if (apiResult.rows.length == 1 && userState.promptType === "QUESTION") {
       await formatOneLineResult(state, userIndex);
-      apiResultObject.text = userResult.text;
+      apiResult.text = userResult.text;
       userResult.rows = [];
-      apiResultObject.rows = [];
-      apiResultObject.fields = [];
+      apiResult.rows = [];
+      apiResult.fields = [];
     }
   }
 
-  return apiResultObject;
+  return apiResult;
 }
 
-const logAPIResultObject = function (apiResultObject: APIResultObject) {
+const logAPIResultObject = function (apiResultObject: APIResult) {
   console.log("API Result Object:");
   console.log("Last Page: " + apiResultObject.lastPage);
   console.log("Page Num: " + apiResultObject.pageNum);
