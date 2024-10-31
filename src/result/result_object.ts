@@ -8,7 +8,7 @@ import { KatsuState, User } from "../state/katsu_state";
  * @module result_object
  */
 
-type APIResultObject = {
+type APIResult = {
   promptType: string;
   fields: string[];
   lastPage: number;
@@ -89,7 +89,7 @@ const resetResult = (userState: User): void => {
 }
 
 export {
-  APIResultObject,
+  APIResult,
   UserResult,
   convResultObjToCSV,
   logResult,
