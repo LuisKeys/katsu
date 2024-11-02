@@ -1,5 +1,5 @@
 import { KatsuState } from "../../state/katsu_state";
-import { ask } from "../../llm/openai/openai_api";
+import { ask, askAI } from "../../llm/openai/openai_api";
 import { createFormatFieldsNamesPrompt } from "../../llm/prompt_generators/format_result_gen";
 import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
 import { getNonResultMsg } from "../../result/result_messages";
@@ -23,8 +23,9 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
     result.pageNum = 1;
     result.lastPage = getLastPage(result);
 
-    userState.context = createFormatFieldsNamesPrompt(result.fields);
-    const fieldList = await ask(state, userIndex);
+    userState.context = `Output human-readable names for ${result.fields} in a comma-separated format`;
+    // userState.context = createFormatFieldsNamesPrompt(result.fields); //TODO remove
+    const fieldList = await askAI(state, userState.context);
     result.fields = fieldList.split(',').map(field => field.trim());
   }
   return state;

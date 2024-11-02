@@ -1,11 +1,9 @@
 import { getUserIndex } from "../users/get_user";
 import { KatsuState } from "../state/katsu_state";
 const { promptHandler } = require("../prompts/prompt_handler");
-import { APIResultObject, logResult } from "../result/result_object";
-import { logAPIResultObject, transfResAPI } from "../result/api_transf";
+import { logAPIResultObject, userResultToAPIResult } from "../result/api_result_format";
 
-// Test the promptHandler
-const executeTest = async (state: KatsuState) => {
+const testPromptHandler = async (state: KatsuState) => {
   console.log("Executing test...");
   const userIndex = await getUserIndex("luis.paradela@accelone.com", state);
   const isValid = userIndex != -1;
@@ -27,11 +25,10 @@ const executeTest = async (state: KatsuState) => {
 
       state = await promptHandler(state, userIndex);
 
-      const apiResultObject: APIResultObject = await transfResAPI(state, userIndex);
-
-      logAPIResultObject(apiResultObject);
+      const apiResult = await userResultToAPIResult(state, userIndex);
+      logAPIResultObject(apiResult);
     }
   }
 };
 
-export { executeTest };
+export { testPromptHandler as executeTest };

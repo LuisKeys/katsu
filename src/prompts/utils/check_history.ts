@@ -27,7 +27,7 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise
   if (userState.isCached) {
     const dataSourceId = rows[0].datasource_id;
     const index = state.dataSources.findIndex(ds => ds.dataSourceId === dataSourceId);
-    if (index !== -1) userState.dataSourceIndex = index; //TODO test other index > 0
+    if (index !== -1) userState.dataSourceIndex = index;
 
     userState.sql = Buffer.from(rows[0].sql, 'base64').toString('utf-8');
     userState.promptType = rows[0].type;
@@ -101,6 +101,6 @@ const listHistory = async (state: KatsuState, userIndex: number): Promise<KatsuS
 };
 
 export {
-  checkPromptHistory as checkPrompt,
+  checkPromptHistory,
   listHistory
 };

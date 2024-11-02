@@ -8,7 +8,7 @@ import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
 import { getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
-import { logAPIResultObject, transfResAPI } from "./result/api_transf";
+import { logAPIResultObject, userResultToAPIResult } from "./result/api_result_format";
 
 dotenv.config();
 
@@ -74,7 +74,7 @@ const apiApp = function (state: KatsuState): void {
       if (userIndex !== null) await promptHandler(state, userIndex);
       if (state.isDebug) console.log("Post call finished ask intent");
 
-      const apiResult = await transfResAPI(state, userIndex);
+      const apiResult = await userResultToAPIResult(state, userIndex);
       if (state.isDebug) {
         try {
           logAPIResultObject(apiResult);

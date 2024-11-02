@@ -43,8 +43,9 @@ const connect = async function (dbConnData: DbConnData): Promise<Client | null> 
     await client.connect();
     return client;
   } catch (error) {
-    await client.end();
     console.error("Error with database operation", error);
+    //TODO throw error?
+    await client.end();
     return null;
   }
 };

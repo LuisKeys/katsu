@@ -1,19 +1,59 @@
-import { resetResult } from "../../result/result_object";
-import { KatsuState } from "../../state/katsu_state";
+import { connectMetadataDB } from "../../db/db_commands";
+import { getUserAuthorizedTables } from "../../security";
+import { DataSource as Datasource, KatsuState, User } from "../../state/katsu_state";
 
-const helpHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  const userState = state.users[userIndex];
-  resetResult(userState);
+const helpHandler = async (userState: User, datasources: Datasource[]) => {
+  const client = connectMetadataDB();
+  if (client === null) throw new Error("Failed to connect to metadata DB."); // TODO move to connectMetadataDB?
 
-  const helpList = state.dataSources[userState.dataSourceIndex].helpList;
-  const result = userState.result;
+  const userAuthorizedTables = await getUserAuthorizedTables(userState.userId); // TODO use [string, string][]?
+  let help = '';
 
-  result.text = "Sample prompts:";
-  for (const helpItem of helpList) {
-    result.text += `\n- ${helpItem}\n`;
+  for (const datasource of datasources) {
+    let tableList = '';
+    for (const table of datasource.tables) {
+      const some = userAuthorizedTables.some(([name, tableName]) => name === datasource.datasourceName && tableName === table);
+      if (some) tableList += `${table}, `;
+    }
+
+    if (tableList !== '') {
+      help += `\n\n**${toTitleCase(datasource.datasourceName)}**: ${toTitleCase(tableList.slice(0, -2))}.`;
+    }
   }
-  return state;
-};
+
+  userState.result.text = help === ''
+    ? 'No authorized data sources found. Please contact your administrator.'
+    : 'Help introduction text goes here.\n'
+    + '\n### **Available Data Sources**\n\n'
+    + help;
+
+  // TODO add help for each table?
+  // const sql = `SELECT sample_prompt FROM help WHERE datasource_name = '${dataSource.datasourceName}' ORDER BY sample_prompt asc`;
+  // const result = await execute(sql, client);
+  // return result === null ? [] : result.rows.map(prompt => prompt.sample_prompt);
+}
+
+function toTitleCase(text: string): string {
+  return text
+    // Replace underscores with spaces, split by spaces
+    .replace(/_/g, ' ')
+    .toLowerCase()
+    // Capitalize the first letter of each word
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+
+// const helpHandlerOld = (userState: User, datasources: Datasource[]) => {
+//   resetResult(userState);
+
+//   const helpList = datasources[userState.dataSourceIndex].helpList;
+//   const result = userState.result;
+
+//   result.text = "Sample prompts:";
+//   for (const helpItem of helpList) {
+//     result.text += `\n- ${helpItem}\n`;
+//   }
+// };
 
 export {
   helpHandler

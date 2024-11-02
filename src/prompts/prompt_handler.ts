@@ -8,7 +8,7 @@ import { pageHandler } from "./handlers/page_handler";
 import { filesHandler } from "./handlers/files_handler";
 import { helpHandler } from "./handlers/help_handler";
 import { savePrompt } from "./utils/save_prompt";
-import { checkPrompt } from "./utils/check_history";
+import { checkPromptHistory } from "./utils/check_history";
 import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
 
 const promptHandler = async (state: KatsuState, userId: number): Promise<void> => {
@@ -18,7 +18,7 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<void> =
   userState.promptType = "";
   userState.sql = "";
 
-  await checkPrompt(state, userId);
+  await checkPromptHistory(state, userId);
   let promptType = userState.promptType
   const isCached = userState.isCached
   if (!isCached) {
@@ -43,13 +43,13 @@ const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuSt
   const promptType = state.users[userId].promptType.toUpperCase();
   switch (promptType) {
     case QUESTION: return await questionHandler(state, userId);
-    case EXCEL: return await excelExportHandler(state, userId);
-    case SORT: return await sortHandler(state, userId);
-    case PAGE: return await pageHandler(state, userId);
-    case FILE: return await filesHandler(state, userId);
-    case HELP: return await helpHandler(state, userId);
-    default: return state;
+    case EXCEL: excelExportHandler(state.users[userId].result);
+    case SORT: await sortHandler(state, userId);
+    case PAGE: await pageHandler(state, userId);
+    case FILE: await filesHandler(state, userId);
+    case HELP: await helpHandler(state.users[userId], state.dataSources);
   }
+  return state;
 }
 
 // TODO remove
