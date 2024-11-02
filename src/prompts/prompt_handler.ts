@@ -43,7 +43,7 @@ const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuSt
   const promptType = state.users[userId].promptType.toUpperCase();
   switch (promptType) {
     case QUESTION: return await questionHandler(state, userId);
-    case EXCEL: excelExportHandler(state.users[userId].result);
+    case EXCEL: await excelExportHandler(state, userId);
     case SORT: await sortHandler(state, userId);
     case PAGE: await pageHandler(state, userId);
     case FILE: await filesHandler(state, userId);
