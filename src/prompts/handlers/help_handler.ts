@@ -6,7 +6,7 @@ const helpHandler = async (userState: User, datasources: Datasource[]) => {
   const client = connectMetadataDB();
   if (client === null) throw new Error("Failed to connect to metadata DB."); // TODO move to connectMetadataDB?
 
-  const userAuthorizedTables = await getUserAuthorizedTables(userState.userId); // TODO use [string, string][]?
+  const userAuthorizedTables = await getUserAuthorizedTables(userState.userId);
   let help = '';
 
   for (const datasource of datasources) {
@@ -17,7 +17,7 @@ const helpHandler = async (userState: User, datasources: Datasource[]) => {
     }
 
     if (tableList !== '') {
-      help += `\n\n**${toTitleCase(datasource.datasourceName)}**: ${toTitleCase(tableList.slice(0, -2))}.`;
+      help += `\n\n**${datasource.datasourceName.toTitleCase()}**: ${tableList.slice(0, -2).toTitleCase()}.`;
     }
   }
 
@@ -33,15 +33,15 @@ const helpHandler = async (userState: User, datasources: Datasource[]) => {
   // return result === null ? [] : result.rows.map(prompt => prompt.sample_prompt);
 }
 
-function toTitleCase(text: string): string {
-  return text
-    // Replace underscores with spaces, split by spaces
-    .replace(/_/g, ' ')
-    .toLowerCase()
-    // Capitalize the first letter of each word
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
+// TODO remove
+// function toTitleCase(text: string): string {
+//   return text
+//     // Replace underscores with spaces, split by spaces
+//     .replace(/_/g, ' ')
+//     .toLowerCase()
+//     // Capitalize the first letter of each word
+//     .replace(/\b\w/g, (char) => char.toUpperCase());
+// }
 
 // const helpHandlerOld = (userState: User, datasources: Datasource[]) => {
 //   resetResult(userState);

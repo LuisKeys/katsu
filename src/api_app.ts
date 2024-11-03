@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 const cors = require('cors');
 import { KatsuState, User } from "./state/katsu_state";
-import { APIResult } from "./result/result_object";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";

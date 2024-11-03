@@ -41,7 +41,7 @@ const userResultToAPIResult = async function (state: KatsuState, userIndex: numb
 
   if (!formattedResult.noDataFound) {
     if (apiResult.rows.length == 1 && userState.promptType === "QUESTION") {
-      await formatOneLineResult(state, userIndex);
+      await formatOneLineResult(state, userState, userIndex);
       apiResult.text = userResult.text;
       userResult.rows = [];
       apiResult.rows = [];

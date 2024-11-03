@@ -1,5 +1,4 @@
 import { formatPhoneNumberFieldUS, formatPhoneNumberFieldLA } from "./phone_formatter";
-import { formatNumber } from "./number_formatter";
 import { UserResult } from "../result/result_object";
 import { getColumnWidths2 } from "./column_width";
 
@@ -58,9 +57,7 @@ const formatCurrency = function (result: UserResult, numColumns: number[]): User
 const formatNumericColumns = function (result: UserResult, numColumns: number[]): UserResult {
   for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
-      result.rows[i][numColumns[j]] = formatNumber(
-        result.rows[i][numColumns[j]]
-      );
+      result.rows[i][numColumns[j]] = result.rows[i][numColumns[j]].formatNumber();
     }
   }
 

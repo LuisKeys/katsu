@@ -1,4 +1,4 @@
-import { KatsuState } from "../../state/katsu_state";
+import { KatsuState, User } from "../../state/katsu_state";
 import { ask, askAI } from "../../llm/openai/openai_api";
 import { createFormatFieldsNamesPrompt } from "../../llm/prompt_generators/format_result_gen";
 import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
@@ -22,14 +22,19 @@ const questionHandler = async (state: KatsuState, userIndex: number): Promise<Ka
   } else {
     result.pageNum = 1;
     result.lastPage = getLastPage(result);
-
-    userState.context = `Output human-readable names for ${result.fields} in a comma-separated format`;
-    // userState.context = createFormatFieldsNamesPrompt(result.fields); //TODO remove
-    const fieldList = await askAI(state, userState.context);
-    result.fields = fieldList.split(',').map(field => field.trim());
+    result.fields = await getNiceFieldNames(state, userState, result.fields);
   }
   return state;
 };
+
+//Replace with string.toTitleCase?
+const getNiceFieldNames = async (state: KatsuState, userState: User, fields: string[]): Promise<string[]> => {
+  userState.context = `Output human-readable names for ${fields} in a comma-separated format`;
+  // userState.context = createFormatFieldsNamesPrompt(result.fields); //TODO remove
+  const niceFieldsComma = await askAI(state, userState.context);
+  const niceFieldsList = niceFieldsComma.split(',').map(field => field.trim());
+  return niceFieldsList;
+}
 
 //TODO remove
 // const questionHandlerOld = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
@@ -66,8 +71,7 @@ const questionIntent = async (state: KatsuState, userIndex: number, isSecondInte
 
   let sql = userState.sql;
   if (sql === "") {
-    const llmPrompt = createQuestionPrompt(state, userIndex, isSecondIntent);
-    userState.context = llmPrompt;
+    userState.context = createQuestionPrompt(state, state.users[userIndex], userIndex, isSecondIntent);
     sql = await ask(state, userIndex);
   }
 
