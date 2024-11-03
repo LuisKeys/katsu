@@ -7,24 +7,26 @@ import { getResult } from "../../result/get_result";
 import { getLastPage } from "./page_calc";
 import { resetResult } from "../../result/result_object";
 
-const questionHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-  const userState = state.users[userIndex];
+const questionHandler = async (userState: User, state: KatsuState): Promise<void> => {
   const result = userState.result;
 
-  await questionIntent(state, userIndex, false);
+  await questionIntent(userState, false, state);
   if (result.rows.length === 0) {
-    await questionIntent(state, userIndex, true);
+    await questionIntent(userState, true, state);
   }
 
   result.noDataFound = result.rows.length === 0;
-  if (result.noDataFound) {
+
+  //TODO fix info returned breaking flutter front end
+  if (result.notAuthorized) {
+    result.text = 'You are not authorized to access this data.\nIf this is an error, please contact your administrator.';
+  } else if (result.noDataFound) {
     result.text = getNonResultMsg(userState.prompt);
   } else {
     result.pageNum = 1;
     result.lastPage = getLastPage(result);
     result.fields = await getNiceFieldNames(state, userState, result.fields);
   }
-  return state;
 };
 
 //Replace with string.toTitleCase?
@@ -65,21 +67,20 @@ const getNiceFieldNames = async (state: KatsuState, userState: User, fields: str
 //   return state;
 // };
 
-const questionIntent = async (state: KatsuState, userIndex: number, isSecondIntent: boolean): Promise<void> => {
-  const userState = state.users[userIndex];
+const questionIntent = async (userState: User, isSecondIntent: boolean, state: KatsuState): Promise<void> => {
   resetResult(userState);
 
   let sql = userState.sql;
   if (sql === "") {
-    userState.context = createQuestionPrompt(state, state.users[userIndex], userIndex, isSecondIntent);
-    sql = await ask(state, userIndex);
+    userState.context = createQuestionPrompt(state, userState, isSecondIntent);
+    sql = await askAI(state, userState.context);
   }
 
   userState.sql = cleanSQL(sql);
   if (process.env.KATSU_DEBUG === "true") {
     console.log("SQL: ", userState.sql);
   }
-  await getResult(state, userIndex);
+  await getResult(state, userState);
 }
 
 const cleanSQL = (sql: string): string => {

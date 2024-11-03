@@ -32,25 +32,19 @@ const promptHandler = async (state: KatsuState, userId: number): Promise<void> =
     }
   }
 
-  state = await processPrompt(state, userId);
+  switch (promptType) {
+    case QUESTION: await questionHandler(userState, state); break;
+    case EXCEL: await excelExportHandler(state, userId); break;
+    case SORT: await sortHandler(state, userId); break;
+    case PAGE: await pageHandler(state, userId); break;
+    case FILE: await filesHandler(state, userId); break;
+    case HELP: await helpHandler(userState, state.dataSources); break;
+  }
   // TODO so this is not history but cache?
   // TODO userId used as index not right. This is assuming there will be no gaps in the user ids
   if (!isCached) await savePrompt(userState, state.dataSources);
   userState.isCached = false;
 };
-
-const processPrompt = async (state: KatsuState, userId: number): Promise<KatsuState> => {
-  const promptType = state.users[userId].promptType.toUpperCase();
-  switch (promptType) {
-    case QUESTION: return await questionHandler(state, userId);
-    case EXCEL: await excelExportHandler(state, userId);
-    case SORT: await sortHandler(state, userId);
-    case PAGE: await pageHandler(state, userId);
-    case FILE: await filesHandler(state, userId);
-    case HELP: await helpHandler(state.users[userId], state.dataSources);
-  }
-  return state;
-}
 
 // TODO remove
 // const promptHandlerOld = async (state: KatsuState, userId: number): Promise<KatsuState> => {

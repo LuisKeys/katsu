@@ -6,6 +6,7 @@ import { formatAPIResult } from '../formatter/format_api_result';
 /**
  * Transforms a `ResultObject` into an `APIResultObject`.
  */
+//TODO refactor name
 const transfResAPI = async function (state: KatsuState, userIndex: number): Promise<APIResult> {
   const userState = state.users[userIndex];
   const userResult = userState.result;
@@ -42,7 +43,7 @@ const transfResAPI = async function (state: KatsuState, userIndex: number): Prom
     docURL: formattedResult.fileURL
   };
 
-  if (!formattedResult.noDataFound) {
+  if (!formattedResult.noDataFound && !formattedResult.notAuthorized) {
     if (apiResult.rows.length == 1 && userState.promptType === "QUESTION") {
       await formatOneLineResult(state, userState, userIndex);
       apiResult.text = userResult.text;

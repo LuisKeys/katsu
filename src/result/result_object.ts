@@ -29,6 +29,7 @@ type UserResult = {
   sql: string;
   text: string;
   noDataFound: boolean;
+  notAuthorized: boolean;
 };
 
 const convResultObjToCSV = function (state: KatsuState, userIndex: number): string {

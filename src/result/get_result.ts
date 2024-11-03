@@ -1,31 +1,40 @@
 import { Client, QueryResult } from "pg";
-import { KatsuState } from "../state/katsu_state";
+import { KatsuState, User } from "../state/katsu_state";
 import { close, connectDatasource, execute, getError } from "../db/db_commands";
 import { getLastPage } from "../prompts/handlers/page_calc";
+import { isSqlAuthorized } from "../security";
 
-const getResult = async (state: KatsuState, userIndex: number): Promise<void> => {
-  const userState = state.users[userIndex];
+const getResult = async (state: KatsuState, userState: User): Promise<void> => {
   const dataSource = state.dataSources[userState.dataSourceIndex];
   const client: Client | null = await connectDatasource(dataSource);
   if (client === null) return;
 
-  const result = await execute(userState.sql, client);
+  const sqlResult = await execute(userState.sql, client);
   close(client);
 
   userState.sqlError = getError();
+  //TODO move upwards?
   const userResult = userState.result;
-  if (result !== null) {
-    userResult.rows = getResultRows(result);
-    userResult.fields = result.fields.map(field => field.name);
-    userResult.pageNum = 1;
-    userResult.lastPage = getLastPage(userResult);
-  } else {
+
+  if (sqlResult === null) {
     userResult.rows = [];
     userResult.fields = [];
     userResult.pageNum = 0;
     userResult.lastPage = 0;
     userResult.text = "No results found.";
+    return;
   }
+
+  const isAuthorized = await isSqlAuthorized(userState.sql, userState.userId, dataSource.datasourceName, state);
+  if (!isAuthorized) {
+    userResult.notAuthorized = true;
+    return;
+  }
+
+  userResult.rows = getResultRows(sqlResult);
+  userResult.fields = sqlResult.fields.map(field => field.name);
+  userResult.pageNum = 1;
+  userResult.lastPage = getLastPage(userResult);
 }
 
 const getResultRows = (queryResult: QueryResult): string[][] => {
