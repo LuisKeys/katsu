@@ -17,14 +17,18 @@ const helpHandler = async (userState: User, datasources: Datasource[]) => {
     }
 
     if (tableList !== '') {
-      help += `\n\n**${datasource.datasourceName.toTitleCase()}**: ${tableList.slice(0, -2).toTitleCase()}.`;
+      help += `\n\n- **${datasource.datasourceName.toUpperCase()}**: ${tableList.slice(0, -2).toTitleCase()}.`;
     }
   }
 
   userState.result.text = help === ''
     ? 'No authorized data sources found. Please contact your administrator.'
-    : 'Help introduction text goes here.\n'
-    + '\n### **Available Data Sources**\n\n'
+
+    : 'Creating effective prompts is key to getting accurate. Here are some best practices.\n'
+    + '\n- Be Clear and Specific.'
+    + '\n- Avoid long prompts.'
+    + '\n- Try to reference the data source name your are looking information from.'
+    + '\n### **Data Sources**\n\n'
     + help;
 
   // TODO add help for each table?

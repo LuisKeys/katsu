@@ -64,7 +64,7 @@ const apiApp = function (state: KatsuState): void {
 
       userState.prompt = prompt;
       if (userIndex !== null) {
-        await promptHandler(state, userIndex);
+        await promptHandler(userState, state, userIndex);
         if (state.isDebug) console.log("Post call finished ask intent.");
       }
 

@@ -1,5 +1,5 @@
 import { getPromptType } from "./utils/prompt_type";
-import { KatsuState } from "../state/katsu_state";
+import { KatsuState, User } from "../state/katsu_state";
 import { getDataSource } from "./utils/data_source";
 import { questionHandler } from "./handlers/question_handler";
 import { excelExportHandler } from "./handlers/excel_handler";
@@ -11,22 +11,21 @@ import { savePrompt } from "./utils/save_prompt";
 import { checkPromptHistory } from "./utils/check_history";
 import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
 
-const promptHandler = async (state: KatsuState, userId: number) => {
+const promptHandler = async (userState: User, state: KatsuState, userIndex: number) => {
   // Get the prompt type and data source 
   // state.showWordsCount = true;
-  const userState = state.users[userId];
   userState.promptType = "";
   userState.sql = "";
 
-  await checkPromptHistory(state, userId);
+  await checkPromptHistory(state, userIndex);
   let promptType = userState.promptType
   const isCached = userState.isCached
   if (!isCached) {
-    state = await getPromptType(state, userId);
+    state = await getPromptType(state, userIndex);
     promptType = userState.promptType
     console.log("Prompt type:", promptType);
     if (promptType === QUESTION) {
-      state = await getDataSource(state, userId);
+      state = await getDataSource(state, userIndex);
       const dataSourceIndex = userState.dataSourceIndex;
       console.log("Data source:", state.dataSources[dataSourceIndex].datasourceName);
     }
@@ -34,10 +33,10 @@ const promptHandler = async (state: KatsuState, userId: number) => {
 
   switch (promptType) {
     case QUESTION: await questionHandler(userState, state); break;
-    case EXCEL: await excelExportHandler(state, userId); break;
-    case SORT: await sortHandler(state, userId); break;
-    case PAGE: await pageHandler(state, userId); break;
-    case FILE: await filesHandler(state, userId); break;
+    case EXCEL: await excelExportHandler(state, userIndex); break;
+    case SORT: await sortHandler(state, userIndex); break;
+    case PAGE: await pageHandler(userState, state); break;
+    case FILE: await filesHandler(state, userIndex); break;
     case HELP: await helpHandler(userState, state.dataSources); break;
   }
   // TODO so this is not history but cache?

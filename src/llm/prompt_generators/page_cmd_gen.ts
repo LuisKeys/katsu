@@ -1,7 +1,6 @@
 import { KatsuState } from "../../state/katsu_state";
 
-const createPageCMDPrompt = (state: KatsuState, userId: number): string => {
-  const userPrompt = state.users[userId].prompt;
+const createPageCMDPrompt = (userPrompt: string): string => {
   let prompt = `Find the sort or order by field within the following list 
   for the following prompt:
   Prompt: "${userPrompt}"
