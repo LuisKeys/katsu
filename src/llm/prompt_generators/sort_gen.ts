@@ -1,12 +1,10 @@
-import { KatsuState } from "../../state/katsu_state";
+import { KatsuState, User } from "../../state/katsu_state";
 
-const createSortFieldPrompt = (state: KatsuState, userId: number): string => {
-  const userPrompt = state.users[userId].prompt;
-  const fields = state.users[userId].result.fields;
-  const csvList = fields.join(", ");
+const createSortFieldPrompt = (userState: User): string => {
+  const csvList = userState.result.fields.join(", ");
   let prompt = `Find the sort or order by field within the following list 
   for the following prompt:
-  Prompt: "${userPrompt}"
+  Prompt: "${userState.prompt}"
   List: ${csvList}
   Only provide the name of the one single field within the list.
   `;
@@ -14,9 +12,9 @@ const createSortFieldPrompt = (state: KatsuState, userId: number): string => {
   return prompt;
 }
 
-const createSortDirectionPrompt = (state: KatsuState, userId: number): string => {
-  const userPrompt = state.users[userId].prompt;
-  const fields = state.users[userId].result.fields;
+const createSortDirectionPrompt = (userState: User): string => {
+  const userPrompt = userState.prompt;
+  // const fields = userState.result.fields;
   let prompt = `Find the order by direction, within the following list 
   for the following prompt:
   Prompt: "${userPrompt}"

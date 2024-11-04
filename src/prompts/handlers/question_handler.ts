@@ -15,6 +15,7 @@ const questionHandler = async (userState: User, state: KatsuState): Promise<void
   }
 
   if (result.notAuthorized) { //TODO use return text filled instead?
+    //TODO initialize result.text at the beginning
     result.text = 'You are not authorized to access this data.\nIf this is an error, please contact your administrator.';
   } else if (result.rows.length === 0) {
     result.text = getNonResultMsg(userState.prompt);

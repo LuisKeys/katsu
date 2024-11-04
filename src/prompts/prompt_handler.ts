@@ -34,7 +34,7 @@ const promptHandler = async (userState: User, state: KatsuState, userIndex: numb
   switch (promptType) {
     case QUESTION: await questionHandler(userState, state); break;
     case EXCEL: await excelExportHandler(state, userIndex); break;
-    case SORT: await sortHandler(state, userIndex); break;
+    case SORT: await sortHandler(userState, state); break;
     case PAGE: await pageHandler(userState, state); break;
     case FILE: await filesHandler(state, userIndex); break;
     case HELP: await helpHandler(userState, state.dataSources); break;
