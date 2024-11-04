@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Client, QueryResult } from 'pg';
 import { DbConnData } from './db_conn_data';
-import { DataSource } from "../state/katsu_state";
+import { Datasource } from "../state/katsu_state";
 
 let gerror = '';
 
@@ -9,7 +9,7 @@ const getError = function (): string {
   return gerror;
 };
 
-const connectDatasource = async function (dataSource: DataSource): Promise<Client | null> {
+const connectDatasource = async function (dataSource: Datasource): Promise<Client | null> {
   let client = new Client({
     user: dataSource.user,
     host: dataSource.host,

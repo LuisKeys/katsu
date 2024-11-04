@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { Client, QueryResultRow } from 'pg';
-import { User, DataSource, KatsuState, TableSampleData } from './katsu_state';
+import { User, Datasource, KatsuState, TableSampleData } from './katsu_state';
 import { connectMetadataDB, close, execute, connectDatasource } from '../db/db_commands';
 import { getHelp } from '../nl/help';
 import { UserResult } from '../result/result_object';
@@ -10,11 +10,11 @@ const loadKatsuState = async (openai: OpenAI): Promise<KatsuState> => {
   if (client === null) throw new Error("Failed to connect to metadata DB.");
 
   const users: User[] = await getUsers(client);
-  const dataSources: DataSource[] = await getDataSources(client);
+  const dataSources: Datasource[] = await getDataSources(client);
 
   await close(client);
   console.log('Loaded Katsu state.');
-  return { users, dataSources, openai: openai, isDebug: false, showWordsCount: false };
+  return { users, datasources: dataSources, openai: openai, isDebug: false, showWordsCount: false };
 }
 
 const getUsers = async (client: Client): Promise<User[]> => {
@@ -65,7 +65,7 @@ const getUsers = async (client: Client): Promise<User[]> => {
   }
 };
 
-const getDataSources = async (client: Client): Promise<DataSource[]> => {
+const getDataSources = async (client: Client): Promise<Datasource[]> => {
   const sql = `SELECT datasource_id AS "sourceId", datasource_name as "datasourceName",
   description, type, host, user, password, port, db, custom_prompt, is_ssl,  
   (SELECT array_agg("table") FROM datasources_tables dt WHERE dt.datasource_name = d.datasource_name) AS tables
@@ -74,7 +74,7 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
   const result = await execute(sql, client);
   if (result === null) return [];
 
-  const dataSources: DataSource[] = [];
+  const dataSources: Datasource[] = [];
   for (const row of result.rows) {
     const dataSource = convertDBRowTODataSource(row);
     dataSource.helpList = await getHelp(client, dataSource);
@@ -84,7 +84,7 @@ const getDataSources = async (client: Client): Promise<DataSource[]> => {
   return dataSources;
 }
 
-async function getTablesSampleData(datasource: DataSource): Promise<TableSampleData[]> {
+async function getTablesSampleData(datasource: Datasource): Promise<TableSampleData[]> {
   const tablesSampleData: TableSampleData[] = [];
   const client: Client | null = await connectDatasource(datasource);
 
@@ -105,7 +105,7 @@ async function getTablesSampleData(datasource: DataSource): Promise<TableSampleD
   return tablesSampleData;
 }
 
-function convertDBRowTODataSource(row: QueryResultRow): DataSource {
+function convertDBRowTODataSource(row: QueryResultRow): Datasource {
   return {
     sourceId: row.sourceId,
     datasourceName: row.datasourceName,

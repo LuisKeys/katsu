@@ -1,8 +1,8 @@
-import { DataSource, KatsuState, User } from "../../state/katsu_state";
+import { Datasource, KatsuState, User } from "../../state/katsu_state";
 import { convertResultToCSV } from "../../result/result_to_csv";
 
 const createQuestionPrompt = (state: KatsuState, userState: User, isSecondIntent: boolean): string => {
-  const datasource = state.dataSources[userState.dataSourceIndex];
+  const datasource = state.datasources[userState.dataSourceIndex];
   const tablesList = getTablesListFormatted(datasource.tables);
   const tableSampleDataList = getTablesSampleDataList(datasource);
 
@@ -46,7 +46,7 @@ const createQuestionPrompt = (state: KatsuState, userState: User, isSecondIntent
   return llmPrompt;
 }
 
-const getTablesSampleDataList = (datasource: DataSource): string => {
+const getTablesSampleDataList = (datasource: Datasource): string => {
   let list = "";
   datasource.tablesSampleData.forEach(tableSampleData => {
     const tableCSV = convertResultToCSV(tableSampleData.result);

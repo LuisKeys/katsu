@@ -27,7 +27,7 @@ interface TableSampleData {
   result: QueryResult;
 }
 
-interface DataSource {
+interface Datasource {
   sourceId: number;
   datasourceName: string;
   description: string;
@@ -47,10 +47,10 @@ interface DataSource {
 
 interface KatsuState {
   users: User[];
-  dataSources: DataSource[];
+  datasources: Datasource[];
   openai: OpenAI;
   isDebug: boolean;
   showWordsCount: boolean;
 }
 
-export { User, DataSource, KatsuState, TableSampleData };
+export { User, Datasource, KatsuState, TableSampleData };

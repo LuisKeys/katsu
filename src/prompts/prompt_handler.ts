@@ -1,6 +1,6 @@
 import { getPromptType } from "./utils/prompt_type";
 import { KatsuState, User } from "../state/katsu_state";
-import { getDataSource } from "./utils/data_source";
+import { getDataSource } from "./utils/datasource";
 import { questionHandler } from "./handlers/question_handler";
 import { excelExportHandler } from "./handlers/excel_handler";
 import { sortHandler } from "./handlers/sort_handler";
@@ -27,7 +27,7 @@ const promptHandler = async (userState: User, state: KatsuState, userIndex: numb
     if (promptType === QUESTION) {
       state = await getDataSource(state, userIndex);
       const dataSourceIndex = userState.dataSourceIndex;
-      console.log("Data source:", state.dataSources[dataSourceIndex].datasourceName);
+      console.log("Data source:", state.datasources[dataSourceIndex].datasourceName);
     }
   }
 
@@ -37,11 +37,11 @@ const promptHandler = async (userState: User, state: KatsuState, userIndex: numb
     case SORT: await sortHandler(userState, state); break;
     case PAGE: await pageHandler(userState, state); break;
     case FILE: await filesHandler(state, userIndex); break;
-    case HELP: await helpHandler(userState, state.dataSources); break;
+    case HELP: await helpHandler(userState, state.datasources); break;
   }
   // TODO so this is not history but cache?
   // TODO userId used as index not right. This is assuming there will be no gaps in the user ids
-  if (!isCached) await savePrompt(userState, state.dataSources);
+  if (!isCached) await savePrompt(userState, state.datasources);
   userState.isCached = false;
 };
 

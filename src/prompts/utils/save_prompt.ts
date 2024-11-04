@@ -1,8 +1,8 @@
-import { DataSource, KatsuState, User } from "../../state/katsu_state";
+import { Datasource, KatsuState, User } from "../../state/katsu_state";
 import { Client } from "pg";
 import { connectMetadataDB, execute, close } from "../../db/db_commands";
 
-const savePrompt = async (userState: User, dataSources: DataSource[]) => {
+const savePrompt = async (userState: User, dataSources: Datasource[]) => {
   const rowsCount = userState.result.rows.length;
   if (rowsCount === 0) return;
 

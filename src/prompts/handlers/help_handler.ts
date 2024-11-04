@@ -1,6 +1,6 @@
 import { connectMetadataDB } from "../../db/db_commands";
 import { getUserAuthorizedTables } from "../../security";
-import { DataSource as Datasource, KatsuState, User } from "../../state/katsu_state";
+import { Datasource, User } from "../../state/katsu_state";
 
 const helpHandler = async (userState: User, datasources: Datasource[]) => {
   const client = connectMetadataDB();

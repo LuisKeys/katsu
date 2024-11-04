@@ -26,7 +26,7 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number) => {
   userState.isCached = rows.length > 0;
   if (userState.isCached) {
     const dataSourceId = rows[0].datasource_id;
-    const index = state.dataSources.findIndex(ds => ds.dataSourceId === dataSourceId);
+    const index = state.datasources.findIndex(ds => ds.dataSourceId === dataSourceId);
     if (index !== -1) userState.dataSourceIndex = index;
 
     userState.sql = Buffer.from(rows[0].sql, 'base64').toString('utf-8');
