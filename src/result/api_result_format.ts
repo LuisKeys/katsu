@@ -29,11 +29,6 @@ const userResultToAPIResult = async function (userState: User, state: KatsuState
     apiResult.text = "";
   }
 
-  if (apiResult.text != "") {
-    apiResult.rows = [];
-    apiResult.docURL = "";
-  }
-
   if (apiResult.rows.length > 0) {
     apiResult.text = "";
     apiResult.docURL = "";
@@ -45,6 +40,11 @@ const userResultToAPIResult = async function (userState: User, state: KatsuState
       apiResult.rows = [];
       apiResult.fields = [];
     }
+  }
+
+  if (apiResult.text != "") {
+    apiResult.rows = [];
+    apiResult.docURL = "";
   }
 
   return apiResult;
