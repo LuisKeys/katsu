@@ -25,7 +25,7 @@ const testPromptHandler = async (state: KatsuState) => {
 
       state = await promptHandler(state, userIndex);
 
-      const apiResult = await userResultToAPIResult(state, userIndex);
+      const apiResult = await userResultToAPIResult(state.users[userIndex], state, userIndex);
       logAPIResultObject(apiResult);
     }
   }

@@ -1,6 +1,5 @@
 import { KatsuState, User } from "../../state/katsu_state";
-import { ask, askAI } from "../../llm/openai/openai_api";
-import { createFormatFieldsNamesPrompt } from "../../llm/prompt_generators/format_result_gen";
+import { askAI } from "../../llm/openai/openai_api";
 import { createQuestionPrompt } from "../../llm/prompt_generators/question_prompt_gen";
 import { getNonResultMsg } from "../../result/result_messages";
 import { getResult } from "../../result/get_result";
@@ -15,28 +14,16 @@ const questionHandler = async (userState: User, state: KatsuState): Promise<void
     await questionIntent(userState, true, state);
   }
 
-  result.noDataFound = result.rows.length === 0;
-
-  //TODO fix info returned breaking flutter front end
-  if (result.notAuthorized) {
+  if (result.notAuthorized) { //TODO use return text filled instead?
     result.text = 'You are not authorized to access this data.\nIf this is an error, please contact your administrator.';
-  } else if (result.noDataFound) {
+  } else if (result.rows.length === 0) {
     result.text = getNonResultMsg(userState.prompt);
   } else {
     result.pageNum = 1;
     result.lastPage = getLastPage(result);
-    result.fields = await getNiceFieldNames(state, userState, result.fields);
+    result.fields = result.fields.map(field => field.toTitleCase());
   }
 };
-
-//Replace with string.toTitleCase?
-const getNiceFieldNames = async (state: KatsuState, userState: User, fields: string[]): Promise<string[]> => {
-  userState.context = `Output human-readable names for ${fields} in a comma-separated format`;
-  // userState.context = createFormatFieldsNamesPrompt(result.fields); //TODO remove
-  const niceFieldsComma = await askAI(state, userState.context);
-  const niceFieldsList = niceFieldsComma.split(',').map(field => field.trim());
-  return niceFieldsList;
-}
 
 //TODO remove
 // const questionHandlerOld = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {

@@ -4,7 +4,7 @@ import { close, connectDatasource, execute, getError } from "../db/db_commands";
 import { getLastPage } from "../prompts/handlers/page_calc";
 import { isSqlAuthorized } from "../security";
 
-const getResult = async (state: KatsuState, userState: User): Promise<void> => {
+const getResult = async (state: KatsuState, userState: User) => {
   const dataSource = state.dataSources[userState.dataSourceIndex];
   const client: Client | null = await connectDatasource(dataSource);
   if (client === null) return;

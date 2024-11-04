@@ -39,7 +39,6 @@ const getUsers = async (client: Client): Promise<User[]> => {
       rows: [],
       sql: '',
       text: '',
-      noDataFound: false,
       notAuthorized: false
     };
 

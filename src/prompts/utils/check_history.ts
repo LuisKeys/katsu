@@ -3,7 +3,7 @@ import { cleanPrompt } from "./save_prompt";
 import { Client } from "pg";
 import { connectMetadataDB, execute, close } from "../../db/db_commands";
 
-const checkPromptHistory = async (state: KatsuState, userIndex: number): Promise<void> => {
+const checkPromptHistory = async (state: KatsuState, userIndex: number) => {
   const client: Client | null = await connectMetadataDB();
   if (!client) throw new Error("Failed to connect to metadata DB."); //TODO test if works when client is null
 

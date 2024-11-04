@@ -5,7 +5,7 @@ import { KatsuState, User } from "./state/katsu_state";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
-import { getUserIndex } from "./users/get_user";
+import { getUser, getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
 import { logAPIResultObject, userResultToAPIResult } from "./result/api_result_format";
 
@@ -14,9 +14,6 @@ dotenv.config();
 const port: number = parseInt(process.env.PORT || "3020");
 const api_root: string = "/api/v1/";
 
-/**
- * Initializes the API application.
- */
 const apiApp = function (state: KatsuState): void {
   const app = express();
   app.use(express.json());
@@ -36,10 +33,6 @@ const apiApp = function (state: KatsuState): void {
     next();
   });
 
-  /**
-   * Handles the auth route.
-   * @name POST /auth
-   */
   app.post(api_root + "auth", (req: Request, res: Response): void => {
     const { user, password }: { user: string; password: string } = req.body;
 
@@ -56,10 +49,6 @@ const apiApp = function (state: KatsuState): void {
     }
   });
 
-  /**
-   * Handles the prompt route.
-   * @name POST /prompt
-   */
   app.post(api_root + "prompt", async (req: Request, res: Response): Promise<void> => {
     const { token, prompt }: { token: string; prompt: string } = req.body;
 
@@ -68,12 +57,18 @@ const apiApp = function (state: KatsuState): void {
       if (state.isDebug) console.log("Post call prompt: ", prompt);
 
       const userName = getPayloadFromToken(token);
+      const userState = getUser(userName, state);
+      if (userState === null) throw new Error("User not found.");
+      //TODO remove userIndex usage
       const userIndex = getUserIndex(userName, state);
-      state.users[userIndex].prompt = prompt;
-      if (userIndex !== null) await promptHandler(state, userIndex);
-      if (state.isDebug) console.log("Post call finished ask intent");
 
-      const apiResult = await userResultToAPIResult(state, userIndex);
+      userState.prompt = prompt;
+      if (userIndex !== null) {
+        await promptHandler(state, userIndex);
+        if (state.isDebug) console.log("Post call finished ask intent.");
+      }
+
+      const apiResult = await userResultToAPIResult(userState, state, userIndex);
       if (state.isDebug) {
         try {
           logAPIResultObject(apiResult);

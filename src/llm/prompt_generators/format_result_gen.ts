@@ -10,13 +10,14 @@ const createFormatResultPrompt = (state: KatsuState, userIndex: number): string 
   return llmPrompt;
 }
 
-const createFormatFieldsNamesPrompt = (fields: String[]): string => {
-  const csv = fields.join(",");
-  const llmPrompt = `Provide more human readable names for the following list of fields:  
-  ${csv}
-  Return the new names as a comma separated list. 
-  `;
-  return llmPrompt;
-}
+//TODO Remove
+// const createFormatFieldsNamesPrompt = (fields: String[]): string => {
+//   const csv = fields.join(",");
+//   const llmPrompt = `Provide more human readable names for the following list of fields:  
+//   ${csv}
+//   Return the new names as a comma separated list. 
+//   `;
+//   return llmPrompt;
+// }
 
-export { createFormatFieldsNamesPrompt, createFormatResultPrompt };
+export { createFormatResultPrompt };

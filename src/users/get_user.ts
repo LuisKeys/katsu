@@ -11,7 +11,6 @@ const getUser = (email: string, state: KatsuState): User | null => {
       return user;
     }
   }
-
   return null;
 }
 

@@ -8,23 +8,21 @@ import { getColumnWidths2 } from "./column_width";
  * @param {ResultObject} result - The API result to be formatted.
  * @returns {Object[]} The formatted API result.
  */
-const formatAPIResult = function (result: UserResult): UserResult {
+const formatAPIResult = function (result: UserResult) {
   const numColumns = getNumericColumns(result);
-  result = formatNumericColumns(result, numColumns);
+  formatNumericColumns(result, numColumns);
 
   const phoneColumns = getPhoneColumns(result);
-  result = formatPhoneNumber(result, phoneColumns);
+  formatPhoneNumber(result, phoneColumns);
 
   const currencyColumns = getCurrencyColumns(result);
-  result = formatCurrency(result, currencyColumns);
+  formatCurrency(result, currencyColumns);
 
   const dateColumns = getDateColumns(result);
-  result = formatDate(result, dateColumns);
-
-  return result;
+  formatDate(result, dateColumns);
 };
 
-const formatDate = function (result: UserResult, dateColumns: number[]): UserResult {
+const formatDate = function (result: UserResult, dateColumns: number[]) {
   for (let j = 0; j < dateColumns.length; j++) {
     for (let i = 0; i < result.rows.length; i++) {
       const date = new Date(result.rows[i][dateColumns[j]]);
@@ -32,11 +30,9 @@ const formatDate = function (result: UserResult, dateColumns: number[]): UserRes
       result.rows[i][dateColumns[j]] = formattedDate;
     }
   }
-
-  return result;
 };
 
-const formatCurrency = function (result: UserResult, numColumns: number[]): UserResult {
+const formatCurrency = function (result: UserResult, numColumns: number[]) {
   const columnWidths = getColumnWidths2(result);
   for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
@@ -50,18 +46,14 @@ const formatCurrency = function (result: UserResult, numColumns: number[]): User
       }
     }
   }
-
-  return result;
 };
 
-const formatNumericColumns = function (result: UserResult, numColumns: number[]): UserResult {
+const formatNumericColumns = function (result: UserResult, numColumns: number[]) {
   for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       result.rows[i][numColumns[j]] = result.rows[i][numColumns[j]].formatNumber();
     }
   }
-
-  return result;
 };
 
 const getNumericColumns = function (result: UserResult): number[] {
@@ -89,8 +81,7 @@ const getNumericColumns = function (result: UserResult): number[] {
   return numericColumns;
 };
 
-const formatPhoneNumber = function (result: UserResult, numColumns: number[]): UserResult {
-
+const formatPhoneNumber = function (result: UserResult, numColumns: number[]) {
   for (let i = 0; i < result.rows.length; i++) {
     for (let j = 0; j < numColumns.length; j++) {
       const number = result.rows[i][numColumns[j]];
@@ -110,8 +101,6 @@ const formatPhoneNumber = function (result: UserResult, numColumns: number[]): U
       }
     }
   }
-
-  return result;
 };
 
 const getPhoneColumns = function (result: UserResult): number[] {

@@ -11,7 +11,7 @@ import { savePrompt } from "./utils/save_prompt";
 import { checkPromptHistory } from "./utils/check_history";
 import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
 
-const promptHandler = async (state: KatsuState, userId: number): Promise<void> => {
+const promptHandler = async (state: KatsuState, userId: number) => {
   // Get the prompt type and data source 
   // state.showWordsCount = true;
   const userState = state.users[userId];

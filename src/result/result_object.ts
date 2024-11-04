@@ -28,7 +28,6 @@ type UserResult = {
   rows: string[][];
   sql: string;
   text: string;
-  noDataFound: boolean;
   notAuthorized: boolean;
 };
 
