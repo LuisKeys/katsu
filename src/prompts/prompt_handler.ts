@@ -9,7 +9,7 @@ import { filesHandler } from "./handlers/files_handler";
 import { helpHandler } from "./handlers/help_handler";
 import { savePrompt } from "./utils/save_prompt";
 import { checkPromptHistory } from "./utils/check_history";
-import { EXCEL, FILE, HELP, PAGE, QUESTION, SORT } from "../state/constants";
+import { promptTypes } from "../state/constants";
 
 const promptHandler = async (userState: User, state: KatsuState) => {
   // Get the prompt type and data source
@@ -24,7 +24,7 @@ const promptHandler = async (userState: User, state: KatsuState) => {
     await getPromptType(userState, state);
     promptType = userState.promptType
     console.log("Prompt type:", promptType);
-    if (promptType === QUESTION) {
+    if (promptType === promptTypes.QUESTION) {
       await getDataSource(userState, state.datasources, state);
       const dataSourceIndex = userState.dataSourceIndex;
       console.log("Data source:", state.datasources[dataSourceIndex].datasourceName);
@@ -32,12 +32,12 @@ const promptHandler = async (userState: User, state: KatsuState) => {
   }
 
   switch (promptType) {
-    case QUESTION: await questionHandler(userState, state); break;
-    case EXCEL: await excelExportHandler(userState.result); break;
-    case SORT: await sortHandler(userState, state); break;
-    case PAGE: await pageHandler(userState, state); break;
-    case FILE: await filesHandler(userState, state); break;
-    case HELP: await helpHandler(userState, state.datasources); break;
+    case promptTypes.QUESTION: await questionHandler(userState, state); break;
+    case promptTypes.EXCEL: await excelExportHandler(userState.result); break;
+    case promptTypes.SORT: await sortHandler(userState, state); break;
+    case promptTypes.PAGE: await pageHandler(userState, state); break;
+    case promptTypes.FILE: await filesHandler(userState, state); break;
+    case promptTypes.HELP: await helpHandler(userState, state.datasources); break;
   }
   // TODO so this is not history but cache?
   // TODO userId used as index not right. This is assuming there will be no gaps in the user ids

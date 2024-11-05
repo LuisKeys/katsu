@@ -1,9 +1,11 @@
-const EXCEL = 'EXCEL';
-const FILE = 'FILE';
-const HELP = 'HELP';
-const PAGE = 'PAGE';
-const QUESTION = 'QUESTION';
-const SORT = 'SORT';
+enum promptTypes {
+  QUESTION = 'QUESTION',
+  EXCEL = 'EXCEL',
+  FILE = 'FILE',
+  HELP = 'HELP',
+  PAGE = 'PAGE',
+  SORT = 'SORT'
+}
 
 const getConstDescription = (): { name: string, description: string }[] => {
   const constants = [
@@ -25,12 +27,7 @@ function convertToCSV(objects: { name: string, description: string }[]): string 
 }
 
 export {
-  EXCEL,
-  FILE,
-  HELP,
-  PAGE,
-  QUESTION,
-  SORT,
+  promptTypes,
   convertToCSV,
   getConstDescription
 };

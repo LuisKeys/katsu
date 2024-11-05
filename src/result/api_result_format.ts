@@ -2,11 +2,12 @@ import { APIResult as APIResult } from './result_object';
 import { KatsuState, User } from '../state/katsu_state';
 import { formatOneLineResult } from '../nl/format_nl_result';
 import { formatAPIResult } from '../formatter/format_api_result';
+import { promptTypes } from '../state/constants';
 
 const userResultToAPIResult = async function (userState: User, state: KatsuState): Promise<APIResult> {
   const userResult = userState.result;
 
-  if (userState.promptType === "HELP") {
+  if (userState.promptType === promptTypes.HELP) {
     userResult.fields = [];
     userResult.rows = [];
   }
