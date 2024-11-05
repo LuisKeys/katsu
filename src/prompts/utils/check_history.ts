@@ -1,9 +1,9 @@
-import { KatsuState } from "../../state/katsu_state";
+import { Datasource, KatsuState, User } from "../../state/katsu_state";
 import { cleanPrompt } from "./save_prompt";
 import { Client } from "pg";
 import { connectMetadataDB, execute, close } from "../../db/db_commands";
 
-const checkPromptHistory = async (state: KatsuState, userIndex: number) => {
+const checkPromptHistory = async (userState: User, datasources: Datasource[]) => {
   const client: Client | null = await connectMetadataDB();
   if (!client) throw new Error("Failed to connect to metadata DB."); //TODO test if works when client is null
 
@@ -11,7 +11,6 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number) => {
     await execute(`DELETE FROM prompts_history`, client);
   }
 
-  const userState = state.users[userIndex];
   const promptSafe = cleanPrompt(userState.prompt);
   const sql = `SELECT prompt_id, prompt, "sql", rows_count, date, "type", user_id, datasource_id
     FROM prompts_history
@@ -26,7 +25,7 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number) => {
   userState.isCached = rows.length > 0;
   if (userState.isCached) {
     const dataSourceId = rows[0].datasource_id;
-    const index = state.datasources.findIndex(ds => ds.dataSourceId === dataSourceId);
+    const index = datasources.findIndex(ds => ds.dataSourceId === dataSourceId);
     if (index !== -1) userState.dataSourceIndex = index;
 
     userState.sql = Buffer.from(rows[0].sql, 'base64').toString('utf-8');
@@ -77,7 +76,8 @@ const checkPromptHistory = async (state: KatsuState, userIndex: number) => {
 //   return state;
 // };
 
-const listHistory = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
+// TODO Luis???
+const listHistory = async (state: KatsuState, userIndex: number) => {
   /*
   let sql = `SELECT prompt as "My most used prompts" FROM (`;
   sql += `SELECT prompt, COUNT(*) AS prompt_count `;
@@ -96,8 +96,6 @@ const listHistory = async (state: KatsuState, userIndex: number): Promise<KatsuS
  
   result = convSqlResToResultObject(sqlRes, result);
   */
-
-  return state;
 };
 
 export {

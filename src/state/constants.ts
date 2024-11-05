@@ -1,8 +1,3 @@
-/**
- * Constants module for prompts.
- * @module prompts/constants
- */
-
 const EXCEL = 'EXCEL';
 const FILE = 'FILE';
 const HELP = 'HELP';

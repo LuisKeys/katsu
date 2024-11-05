@@ -1,11 +1,10 @@
-import { getUserIndex } from "../users/get_user";
 import { KatsuState } from "../state/katsu_state";
 const { promptHandler } = require("../prompts/prompt_handler");
 import { logAPIResultObject, userResultToAPIResult } from "../result/api_result_format";
 
 const testPromptHandler = async (state: KatsuState) => {
   console.log("Executing test...");
-  const userIndex = await getUserIndex("luis.paradela@accelone.com", state);
+  const userIndex = state.users.findIndex(user => user.email === "luis.paradela@accelone.com");
   const isValid = userIndex != -1;
   if (!isValid) {
     console.log(
@@ -25,7 +24,7 @@ const testPromptHandler = async (state: KatsuState) => {
 
       state = await promptHandler(state, userIndex);
 
-      const apiResult = await userResultToAPIResult(state.users[userIndex], state, userIndex);
+      const apiResult = await userResultToAPIResult(state.users[userIndex], state);
       logAPIResultObject(apiResult);
     }
   }

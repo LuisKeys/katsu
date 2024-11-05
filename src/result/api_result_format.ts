@@ -3,8 +3,13 @@ import { KatsuState, User } from '../state/katsu_state';
 import { formatOneLineResult } from '../nl/format_nl_result';
 import { formatAPIResult } from '../formatter/format_api_result';
 
-const userResultToAPIResult = async function (userState: User, state: KatsuState, userIndex: number): Promise<APIResult> {
+const userResultToAPIResult = async function (userState: User, state: KatsuState): Promise<APIResult> {
   const userResult = userState.result;
+
+  if (userState.promptType === "HELP") {
+    userResult.fields = [];
+    userResult.rows = [];
+  }
 
   const apiResult: APIResult = {
     promptType: userState.promptType,
@@ -34,7 +39,7 @@ const userResultToAPIResult = async function (userState: User, state: KatsuState
     apiResult.docURL = "";
 
     if (apiResult.rows.length == 1 && userState.promptType === "QUESTION") {
-      await formatOneLineResult(state, userState, userIndex);
+      await formatOneLineResult(userState, state);
       apiResult.text = userResult.text;
       userResult.rows = [];
       apiResult.rows = [];
@@ -51,16 +56,21 @@ const userResultToAPIResult = async function (userState: User, state: KatsuState
 }
 
 const logAPIResultObject = function (apiResultObject: APIResult) {
-  console.log("API Result Object:");
-  console.log("Last Page: " + apiResultObject.lastPage);
-  console.log("Page Num: " + apiResultObject.pageNum);
-  console.log("Text: " + apiResultObject.text);
-  console.log("Doc URL: " + apiResultObject.docURL);
-  console.log("Fields: " + apiResultObject.fields);
-  console.log("Rows: " + apiResultObject.rows.length);
-  for (let i = 0; i < apiResultObject.rows.length; i++) {
-    apiResultObject.lastPage = apiResultObject.lastPage;
-    console.log("Row " + i + ": " + apiResultObject.rows[i]);
+  try {
+    console.log("API Result Object:");
+    console.log("Last Page: " + apiResultObject.lastPage);
+    console.log("Page Num: " + apiResultObject.pageNum);
+    console.log("Text: " + apiResultObject.text);
+    console.log("Doc URL: " + apiResultObject.docURL);
+    console.log("Fields: " + apiResultObject.fields);
+    console.log("Rows: " + apiResultObject.rows.length);
+    for (let i = 0; i < apiResultObject.rows.length; i++) {
+      apiResultObject.lastPage = apiResultObject.lastPage;
+      console.log("Row " + i + ": " + apiResultObject.rows[i]);
+    }
+  }
+  catch (error: any) {
+    console.log("Error logging API result object: ", error["message"]);
   }
 }
 

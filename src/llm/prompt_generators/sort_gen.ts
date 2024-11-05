@@ -1,4 +1,4 @@
-import { KatsuState, User } from "../../state/katsu_state";
+import { User } from "../../state/katsu_state";
 
 const createSortFieldPrompt = (userState: User): string => {
   const csvList = userState.result.fields.join(", ");

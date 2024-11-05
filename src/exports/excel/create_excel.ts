@@ -1,29 +1,16 @@
 import * as clean from '../../files/clean';
 import * as excel from 'excel4node';
 import * as filesName from '../../files/file_name';
-import { KatsuState } from '../../state/katsu_state';
 import { getColumnWidths } from '../../formatter/column_width';
+import { UserResult } from '../../result/result_object';
 
-/**
- * @file Creates an Excel file with the provided data.
- * @module createExcel
- */
-
-
-/**
- * Creates an Excel file with KATSU report data.
- *
- * @param state - The KatsuState object containing the report data.
- * @param userIndex - The index of the user for whom the report is being generated.
- * @returns The updated KatsuState object.
- */
-const createExcel = function (state: KatsuState, userIndex: number): KatsuState {
+const createExcel = function (userResult: UserResult) {
   const wb = new excel.Workbook();
   const ws = wb.addWorksheet('KATSU Report');
   let fileName = excelFileName();
   const folder = process.env.REPORTS_FOLDER;
   const fullPath = `${folder}/` + fileName;
-  let columnWidths = getColumnWidths(state, userIndex);
+  let columnWidths = getColumnWidths(userResult);
 
   const headerStyle = wb.createStyle({
     font: {
@@ -53,8 +40,7 @@ const createExcel = function (state: KatsuState, userIndex: number): KatsuState 
     numberFormat: '#,##0; (#,##0); -',
   });
 
-  const result = state.users[userIndex].result;
-  const header = result.fields;
+  const header = userResult.fields;
 
   // Add the header row
   for (let i = 0; i < header.length; i++) {
@@ -62,7 +48,7 @@ const createExcel = function (state: KatsuState, userIndex: number): KatsuState 
     ws.column(i + 1).setWidth(columnWidths[i] + 2);
   }
 
-  const rows = result.rows;
+  const rows = userResult.rows;
   for (let i = 0; i < rows.length; i++) {
     for (let j = 0; j < header.length; j++) {
       let value = '';
@@ -77,8 +63,7 @@ const createExcel = function (state: KatsuState, userIndex: number): KatsuState 
   clean.cleanReports();
 
   const url = process.env.REPORTS_URL + fileName;
-  state.users[userIndex].result.fileURL = url;
-  return state;
+  userResult.fileURL = url;
 };
 
 /**
@@ -87,7 +72,6 @@ const createExcel = function (state: KatsuState, userIndex: number): KatsuState 
  */
 const excelFileName = function (): string {
   const fileName = filesName.randomFileName('xlsx');
-
   return fileName;
 };
 

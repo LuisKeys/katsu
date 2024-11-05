@@ -1,4 +1,3 @@
-import { QueryResultRow } from "pg";
 import { KatsuState, User } from "../state/katsu_state";
 
 /**
@@ -31,13 +30,12 @@ type UserResult = {
   notAuthorized: boolean;
 };
 
-const convResultObjToCSV = function (state: KatsuState, userIndex: number): string {
-  const result = state.users[userIndex].result;
-  const fields = result.fields;
+const convResultObjToCSV = function (userResult: UserResult): string {
+  const fields = userResult.fields;
 
   let csv = fields.join(", ");
   csv += "\n";
-  for (const row of result.rows) {
+  for (const row of userResult.rows) {
     let line = "";
     for (let i = 0; i < row.length; i++) {
       csv += row[i];
@@ -51,19 +49,12 @@ const convResultObjToCSV = function (state: KatsuState, userIndex: number): stri
   return csv;
 };
 
-
-/**
- * Logs the result of a user in the Katsu state.
- * @param state - The Katsu state object.
- * @param userIndex - The index of the user whose result should be logged.
- */
-const logResult = function (state: KatsuState, userIndex: number): void {
-  const result = state.users[userIndex].result;
-  const fields = result.fields;
+const logUserResult = function (userResult: UserResult): void {
+  const fields = userResult.fields;
 
   console.log("Result:");
   console.log(fields.join(", "));
-  for (const row of result.rows) {
+  for (const row of userResult.rows) {
     let line = "";
     for (let i = 0; i < row.length; i++) {
       line += row[i];
@@ -92,6 +83,6 @@ export {
   APIResult,
   UserResult,
   convResultObjToCSV,
-  logResult,
+  logUserResult as logResult,
   resetResult,
 };

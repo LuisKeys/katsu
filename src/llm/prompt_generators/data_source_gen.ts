@@ -1,17 +1,16 @@
-import { Datasource, KatsuState } from "../../state/katsu_state";
+import { Datasource, User } from "../../state/katsu_state";
 
-const createDatasourcePrompt = (state: KatsuState, userId: number): string => {
-  const csvList = convertToCSV(state.datasources);
-  const user = state.users[userId];
+const createDatasourcePrompt = (userState: User, datasources: Datasource[]): string => {
+  const csvList = convertToCSV(datasources);
 
   let prompt = `Define the datasource within the following list 
   for the following prompt:
-  Prompt: "${state.users[userId].prompt}"
+  Prompt: "${userState.prompt}"
   and the following user profile:
   User profile:
-  - department: ${user.department}
-  - role: ${user.role}
-  - title: ${user.title}
+  - department: ${userState.department}
+  - role: ${userState.role}
+  - title: ${userState.title}
   Data Sources:
   List: ${csvList}
   Only provide the name of the data source.

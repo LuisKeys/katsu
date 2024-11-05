@@ -12,12 +12,9 @@ const init = async () => {
   const state = await loadKatsuState(openai)
   state.isDebug = process.env.KATSU_DEBUG === 'true';
   // state.showWordsCount = true
-  const isTest = process.env.IS_TEST === 'true';
-  if (isTest) {
-    executeTest(state);
-  }
+  if (process.env.IS_TEST === 'true') executeTest(state);
 
-  // start the API server.
+  // no puedo volver hacer Help despues de table
   apiApp(state);
 }
 

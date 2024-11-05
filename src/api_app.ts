@@ -5,7 +5,6 @@ import { KatsuState, User } from "./state/katsu_state";
 import { authUser } from "./authentication/auth_user";
 import { generateToken, validateToken } from "./authentication/token";
 import { getPayloadFromToken } from "./authentication/token";
-import { getUser, getUserIndex } from "./users/get_user";
 import { promptHandler } from "./prompts/prompt_handler";
 import { logAPIResultObject, userResultToAPIResult } from "./result/api_result_format";
 
@@ -14,7 +13,7 @@ dotenv.config();
 const port: number = parseInt(process.env.PORT || "3020");
 const api_root: string = "/api/v1/";
 
-const apiApp = function (state: KatsuState): void {
+const startApiServer = function (state: KatsuState): void {
   const app = express();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
@@ -57,26 +56,15 @@ const apiApp = function (state: KatsuState): void {
       if (state.isDebug) console.log("Post call prompt: ", prompt);
 
       const userName = getPayloadFromToken(token);
-      const userState = getUser(userName, state);
+      const userState = state.users.find(user => user.email === userName) || null;
       if (userState === null) throw new Error("User not found.");
-      //TODO remove userIndex usage
-      const userIndex = getUserIndex(userName, state);
 
       userState.prompt = prompt;
-      if (userIndex !== null) {
-        await promptHandler(userState, state, userIndex);
-        if (state.isDebug) console.log("Post call finished ask intent.");
-      }
+      await promptHandler(userState, state);
+      if (state.isDebug) console.log("Post call finished askAI intent.");
 
-      const apiResult = await userResultToAPIResult(userState, state, userIndex);
-      if (state.isDebug) {
-        try {
-          logAPIResultObject(apiResult);
-        }
-        catch (error: any) {
-          console.log("Error logging API result object: ", error["message"]);
-        }
-      }
+      const apiResult = await userResultToAPIResult(userState, state);
+      if (state.isDebug) logAPIResultObject(apiResult);
 
       res.status(200).json(apiResult);
     } catch (error: any) {
@@ -94,4 +82,4 @@ const apiApp = function (state: KatsuState): void {
   });
 };
 
-export { apiApp };
+export { startApiServer as apiApp };

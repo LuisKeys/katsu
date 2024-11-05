@@ -1,8 +1,7 @@
-import { convResultObjToCSV } from "../../result/result_object";
-import { KatsuState } from "../../state/katsu_state";
+import { convResultObjToCSV, UserResult } from "../../result/result_object";
 
-const createFormatResultPrompt = (state: KatsuState, userIndex: number): string => {
-  const csv = convResultObjToCSV(state, userIndex);
+const createFormatResultPrompt = (userResult: UserResult): string => {
+  const csv = convResultObjToCSV(userResult);
   const llmPrompt = `format the result in the following CSV format to a nice human readable short paragraph: 
   ${csv}
   Avoid the references to your model training data, date, etc.

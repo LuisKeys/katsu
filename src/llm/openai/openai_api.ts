@@ -30,20 +30,21 @@ const askAI = async (state: KatsuState, context: string): Promise<string> => {
  * @param {string} prompt - The prompt to send to the OpenAI API.
  * @returns {Promise<string>} - The response from the OpenAI API.
  */
-const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
-  const context = state.users[userIndex].context;
-  if (state.showWordsCount) showCost(context);
+// TODO Remove
+// const ask = async (state: KatsuState, userIndex: number): Promise<string> => {
+//   const context = state.users[userIndex].context;
+//   if (state.showWordsCount) showCost(context);
 
-  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
-  const completion = await (state.openai.chat.completions.create)({
-    messages: [{ role: "system", content: context }],
-    model: model,
-  });
-  if (state.isDebug) console.log("Ask ended");
+//   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+//   const completion = await (state.openai.chat.completions.create)({
+//     messages: [{ role: "system", content: context }],
+//     model: model,
+//   });
+//   if (state.isDebug) console.log("Ask ended");
 
-  const answer = completion?.choices?.[0]?.message?.content || "";
-  return answer;
-};
+//   const answer = completion?.choices?.[0]?.message?.content || "";
+//   return answer;
+// };
 
 const showCost = (context: string): void => {
   const wordsCount = countWords(context);
@@ -71,4 +72,4 @@ const countWords = (str: string): number => {
   return words.length;
 };
 
-export { ask, askAI, getOpenAI };
+export { askAI, getOpenAI };

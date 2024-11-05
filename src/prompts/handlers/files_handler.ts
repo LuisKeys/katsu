@@ -1,20 +1,6 @@
-import { KatsuState } from "../../state/katsu_state";
+import { KatsuState, User } from "../../state/katsu_state";
 
-/**
- * This module contains the handler for files prompts type.
- * @module file handler
- */
-
-/**
- * Handles the files prompt.
- *
- * @param state - The current state of the application.
- * @param userIndex - The index of the current user.
- * @returns The updated state of the application.
- */
-const filesHandler = async (state: KatsuState, userIndex: number): Promise<KatsuState> => {
-
-  return state;
+const filesHandler = async (userState: User, state: KatsuState) => {
 };
 
 export {
